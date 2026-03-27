@@ -11,4 +11,5 @@ reproducible runs from JSON specs.
 
 ## Author
 
-**Maintainer**: CQU Animal Analytics <example@example.com>
+**Maintainer**: Dr Thomas Williams
+<wobblytwilliams@users.noreply.github.com>
