@@ -1,0 +1,65 @@
+url: https://wobblytwilliams.github.io/moover/
+
+template:
+  bootstrap: 5
+
+home:
+  title: moover
+  description: Convert movement data into behaviour workflows for animal scientists.
+
+navbar:
+  structure:
+    left: [reference, tutorials]
+    right: [github]
+  components:
+    tutorials:
+      text: Tutorials
+      menu:
+      - text: Getting Started
+        href: articles/getting-started.html
+      - text: Recording Observations
+        href: articles/recording-observations.html
+      - text: Accelerometer Input Formats
+        href: articles/accelerometer-input-formats.html
+      - text: Deployment Export Format
+        href: articles/deployment-export-format.html
+      - text: Build a Model
+        href: articles/build-a-model.html
+      - text: Predict with an Existing Model
+        href: articles/predict-with-existing-model.html
+    github:
+      icon: fab fa-github
+      aria-label: GitHub repository
+      href: https://github.com/wobblytwilliams/moover
+
+reference:
+- title: Workspace and specs
+  contents:
+  - init_workspace
+  - create_spec
+  - run_pipeline
+- title: Guided workflows
+  contents:
+  - wizard_import
+  - wizard_train
+  - wizard_predict
+- title: Core pipeline functions
+  contents:
+  - import_accel
+  - build_epoch_features
+  - optimise_model
+  - train_model
+  - export_model
+  - predict_behaviour
+  - load_model_bundle
+
+articles:
+- title: Tutorials
+  navbar: Tutorials
+  contents:
+  - getting-started
+  - recording-observations
+  - accelerometer-input-formats
+  - deployment-export-format
+  - build-a-model
+  - predict-with-existing-model

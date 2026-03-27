@@ -1,0 +1,52 @@
+---
+title: "Predict with an Existing Model"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Predict with an Existing Model}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Use this workflow when you already have an exported model bundle.
+
+## Step 1. Create a prediction spec
+
+```r
+spec <- create_spec(
+  predict = list(
+    model_bundle = "path/to/exported_bundle"
+  ),
+  labels = list(
+    path = NULL
+  )
+)
+```
+
+## Step 2. Run prediction
+
+```r
+run_pipeline(spec, stage = "predict")
+```
+
+The default output is an epoch-level predictions file written into the run's
+`results/` folder.
+
+## Optional summaries
+
+You can also request summaries:
+
+```r
+spec <- create_spec(
+  predict = list(
+    model_bundle = "path/to/exported_bundle",
+    summary_outputs = c("hourly", "daily")
+  ),
+  labels = list(path = NULL)
+)
+```
+
+## Beginner option
+
+```r
+wizard_predict()
+```

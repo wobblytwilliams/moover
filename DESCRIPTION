@@ -1,0 +1,32 @@
+Package: moover
+Title: Convert Movement Data into Behaviour Workflows
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "CQU",
+           family = "Animal Analytics",
+           role = c("aut", "cre"),
+           email = "example@example.com")
+Description: Beginner-friendly and scriptable tools for converting raw
+    accelerometer data into canonical movement tables, epoch features,
+    behaviour models, optimisation outputs, and deployable model bundles.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    data.table,
+    ggplot2,
+    jsonlite,
+    lubridate,
+    ranger,
+    tools,
+    utils,
+    yardstick
+Suggests:
+    knitr,
+    pkgdown,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+VignetteBuilder: knitr
