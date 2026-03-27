@@ -14,6 +14,15 @@ can still take time, but the goal is to make model building,
 optimisation, and prediction accessible to beginners working on their
 own machines.
 
+## Installation
+
+Install the development version from GitHub with:
+
+``` r
+install.packages("devtools")
+devtools::install_github("wobblytwilliams/moover")
+```
+
 ## What `moover` does
 
 - ingests raw accelerometer data
@@ -68,7 +77,10 @@ moover::wizard_train()
 
 ## Documentation
 
-The pkgdown site is intended to be the main tutorial and reference hub.
+The pkgdown site is intended to be the main tutorial and reference hub:
+
+<https://wobblytwilliams.github.io/moover/>
+
 It includes walkthroughs for:
 
 - setting up folders
