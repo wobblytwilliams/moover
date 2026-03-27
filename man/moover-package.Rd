@@ -15,7 +15,7 @@ The package supports both guided beginner workflows and fully scripted,
 reproducible runs from JSON specs.
 }
 \author{
-\strong{Maintainer}: CQU Animal Analytics \email{example@example.com}
+\strong{Maintainer}: Dr Thomas Williams \email{wobblytwilliams@users.noreply.github.com}
 
 }
 \keyword{internal}

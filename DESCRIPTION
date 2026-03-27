@@ -2,10 +2,10 @@ Package: moover
 Title: Convert Movement Data into Behaviour Workflows
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "CQU",
-           family = "Animal Analytics",
+    person(given = "Dr Thomas",
+           family = "Williams",
            role = c("aut", "cre"),
-           email = "example@example.com")
+           email = "wobblytwilliams@users.noreply.github.com")
 Description: Beginner-friendly and scriptable tools for converting raw
     accelerometer data into canonical movement tables, epoch features,
     behaviour models, optimisation outputs, and deployable model bundles.
