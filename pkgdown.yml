@@ -1,0 +1,14 @@
+pandoc: 3.1.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  accelerometer-input-formats: accelerometer-input-formats.html
+  build-a-model: build-a-model.html
+  deployment-export-format: deployment-export-format.html
+  getting-started: getting-started.html
+  predict-with-existing-model: predict-with-existing-model.html
+  recording-observations: recording-observations.html
+last_built: 2026-03-27T06:48Z
+urls:
+  reference: https://wobblytwilliams.github.io/moover/reference
+  article: https://wobblytwilliams.github.io/moover/articles

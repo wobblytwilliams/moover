@@ -1,0 +1,67 @@
+# Accelerometer Input Formats
+
+`moover` supports two input modes in v1.
+
+## 1. CQU-style accelerometer files
+
+This is the default.
+
+Expected columns:
+
+- `datetime`
+- `x`
+- `y`
+- `z`
+
+Example:
+
+``` text
+datetime,x,y,z
+2025-01-01T00:00:00Z,0.01,0.02,1.00
+2025-01-01T00:00:01Z,0.03,0.01,0.99
+```
+
+For training workflows, filenames are expected to include the
+accelerometer id, for example:
+
+``` text
+demo-A01_cquFormat.csv
+```
+
+## 2. Generic delimited files
+
+You can also import generic delimited files by mapping columns
+interactively or in the spec.
+
+Example:
+
+``` r
+spec <- create_spec(
+  ingest = list(format = "generic"),
+  schema = list(
+    raw = list(
+      datetime = "timestamp_ms",
+      x = "acc_x",
+      y = "acc_y",
+      z = "acc_z",
+      id = "animal_id",
+      id_type = "id",
+      time_format = "unix_ms"
+    )
+  )
+)
+```
+
+## Canonical format downstream
+
+All raw data is converted to:
+
+- `id`
+- `t_unix_ms`
+- `x`
+- `y`
+- `z`
+
+## TODO
+
+Parquet and arrow support are planned, but are not part of v1.

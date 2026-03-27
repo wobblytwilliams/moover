@@ -1,0 +1,140 @@
+# moover
+
+`moover` converts movement data into behaviour workflows for animal
+scientists.
+
+It is designed to support both:
+
+- beginner-friendly guided workflows
+- reproducible scripted workflows from JSON specs
+
+## What `moover` does
+
+- ingests raw accelerometer data
+- converts it to a canonical movement format
+- generates epoch features
+- trains and optimises Random Forest models
+- evaluates models with LOCO metrics and plots
+- exports reusable and embedded-friendly model bundles
+- predicts behaviour on new datasets using existing bundles
+
+## Core workflows
+
+### 1. Use an existing model
+
+``` r
+spec <- moover::create_spec(
+  predict = list(model_bundle = "path/to/exported_bundle")
+)
+
+moover::run_pipeline(spec, stage = "predict")
+```
+
+### 2. Train and export a new model
+
+``` r
+spec <- moover::create_spec(
+  labels = list(
+    tech_file = "tech.csv",
+    path = "observations.csv"
+  )
+)
+
+moover::run_pipeline(spec, stage = "all")
+```
+
+### 3. Optimise for embedded deployment
+
+``` r
+spec <- moover::create_spec(
+  optimise = list(enabled = TRUE)
+)
+
+moover::run_pipeline(spec, stage = "all")
+```
+
+## Getting started
+
+``` r
+moover::init_workspace()
+moover::wizard_train()
+```
+
+## Documentation
+
+The pkgdown site is intended to be the main tutorial and reference hub.
+It includes walkthroughs for:
+
+- setting up folders
+- formatting observations
+- formatting accelerometer input files
+- understanding exported deployment bundles
+- building a model
+- predicting with an existing model
+
+## Included example data
+
+The package ships with a small example workspace under:
+
+``` r
+system.file("extdata", "example_workspace", package = "moover")
+```
+
+## TODO
+
+- parquet and arrow ingestion support
+- additional model backends beyond Random Forest
+
+# Package index
+
+## Workspace and specs
+
+- [`init_workspace()`](https://wobblytwilliams.github.io/moover/reference/init_workspace.md)
+  : Initialise a moover Workspace
+- [`create_spec()`](https://wobblytwilliams.github.io/moover/reference/create_spec.md)
+  : Create a moover Specification
+- [`run_pipeline()`](https://wobblytwilliams.github.io/moover/reference/run_pipeline.md)
+  : Run a moover Pipeline
+
+## Guided workflows
+
+- [`wizard_import()`](https://wobblytwilliams.github.io/moover/reference/wizard_import.md)
+  : Guided Import Wizard
+- [`wizard_train()`](https://wobblytwilliams.github.io/moover/reference/wizard_train.md)
+  : Guided Training Wizard
+- [`wizard_predict()`](https://wobblytwilliams.github.io/moover/reference/wizard_predict.md)
+  : Guided Prediction Wizard
+
+## Core pipeline functions
+
+- [`import_accel()`](https://wobblytwilliams.github.io/moover/reference/import_accel.md)
+  : Import Raw Accelerometer Data
+- [`build_epoch_features()`](https://wobblytwilliams.github.io/moover/reference/build_epoch_features.md)
+  : Build Epoch Features
+- [`optimise_model()`](https://wobblytwilliams.github.io/moover/reference/optimise_model.md)
+  : Optimise a moover Model
+- [`train_model()`](https://wobblytwilliams.github.io/moover/reference/train_model.md)
+  : Train a moover Model
+- [`export_model()`](https://wobblytwilliams.github.io/moover/reference/export_model.md)
+  : Export a moover Model Bundle
+- [`predict_behaviour()`](https://wobblytwilliams.github.io/moover/reference/predict_behaviour.md)
+  : Predict Behaviour from an Existing Model
+- [`load_model_bundle()`](https://wobblytwilliams.github.io/moover/reference/load_model_bundle.md)
+  : Load a moover Model Bundle
+
+# Articles
+
+### Tutorials
+
+- [Getting
+  Started](https://wobblytwilliams.github.io/moover/articles/getting-started.md):
+- [Recording
+  Observations](https://wobblytwilliams.github.io/moover/articles/recording-observations.md):
+- [Accelerometer Input
+  Formats](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md):
+- [Deployment Export
+  Format](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md):
+- [Build a
+  Model](https://wobblytwilliams.github.io/moover/articles/build-a-model.md):
+- [Predict with an Existing
+  Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md):
