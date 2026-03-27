@@ -5,7 +5,7 @@ template:
 
 home:
   title: moover
-  description: Convert movement data into behaviour workflows for animal scientists.
+  description: Convert movement data into behaviour workflows for animal scientists, locally and without requiring HPC.
 
 navbar:
   structure:

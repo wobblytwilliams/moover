@@ -7,6 +7,8 @@ It is designed to support both:
 - beginner-friendly guided workflows
 - reproducible scripted workflows from JSON specs
 
+It is designed to work locally on a normal computer, without requiring access to a high-performance computing (HPC) environment. Larger runs can still take time, but the goal is to make model building, optimisation, and prediction accessible to beginners working on their own machines.
+
 ## What `moover` does
 
 - ingests raw accelerometer data
