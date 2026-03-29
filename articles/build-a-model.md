@@ -2,10 +2,10 @@
 
 ## You are here
 
-This is **5 of 10** in the beginner path.
+This is **Chapter 5 of 10** in the beginner path.
 
 If you already have a trained model and only want predictions, you can
-skip ahead to [Predict Behaviour with an Existing
+skip ahead to [Chapter 6: Predict Behaviour with an Existing
 Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md).
 
 ## Who this page is for
@@ -37,6 +37,8 @@ build, validate, and export a first Random Forest model.
 For most new users, the easiest option is the guided wizard:
 
 ``` r
+# Open the training wizard.
+# The wizard asks where your files are and then runs the beginner workflow.
 wizard_train()
 ```
 
@@ -46,23 +48,40 @@ in a binary model.
 
 ## The same workflow in copy-pasteable code
 
+The code below is trying to achieve a complete beginner training run
+without optimisation.
+
 ``` r
 library(moover)
 
+# Create a run specification that points moover at your workspace.
+# The workspace root is the folder that contains data_raw/, tech.csv, and observations.csv.
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
   labels = list(
+    # tech.csv links animal ids and accelerometer ids when needed.
     tech_file = "tech.csv",
+    # observations.csv contains the labelled behaviour periods for training.
     path = "observations.csv"
   ),
   features = list(
+    # Use the standard beginner-friendly feature set.
     selection = "standard",
     standard_set = "manual5"
   ),
-  optimise = list(enabled = FALSE),
-  model = list(positive_class = "grazing")
+  optimise = list(
+    # Keep the first run simple.
+    # We are not searching over many candidate models here.
+    enabled = FALSE
+  ),
+  model = list(
+    # In a binary model, this is the class treated as the positive outcome.
+    positive_class = "grazing"
+  )
 )
 
+# Run the full workflow.
+# Here, stage = "all" means import, feature building, training, evaluation, and export.
 run_pipeline(spec, stage = "all")
 ```
 
@@ -119,8 +138,8 @@ After a successful run, you should have:
 - Turning optimisation on too early when you only want a first working
   model.
 
-## What’s next
-
-If you already have a model bundle to apply to new data, continue to
-[Predict Behaviour with an Existing
-Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 4. Record Observations for
+Training](https://wobblytwilliams.github.io/moover/articles/recording-observations.md)  
+Next chapter: [Chapter 6. Predict Behaviour with an Existing
+Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md)

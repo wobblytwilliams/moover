@@ -2,10 +2,7 @@
 
 ## You are here
 
-This is **2 of 10** in the beginner path.
-
-If you have already run the example workflow once, this page helps you
-understand the folder structure before you add your own files.
+This is **Chapter 2 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -32,13 +29,29 @@ predictable rather than technical.
 We are creating a clean workspace and walking through each folder in
 plain language.
 
+The key idea is that `moover` separates:
+
+- your raw input files
+- the outputs from each run
+- the temporary internal working files used while the package is doing
+  its job
+
 ## Do this
+
+The code below is trying to create the standard folder structure that
+`moover` expects.
 
 ``` r
 library(moover)
 
+# Create a new moover workspace called "my_moover_workspace".
+# This is your project folder for one piece of work.
 init_workspace("my_moover_workspace")
 ```
+
+[`init_workspace()`](https://wobblytwilliams.github.io/moover/reference/init_workspace.md)
+does not train a model or import data. It simply prepares the folder
+structure so the next steps are easier to follow.
 
 After that, your workspace should contain this basic structure:
 
@@ -118,8 +131,8 @@ need HPC. Some jobs can still take time, especially when you optimise
 several models, but the folder structure is designed to help you work
 step by step and keep track of progress.
 
-## What’s next
-
-If you are ready to prepare your own raw files, continue to [Prepare
-Your Accelerometer
-Files](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 1. Start
+Here](https://wobblytwilliams.github.io/moover/articles/getting-started.md)  
+Next chapter: [Chapter 3. Prepare Your Accelerometer
+Files](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md)

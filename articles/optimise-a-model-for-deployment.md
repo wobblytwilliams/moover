@@ -2,7 +2,7 @@
 
 ## You are here
 
-This is **8 of 10** in the beginner path, and it is optional.
+This is **Chapter 8 of 10** in the beginner path, and it is optional.
 
 ## Who this page is for
 
@@ -36,14 +36,20 @@ is a later step once you already trust the basic workflow.
 
 ## Do this
 
-You can turn optimisation on in the wizard, or in code like this:
+The code below is trying to achieve a full run where `moover` tests
+multiple model candidates instead of training just one fixed model.
 
 ``` r
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
-  optimise = list(enabled = TRUE)
+  optimise = list(
+    # Turn on candidate search.
+    # This tells moover to compare multiple model settings before exporting one.
+    enabled = TRUE
+  )
 )
 
+# Run the full workflow, including optimisation.
 run_pipeline(spec, stage = "all")
 ```
 
@@ -76,8 +82,8 @@ confident choice that matches your real deployment needs.
 - Making the model tiny without checking whether the performance drop is
   acceptable.
 
-## What’s next
-
-If you want reproducible reruns or want to save a workflow for later,
-continue to [Scripted Reruns and Saved
-Specs](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 7. Understand Your Results and Export
+Folder](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md)  
+Next chapter: [Chapter 9. Scripted Reruns and Saved
+Specs](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.md)

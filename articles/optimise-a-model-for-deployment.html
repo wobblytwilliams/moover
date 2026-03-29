@@ -10,7 +10,8 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Optimise a Model for Deployment">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../extra.js"></script><meta property="og:title" content="Optimise a Model for Deployment">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,16 +34,16 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Start Here: Your First Successful Run</a></li>
-    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
-    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
-    <li><a class="dropdown-item" href="../articles/recording-observations.html">Record Observations for Training</a></li>
-    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build Your First Behaviour Model</a></li>
-    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
-    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
-    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
-    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
-    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Chapter 1: Start Here</a></li>
+    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Chapter 2: Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Chapter 3: Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="../articles/recording-observations.html">Chapter 4: Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="../articles/build-a-model.html">Chapter 5: Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Chapter 6: Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Chapter 7: Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Chapter 8: Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Chapter 9: Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Chapter 10: Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -64,7 +65,7 @@
       <h1>Optimise a Model for Deployment</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/wobblytwilliams/moover/blob/main/vignettes/optimise-a-model-for-deployment.Rmd" class="external-link"><code>vignettes/optimise-a-model-for-deployment.Rmd</code></a></small>
       <div class="d-none name"><code>optimise-a-model-for-deployment.Rmd</code></div>
     </div>
 
@@ -73,8 +74,8 @@
 <div class="section level2">
 <h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
 </h2>
-<p>This is <strong>8 of 10</strong> in the beginner path, and it is
-optional.</p>
+<p>This is <strong>Chapter 8 of 10</strong> in the beginner path, and it
+is optional.</p>
 </div>
 <div class="section level2">
 <h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
@@ -116,13 +117,20 @@ workflow.</p>
 <div class="section level2">
 <h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
 </h2>
-<p>You can turn optimisation on in the wizard, or in code like this:</p>
+<p>The code below is trying to achieve a full run where
+<code>moover</code> tests multiple model candidates instead of training
+just one fixed model.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
-<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>enabled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Turn on candidate search.</span></span>
+<span>    <span class="co"># This tells moover to compare multiple model settings before exporting one.</span></span>
+<span>    enabled <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Run the full workflow, including optimisation.</span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -160,13 +168,13 @@ confident choice that matches your real deployment needs.</p>
 <li>Making the model tiny without checking whether the performance drop
 is acceptable.</li>
 </ul>
+<div class="moover-next-steps">
+<p><strong>Move through the tutorial</strong><br> Previous chapter:
+<a href="deployment-export-format.html">Chapter 7. Understand Your
+Results and Export Folder</a><br> Next chapter:
+<a href="scripted-reruns-and-saved-specs.html">Chapter 9. Scripted
+Reruns and Saved Specs</a></p>
 </div>
-<div class="section level2">
-<h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
-</h2>
-<p>If you want reproducible reruns or want to save a workflow for later,
-continue to <a href="scripted-reruns-and-saved-specs.html">Scripted
-Reruns and Saved Specs</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

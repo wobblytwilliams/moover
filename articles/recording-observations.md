@@ -2,7 +2,7 @@
 
 ## You are here
 
-This is **4 of 10** in the beginner path.
+This is **Chapter 4 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -62,22 +62,32 @@ cow_1,resting,1735689720000,1735689840000
 
 ## Do this
 
-If your observation file uses friendly names like `animal_id` and
-`start_time`, map them in the spec:
+The code below is trying to achieve one thing: tell `moover` which
+columns in your observation table correspond to animal ID, behaviour
+label, start time, and end time.
 
 ``` r
 spec <- create_spec(
   schema = list(
     observations = list(
+      # Column containing the animal identifier.
       id = "animal_id",
+      # Column containing the behaviour name.
       label = "behaviour",
+      # Column containing the start time of the observed bout.
       start = "start_time",
+      # Column containing the end time of the observed bout.
       end = "end_time",
+      # Tell moover how those times are written in the file.
       time_format = "iso8601_local"
     )
   )
 )
 ```
+
+[`create_spec()`](https://wobblytwilliams.github.io/moover/reference/create_spec.md)
+does not train the model by itself. It stores the instructions that the
+later training step will use.
 
 ## Why consistent label spelling matters
 
@@ -108,8 +118,8 @@ consistent, and easy to scan.
 - IDs that do not match the accelerometer data.
 - Start and end times recorded in the wrong timezone or wrong format.
 
-## What’s next
-
-With raw files and observation labels ready, continue to [Build Your
-First Behaviour
-Model](https://wobblytwilliams.github.io/moover/articles/build-a-model.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 3. Prepare Your Accelerometer
+Files](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md)  
+Next chapter: [Chapter 5. Build Your First Behaviour
+Model](https://wobblytwilliams.github.io/moover/articles/build-a-model.md)

@@ -10,7 +10,8 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Prepare Your Accelerometer Files">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<script src="../extra.js"></script><meta property="og:title" content="Prepare Your Accelerometer Files">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,16 +34,16 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Start Here: Your First Successful Run</a></li>
-    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
-    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
-    <li><a class="dropdown-item" href="../articles/recording-observations.html">Record Observations for Training</a></li>
-    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build Your First Behaviour Model</a></li>
-    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
-    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
-    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
-    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
-    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Chapter 1: Start Here</a></li>
+    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Chapter 2: Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Chapter 3: Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="../articles/recording-observations.html">Chapter 4: Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="../articles/build-a-model.html">Chapter 5: Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Chapter 6: Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Chapter 7: Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Chapter 8: Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Chapter 9: Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Chapter 10: Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -64,7 +65,7 @@
       <h1>Prepare Your Accelerometer Files</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/wobblytwilliams/moover/blob/main/vignettes/accelerometer-input-formats.Rmd" class="external-link"><code>vignettes/accelerometer-input-formats.Rmd</code></a></small>
       <div class="d-none name"><code>accelerometer-input-formats.Rmd</code></div>
     </div>
 
@@ -73,7 +74,7 @@
 <div class="section level2">
 <h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
 </h2>
-<p>This is <strong>3 of 10</strong> in the beginner path.</p>
+<p>This is <strong>Chapter 3 of 10</strong> in the beginner path.</p>
 </div>
 <div class="section level2">
 <h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
@@ -105,6 +106,12 @@ calmer.</p>
 </h2>
 <p>We are making sure your accelerometer files are in a shape that
 <code>moover</code> can understand.</p>
+<p>The package supports two starting points:</p>
+<ul>
+<li>CQU-style files, which are the default</li>
+<li>generic delimited files, where you tell the package which columns
+are which</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="the-two-supported-input-routes">The two supported input routes<a class="anchor" aria-label="anchor" href="#the-two-supported-input-routes"></a>
@@ -133,22 +140,6 @@ calmer.</p>
 <p>If your files use different column names, <code>moover</code> can
 still work with them. You just need to tell it which columns contain the
 timestamp, x, y, z, and animal or accelerometer identifier.</p>
-<p>Example mapping:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"generic"</span><span class="op">)</span>,</span>
-<span>  schema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    raw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      datetime <span class="op">=</span> <span class="st">"timestamp_ms"</span>,</span>
-<span>      x <span class="op">=</span> <span class="st">"acc_x"</span>,</span>
-<span>      y <span class="op">=</span> <span class="st">"acc_y"</span>,</span>
-<span>      z <span class="op">=</span> <span class="st">"acc_z"</span>,</span>
-<span>      id <span class="op">=</span> <span class="st">"animal_id"</span>,</span>
-<span>      id_type <span class="op">=</span> <span class="st">"id"</span>,</span>
-<span>      time_format <span class="op">=</span> <span class="st">"unix_ms"</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -180,12 +171,39 @@ consistent.</p>
 <div class="section level2">
 <h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
 </h2>
-<p>If you are unsure about your file layout, start with the import
-wizard:</p>
+<p>If your files are already in the CQU style, the simplest thing to do
+is use the import wizard.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Open the import wizard.</span></span>
+<span><span class="co"># The wizard asks what type of raw file you have and where the files live.</span></span>
+<span><span class="fu"><a href="../reference/wizard_import.html">wizard_import</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>If your files are generic delimited files, the code below is trying
+to achieve one very specific thing: it tells <code>moover</code> how to
+interpret the raw table.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_import.html">wizard_import</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The wizard previews the data and helps you confirm that the right
-columns are being used.</p>
+<code class="sourceCode R"><span><span class="co"># Create a spec for generic files instead of the default CQU-style files.</span></span>
+<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
+<span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"generic"</span><span class="op">)</span>,</span>
+<span>  schema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    raw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      <span class="co"># The source column that contains the timestamp.</span></span>
+<span>      datetime <span class="op">=</span> <span class="st">"timestamp_ms"</span>,</span>
+<span>      <span class="co"># The source columns for the x, y, and z acceleration values.</span></span>
+<span>      x <span class="op">=</span> <span class="st">"acc_x"</span>,</span>
+<span>      y <span class="op">=</span> <span class="st">"acc_y"</span>,</span>
+<span>      z <span class="op">=</span> <span class="st">"acc_z"</span>,</span>
+<span>      <span class="co"># The column that identifies the animal or device.</span></span>
+<span>      id <span class="op">=</span> <span class="st">"animal_id"</span>,</span>
+<span>      <span class="co"># Tell moover whether that id column contains animal ids or accelerometer ids.</span></span>
+<span>      id_type <span class="op">=</span> <span class="st">"id"</span>,</span>
+<span>      <span class="co"># Tell moover how to interpret the timestamp values.</span></span>
+<span>      time_format <span class="op">=</span> <span class="st">"unix_ms"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="../reference/create_spec.html">create_spec()</a></code> is not importing the data yet. It is
+saving the instructions that tell <code>moover</code> how the raw data
+should be read.</p>
 </div>
 <div class="section level2">
 <h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
@@ -227,12 +245,13 @@ columns are being used.</p>
 <code>tech.csv</code> mapping.</li>
 <li>Forgetting to check the preview after import.</li>
 </ul>
+<div class="moover-next-steps">
+<p><strong>Move through the tutorial</strong><br> Previous chapter:
+<a href="set-up-your-workspace.html">Chapter 2. Set Up Your
+Workspace</a><br> Next chapter:
+<a href="recording-observations.html">Chapter 4. Record Observations for
+Training</a></p>
 </div>
-<div class="section level2">
-<h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
-</h2>
-<p>Once your raw files make sense, continue to <a href="recording-observations.html">Record Observations for
-Training</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

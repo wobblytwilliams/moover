@@ -1,5 +1,9 @@
 # Troubleshooting and Glossary
 
+## You are here
+
+This is **Chapter 10 of 10** in the tutorial path.
+
 ## Who this page is for
 
 This page is for anyone who got stuck, feels unsure about a term, or
@@ -23,7 +27,7 @@ Beginners often do not need more detail. They need the right next clue.
 
 Check:
 
-- the file format tutorial: [Prepare Your Accelerometer
+- the file format tutorial: [Chapter 3. Prepare Your Accelerometer
   Files](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md)
 - the preview file written into `qc/`
 - whether your timestamp column was mapped correctly
@@ -32,7 +36,7 @@ Check:
 
 Check:
 
-- the observation tutorial: [Record Observations for
+- the observation tutorial: [Chapter 4. Record Observations for
   Training](https://wobblytwilliams.github.io/moover/articles/recording-observations.md)
 - whether IDs match the accelerometer workflow
 - whether start and end times are in the correct timezone or format
@@ -41,9 +45,9 @@ Check:
 
 Check:
 
-- [Set Up Your
+- [Chapter 2. Set Up Your
   Workspace](https://wobblytwilliams.github.io/moover/articles/set-up-your-workspace.md)
-- [Understand Your Results and Export
+- [Chapter 7. Understand Your Results and Export
   Folder](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md)
 
 ### My run is taking longer than I expected
@@ -54,7 +58,7 @@ once you trust the workflow.
 
 ### I only want predictions, not model training
 
-Go straight to [Predict Behaviour with an Existing
+Go straight to [Chapter 6. Predict Behaviour with an Existing
 Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md).
 
 ## Plain-language glossary
@@ -115,10 +119,8 @@ When you ask, it helps to share:
 - the run folder or the relevant quality-check files
 - the exact step where you became unsure
 
-## What next
-
-If you are still learning, go back to [Start Here: Your First Successful
-Run](https://wobblytwilliams.github.io/moover/articles/getting-started.md).
-If you are ready for repeatable workflows, use [Scripted Reruns and
-Saved
-Specs](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 9. Scripted Reruns and Saved
+Specs](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.md)  
+Start again: [Chapter 1. Start
+Here](https://wobblytwilliams.github.io/moover/articles/getting-started.md)

@@ -2,8 +2,8 @@
 
 ## You are here
 
-This is **9 of 10** in the tutorial path, and it is aimed at advanced or
-repeat users.
+This is **Chapter 9 of 10** in the tutorial path, and it is aimed at
+advanced or repeat users.
 
 ## Who this page is for
 
@@ -42,29 +42,38 @@ It records things like:
 
 ## Do this
 
+The first code block is trying to create a reusable in-memory spec and
+run it immediately.
+
 ``` r
 library(moover)
 
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
   labels = list(
+    # Path to the animal/device mapping file.
     tech_file = "tech.csv",
+    # Path to the behaviour observations used for training.
     path = "observations.csv"
   ),
   features = list(
+    # Use the standard beginner-friendly feature set.
     selection = "standard",
     standard_set = "manual5"
   )
 )
 
+# Run the saved instructions.
 run_pipeline(spec, stage = "all")
 ```
 
-If you want to write the spec to disk:
+The second code block is trying to write those instructions to a JSON
+file so you can reuse them later.
 
 ``` r
 create_spec(
   workspace = list(root = "my_moover_workspace"),
+  # Write the saved instructions to disk.
   path = "saved_run_spec.json"
 )
 ```
@@ -72,6 +81,7 @@ create_spec(
 To rerun from that saved file later:
 
 ``` r
+# Read the saved instructions from disk and run them again.
 run_pipeline("saved_run_spec.json", stage = "all")
 ```
 
@@ -95,8 +105,8 @@ clicking back through the wizard.
 - Assuming a saved spec will work if the file layout has changed
   underneath it.
 
-## What’s next
-
-For help with common problems and a plain-language glossary of terms,
-continue to [Troubleshooting and
-Glossary](https://wobblytwilliams.github.io/moover/articles/troubleshooting-and-glossary.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 8. Optimise a Model for
+Deployment](https://wobblytwilliams.github.io/moover/articles/optimise-a-model-for-deployment.md)  
+Next chapter: [Chapter 10. Troubleshooting and
+Glossary](https://wobblytwilliams.github.io/moover/articles/troubleshooting-and-glossary.md)

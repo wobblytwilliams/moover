@@ -57,7 +57,8 @@ The full tutorial and reference site is here:
 
 <https://wobblytwilliams.github.io/moover/>
 
-The beginner path walks through:
+The beginner path is organised as a 10-chapter walkthrough and walks
+through:
 
 - your first successful run
 - setting up folders and understanding the workspace

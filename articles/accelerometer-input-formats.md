@@ -2,7 +2,7 @@
 
 ## You are here
 
-This is **3 of 10** in the beginner path.
+This is **Chapter 3 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -27,6 +27,12 @@ becomes harder. Good inputs make the rest of the workflow much calmer.
 
 We are making sure your accelerometer files are in a shape that `moover`
 can understand.
+
+The package supports two starting points:
+
+- CQU-style files, which are the default
+- generic delimited files, where you tell the package which columns are
+  which
 
 ## The two supported input routes
 
@@ -61,25 +67,6 @@ If your files use different column names, `moover` can still work with
 them. You just need to tell it which columns contain the timestamp, x,
 y, z, and animal or accelerometer identifier.
 
-Example mapping:
-
-``` r
-spec <- create_spec(
-  ingest = list(format = "generic"),
-  schema = list(
-    raw = list(
-      datetime = "timestamp_ms",
-      x = "acc_x",
-      y = "acc_y",
-      z = "acc_z",
-      id = "animal_id",
-      id_type = "id",
-      time_format = "unix_ms"
-    )
-  )
-)
-```
-
 ## Why the timestamp matters so much
 
 Your timestamp tells `moover` when each movement sample happened. Later
@@ -106,14 +93,45 @@ consistent.
 
 ## Do this
 
-If you are unsure about your file layout, start with the import wizard:
+If your files are already in the CQU style, the simplest thing to do is
+use the import wizard.
 
 ``` r
+# Open the import wizard.
+# The wizard asks what type of raw file you have and where the files live.
 wizard_import()
 ```
 
-The wizard previews the data and helps you confirm that the right
-columns are being used.
+If your files are generic delimited files, the code below is trying to
+achieve one very specific thing: it tells `moover` how to interpret the
+raw table.
+
+``` r
+# Create a spec for generic files instead of the default CQU-style files.
+spec <- create_spec(
+  ingest = list(format = "generic"),
+  schema = list(
+    raw = list(
+      # The source column that contains the timestamp.
+      datetime = "timestamp_ms",
+      # The source columns for the x, y, and z acceleration values.
+      x = "acc_x",
+      y = "acc_y",
+      z = "acc_z",
+      # The column that identifies the animal or device.
+      id = "animal_id",
+      # Tell moover whether that id column contains animal ids or accelerometer ids.
+      id_type = "id",
+      # Tell moover how to interpret the timestamp values.
+      time_format = "unix_ms"
+    )
+  )
+)
+```
+
+[`create_spec()`](https://wobblytwilliams.github.io/moover/reference/create_spec.md)
+is not importing the data yet. It is saving the instructions that tell
+`moover` how the raw data should be read.
 
 ## What success looks like
 
@@ -149,7 +167,8 @@ Common problems include:
   mapping.
 - Forgetting to check the preview after import.
 
-## What’s next
-
-Once your raw files make sense, continue to [Record Observations for
-Training](https://wobblytwilliams.github.io/moover/articles/recording-observations.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 2. Set Up Your
+Workspace](https://wobblytwilliams.github.io/moover/articles/set-up-your-workspace.md)  
+Next chapter: [Chapter 4. Record Observations for
+Training](https://wobblytwilliams.github.io/moover/articles/recording-observations.md)

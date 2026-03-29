@@ -2,7 +2,7 @@
 
 ## You are here
 
-This is **6 of 10** in the beginner path.
+This is **Chapter 6 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -41,36 +41,49 @@ You need:
 The guided option is:
 
 ``` r
+# Open the prediction wizard.
+# The wizard asks where the model bundle is and where the new raw data lives.
 wizard_predict()
 ```
 
 ## The same workflow in copy-pasteable code
+
+The code below is trying to achieve one prediction run on new raw data
+using a model that already exists.
 
 ``` r
 library(moover)
 
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
-  labels = list(path = NULL),
+  labels = list(
+    # There are no training observations in this workflow.
+    path = NULL
+  ),
   predict = list(
+    # Point to the folder that contains the exported model bundle.
     model_bundle = "path/to/exported_bundle"
   )
 )
 
+# Run only the prediction step.
+# This reads the new raw files, calculates the required features, and writes predictions.
 run_pipeline(spec, stage = "predict")
 ```
 
 ## Optional summaries
 
-If you want more than epoch-level predictions, you can request hourly or
-daily summaries:
+If you want more than epoch-level predictions, the code below adds
+hourly and daily summaries.
 
 ``` r
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
   labels = list(path = NULL),
   predict = list(
+    # Use an existing exported model.
     model_bundle = "path/to/exported_bundle",
+    # Ask moover to also write summary tables.
     summary_outputs = c("hourly", "daily")
   )
 )
@@ -99,8 +112,8 @@ those files written there.
 - Expecting a prediction model to work well on very different data
   collection setups without checking compatibility.
 
-## What’s next
-
-To understand the files created by training and prediction runs,
-continue to [Understand Your Results and Export
-Folder](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md).
+**Move through the tutorial**  
+Previous chapter: [Chapter 5. Build Your First Behaviour
+Model](https://wobblytwilliams.github.io/moover/articles/build-a-model.md)  
+Next chapter: [Chapter 7. Understand Your Results and Export
+Folder](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md)

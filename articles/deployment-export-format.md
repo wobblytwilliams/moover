@@ -2,7 +2,7 @@
 
 ## You are here
 
-This is **7 of 10** in the beginner path.
+This is **Chapter 7 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -112,9 +112,8 @@ You should be able to answer these practical questions:
 - Sharing only the model object and forgetting the feature manifest and
   test vectors.
 
-## What’s next
-
-If you want to make a model smaller for deployment, continue to
-[Optimise a Model for
-Deployment](https://wobblytwilliams.github.io/moover/articles/optimise-a-model-for-deployment.md).
-If you are not there yet, that is completely fine.
+**Move through the tutorial**  
+Previous chapter: [Chapter 6. Predict Behaviour with an Existing
+Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md)  
+Next chapter: [Chapter 8. Optimise a Model for
+Deployment](https://wobblytwilliams.github.io/moover/articles/optimise-a-model-for-deployment.md)
