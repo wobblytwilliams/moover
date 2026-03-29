@@ -15,25 +15,25 @@ navbar:
     tutorials:
       text: Tutorials
       menu:
-      - text: "Start Here: Your First Successful Run"
+      - text: "Chapter 1: Start Here"
         href: articles/getting-started.html
-      - text: "Set Up Your Workspace"
+      - text: "Chapter 2: Set Up Your Workspace"
         href: articles/set-up-your-workspace.html
-      - text: "Prepare Your Accelerometer Files"
+      - text: "Chapter 3: Prepare Your Accelerometer Files"
         href: articles/accelerometer-input-formats.html
-      - text: "Record Observations for Training"
+      - text: "Chapter 4: Record Observations for Training"
         href: articles/recording-observations.html
-      - text: "Build Your First Behaviour Model"
+      - text: "Chapter 5: Build Your First Behaviour Model"
         href: articles/build-a-model.html
-      - text: "Predict Behaviour with an Existing Model"
+      - text: "Chapter 6: Predict Behaviour with an Existing Model"
         href: articles/predict-with-existing-model.html
-      - text: "Understand Your Results and Export Folder"
+      - text: "Chapter 7: Understand Your Results and Export Folder"
         href: articles/deployment-export-format.html
-      - text: "Optimise a Model for Deployment"
+      - text: "Chapter 8: Optimise a Model for Deployment"
         href: articles/optimise-a-model-for-deployment.html
-      - text: "Scripted Reruns and Saved Specs"
+      - text: "Chapter 9: Scripted Reruns and Saved Specs"
         href: articles/scripted-reruns-and-saved-specs.html
-      - text: "Troubleshooting and Glossary"
+      - text: "Chapter 10: Troubleshooting and Glossary"
         href: articles/troubleshooting-and-glossary.html
     github:
       icon: fab fa-github

@@ -13,7 +13,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ## You are here
 
-This is **7 of 10** in the beginner path.
+This is **Chapter 7 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -116,6 +116,8 @@ You should be able to answer these practical questions:
 - Treating every output file as equally important.
 - Sharing only the model object and forgetting the feature manifest and test vectors.
 
-## What's next
-
-If you want to make a model smaller for deployment, continue to [Optimise a Model for Deployment](optimise-a-model-for-deployment.html). If you are not there yet, that is completely fine.
+<div class="moover-next-steps">
+<strong>Move through the tutorial</strong><br>
+Previous chapter: <a href="predict-with-existing-model.html">Chapter 6. Predict Behaviour with an Existing Model</a><br>
+Next chapter: <a href="optimise-a-model-for-deployment.html">Chapter 8. Optimise a Model for Deployment</a>
+</div>

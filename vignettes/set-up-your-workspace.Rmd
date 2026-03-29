@@ -13,9 +13,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 ## You are here
 
-This is **2 of 10** in the beginner path.
-
-If you have already run the example workflow once, this page helps you understand the folder structure before you add your own files.
+This is **Chapter 2 of 10** in the beginner path.
 
 ## Who this page is for
 
@@ -38,13 +36,25 @@ Many beginners feel unsure before they even start because the folder layout look
 
 We are creating a clean workspace and walking through each folder in plain language.
 
+The key idea is that `moover` separates:
+
+- your raw input files
+- the outputs from each run
+- the temporary internal working files used while the package is doing its job
+
 ## Do this
+
+The code below is trying to create the standard folder structure that `moover` expects.
 
 ```r
 library(moover)
 
+# Create a new moover workspace called "my_moover_workspace".
+# This is your project folder for one piece of work.
 init_workspace("my_moover_workspace")
 ```
+
+`init_workspace()` does not train a model or import data. It simply prepares the folder structure so the next steps are easier to follow.
 
 After that, your workspace should contain this basic structure:
 
@@ -116,6 +126,8 @@ You should be able to look at your workspace and answer these questions confiden
 
 `moover` is designed to work locally on a normal computer. You do not need HPC. Some jobs can still take time, especially when you optimise several models, but the folder structure is designed to help you work step by step and keep track of progress.
 
-## What's next
-
-If you are ready to prepare your own raw files, continue to [Prepare Your Accelerometer Files](accelerometer-input-formats.html).
+<div class="moover-next-steps">
+<strong>Move through the tutorial</strong><br>
+Previous chapter: <a href="getting-started.html">Chapter 1. Start Here</a><br>
+Next chapter: <a href="accelerometer-input-formats.html">Chapter 3. Prepare Your Accelerometer Files</a>
+</div>

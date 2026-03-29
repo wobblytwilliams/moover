@@ -9,6 +9,8 @@ Authors@R:
 Description: Beginner-friendly and scriptable tools for converting raw
     accelerometer data into canonical movement tables, epoch features,
     behaviour models, optimisation outputs, and deployable model bundles.
+URL: https://wobblytwilliams.github.io/moover/,
+    https://github.com/wobblytwilliams/moover
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

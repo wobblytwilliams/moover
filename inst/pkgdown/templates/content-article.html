@@ -1,0 +1,98 @@
+﻿{{^as_is}}$for(header-includes)$
+$header-includes$
+$endfor${{/as_is}}
+
+<div class="row moover-article-layout">
+  <aside class="col-lg-3 moover-chapter-sidebar d-none d-lg-block">
+    <nav class="moover-chapter-nav" aria-label="Tutorial chapters">
+      <h2>Beginner Chapters</h2>
+      <ol>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/getting-started.html" data-moover-chapter="getting-started.html">Chapter 1. Start Here</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/set-up-your-workspace.html" data-moover-chapter="set-up-your-workspace.html">Chapter 2. Set Up Your Workspace</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/accelerometer-input-formats.html" data-moover-chapter="accelerometer-input-formats.html">Chapter 3. Prepare Accelerometer Files</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/recording-observations.html" data-moover-chapter="recording-observations.html">Chapter 4. Record Observations</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/build-a-model.html" data-moover-chapter="build-a-model.html">Chapter 5. Build Your First Model</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/predict-with-existing-model.html" data-moover-chapter="predict-with-existing-model.html">Chapter 6. Predict with a Model</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/deployment-export-format.html" data-moover-chapter="deployment-export-format.html">Chapter 7. Understand Your Results</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/optimise-a-model-for-deployment.html" data-moover-chapter="optimise-a-model-for-deployment.html">Chapter 8. Optimise for Deployment</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/scripted-reruns-and-saved-specs.html" data-moover-chapter="scripted-reruns-and-saved-specs.html">Chapter 9. Scripted Reruns</a></li>
+        <li><a href="{{#site}}{{root}}{{/site}}articles/troubleshooting-and-glossary.html" data-moover-chapter="troubleshooting-and-glossary.html">Chapter 10. Troubleshooting</a></li>
+      </ol>
+      <p class="moover-chapter-note">Use this chapter list to move through the tutorial without jumping back to the top menu.</p>
+    </nav>
+  </aside>
+
+  <main id="main" class="col-lg-6">
+    <div class="d-lg-none moover-mobile-chapter-nav-wrapper">
+      <details class="moover-mobile-chapter-nav">
+        <summary>Open the chapter list</summary>
+        <ol>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/getting-started.html">Chapter 1. Start Here</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/set-up-your-workspace.html">Chapter 2. Set Up Your Workspace</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/accelerometer-input-formats.html">Chapter 3. Prepare Accelerometer Files</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/recording-observations.html">Chapter 4. Record Observations</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/build-a-model.html">Chapter 5. Build Your First Model</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/predict-with-existing-model.html">Chapter 6. Predict with a Model</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/deployment-export-format.html">Chapter 7. Understand Your Results</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/optimise-a-model-for-deployment.html">Chapter 8. Optimise for Deployment</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/scripted-reruns-and-saved-specs.html">Chapter 9. Scripted Reruns</a></li>
+          <li><a href="{{#site}}{{root}}{{/site}}articles/troubleshooting-and-glossary.html">Chapter 10. Troubleshooting</a></li>
+        </ol>
+      </details>
+    </div>
+
+    <div class="page-header">
+      {{#logo}}<img src="{{logo.src}}" class="logo" alt="" >{{/logo}}
+      <h1>{{{pagetitle}}}</h1>
+      $if(subtitle)$
+      <h3 data-toc-skip class="subtitle">$subtitle$</h3>
+      $endif$
+      $for(author)$
+      $if(author.name)$
+      <h4 data-toc-skip class="author">$author.name$</h4>
+      $if(author.affiliation)$
+      <address class="author_afil">
+      $author.affiliation$<br>$endif$
+      $if(author.email)$
+      <a class="author_email" href="mailto:#">$author.email$</a>
+      </address>
+      $endif$
+      $else$
+      <h4 data-toc-skip class="author">$author$</h4>
+      $endif$
+      $endfor$
+
+      $if(date)$
+      <h4 data-toc-skip class="date">$date$</h4>
+      $endif$
+
+      {{#source}}<small class="dont-index">{{{.}}}</small>{{/source}}
+      <div class="d-none name"><code>{{filename}}</code></div>
+    </div>
+
+    $for(include-before)$
+    $include-before$
+    $endfor$
+
+    $if(abstract)$
+    <div class="abstract">
+      <p class="abstract">{{#translate}}{{abstract}}{{/translate}}</p>
+      $abstract$
+    </div>
+    $endif$
+
+$body$
+  </main>
+ {{#toc}}
+  <aside class="col-lg-3">
+    <nav id="toc" aria-label="{{#translate}}{{toc}}{{/translate}}">
+      <h2>{{#translate}}{{on_this_page}}{{/translate}}</h2>
+    </nav>
+  </aside>
+ {{/toc}}
+
+</div>
+
+$for(include-after)$
+$include-after$
+$endfor$

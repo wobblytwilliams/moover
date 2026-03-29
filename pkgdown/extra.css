@@ -1,0 +1,99 @@
+﻿.moover-article-layout {
+  align-items: flex-start;
+}
+
+.moover-chapter-nav {
+  position: sticky;
+  top: 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid #d7e3db;
+  border-radius: 0.75rem;
+  background: #f6faf7;
+  box-shadow: 0 0.2rem 0.6rem rgba(18, 63, 49, 0.06);
+}
+
+.moover-chapter-nav h2,
+.moover-mobile-chapter-nav summary {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #113528;
+}
+
+.moover-chapter-nav ol,
+.moover-mobile-chapter-nav ol {
+  padding-left: 1.2rem;
+  margin-bottom: 0.75rem;
+}
+
+.moover-chapter-nav li,
+.moover-mobile-chapter-nav li {
+  margin-bottom: 0.45rem;
+}
+
+.moover-chapter-nav a,
+.moover-mobile-chapter-nav a {
+  color: #174a3a;
+  text-decoration: none;
+}
+
+.moover-chapter-nav a:hover,
+.moover-mobile-chapter-nav a:hover,
+.moover-chapter-nav a:focus,
+.moover-mobile-chapter-nav a:focus {
+  text-decoration: underline;
+}
+
+.moover-chapter-nav a.is-active {
+  font-weight: 700;
+  color: #0f2f24;
+}
+
+.moover-chapter-nav a.is-active::before {
+  content: "Current chapter: ";
+  display: block;
+  font-size: 0.75rem;
+  color: #55786b;
+  font-weight: 600;
+}
+
+.moover-chapter-note {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: #4d685f;
+}
+
+.moover-mobile-chapter-nav-wrapper {
+  margin-bottom: 1rem;
+}
+
+.moover-mobile-chapter-nav {
+  padding: 0.9rem 1rem;
+  border: 1px solid #d7e3db;
+  border-radius: 0.75rem;
+  background: #f6faf7;
+}
+
+.moover-mobile-chapter-nav summary {
+  cursor: pointer;
+}
+
+.template-article main .moover-step-note,
+.template-article main .moover-function-note,
+.template-article main .moover-next-steps {
+  padding: 0.9rem 1rem;
+  border-left: 4px solid #8db5a3;
+  background: #f6faf7;
+  margin: 1rem 0 1.25rem;
+}
+
+.template-article main .moover-next-steps strong,
+.template-article main .moover-step-note strong,
+.template-article main .moover-function-note strong {
+  color: #113528;
+}
+
+@media (max-width: 991.98px) {
+  .template-article #toc {
+    margin-top: 1.5rem;
+  }
+}

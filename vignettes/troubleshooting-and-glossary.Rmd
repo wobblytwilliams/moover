@@ -11,6 +11,10 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
+## You are here
+
+This is **Chapter 10 of 10** in the tutorial path.
+
 ## Who this page is for
 
 This page is for anyone who got stuck, feels unsure about a term, or wants a quick place to look before asking for help.
@@ -33,7 +37,7 @@ Beginners often do not need more detail. They need the right next clue.
 
 Check:
 
-- the file format tutorial: [Prepare Your Accelerometer Files](accelerometer-input-formats.html)
+- the file format tutorial: [Chapter 3. Prepare Your Accelerometer Files](accelerometer-input-formats.html)
 - the preview file written into `qc/`
 - whether your timestamp column was mapped correctly
 
@@ -41,7 +45,7 @@ Check:
 
 Check:
 
-- the observation tutorial: [Record Observations for Training](recording-observations.html)
+- the observation tutorial: [Chapter 4. Record Observations for Training](recording-observations.html)
 - whether IDs match the accelerometer workflow
 - whether start and end times are in the correct timezone or format
 
@@ -49,8 +53,8 @@ Check:
 
 Check:
 
-- [Set Up Your Workspace](set-up-your-workspace.html)
-- [Understand Your Results and Export Folder](deployment-export-format.html)
+- [Chapter 2. Set Up Your Workspace](set-up-your-workspace.html)
+- [Chapter 7. Understand Your Results and Export Folder](deployment-export-format.html)
 
 ### My run is taking longer than I expected
 
@@ -58,7 +62,7 @@ This can be normal on a local computer, especially for optimisation or larger da
 
 ### I only want predictions, not model training
 
-Go straight to [Predict Behaviour with an Existing Model](predict-with-existing-model.html).
+Go straight to [Chapter 6. Predict Behaviour with an Existing Model](predict-with-existing-model.html).
 
 ## Plain-language glossary
 
@@ -113,6 +117,8 @@ When you ask, it helps to share:
 - the run folder or the relevant quality-check files
 - the exact step where you became unsure
 
-## What next
-
-If you are still learning, go back to [Start Here: Your First Successful Run](getting-started.html). If you are ready for repeatable workflows, use [Scripted Reruns and Saved Specs](scripted-reruns-and-saved-specs.html).
+<div class="moover-next-steps">
+<strong>Move through the tutorial</strong><br>
+Previous chapter: <a href="scripted-reruns-and-saved-specs.html">Chapter 9. Scripted Reruns and Saved Specs</a><br>
+Start again: <a href="getting-started.html">Chapter 1. Start Here</a>
+</div>
