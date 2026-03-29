@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Deployment Export Format • moover</title>
+<title>Understand Your Results and Export Folder • moover</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Deployment Export Format">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Understand Your Results and Export Folder">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,12 +33,16 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/recording-observations.html">Recording Observations</a></li>
-    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Accelerometer Input Formats</a></li>
-    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Deployment Export Format</a></li>
-    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build a Model</a></li>
-    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict with an Existing Model</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Start Here: Your First Successful Run</a></li>
+    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="../articles/recording-observations.html">Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -57,7 +61,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Deployment Export Format</h1>
+      <h1>Understand Your Results and Export Folder</h1>
             
       
 
@@ -66,53 +70,162 @@
 
     
     
-<p>Every exported model bundle is designed to support:</p>
-<ul>
-<li>prediction in R</li>
-<li>inspection by collaborators</li>
-<li>implementation in another language</li>
-<li>embedded deployment</li>
-</ul>
 <div class="section level2">
-<h2 id="bundle-contents">Bundle contents<a class="anchor" aria-label="anchor" href="#bundle-contents"></a>
+<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
 </h2>
-<p>Expected files include:</p>
+<p>This is <strong>7 of 10</strong> in the beginner path.</p>
+</div>
+<div class="section level2">
+<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+</h2>
+<p>This page is for users who have finished a run and want help
+understanding the output folders.</p>
+</div>
+<div class="section level2">
+<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
+</h2>
+<p>By the end of this page, you will know:</p>
 <ul>
-<li><code>rf_model_full.rds</code></li>
-<li><code>model_spec.json</code></li>
-<li><code>export_config.json</code></li>
-<li><code>feature_manifest.csv</code></li>
-<li><code>feature_manifest.json</code></li>
+<li>what the main output folders are for</li>
+<li>which files matter most for everyday use</li>
+<li>which files are useful for collaborators or embedded deployment
+work</li>
+<li>where to look first when checking whether a run behaved as
+expected</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+</h2>
+<p>A finished run can look busy. This page helps you understand which
+files are the practical ones and which files are mainly there for
+reproducibility or sharing.</p>
+</div>
+<div class="section level2">
+<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
+</h2>
+<p>We are walking through a completed run folder and explaining the most
+important outputs in plain language.</p>
+</div>
+<div class="section level2">
+<h2 id="a-typical-run-structure">A typical run structure<a class="anchor" aria-label="anchor" href="#a-typical-run-structure"></a>
+</h2>
+<p>A run usually looks something like this:</p>
+<pre class="text"><code>runs/&lt;run_id&gt;/
+  spec/
+  results/
+  models/
+  plots/
+  qc/</code></pre>
+</div>
+<div class="section level2">
+<h2 id="the-folders-in-plain-language">The folders in plain language<a class="anchor" aria-label="anchor" href="#the-folders-in-plain-language"></a>
+</h2>
+<div class="section level3">
+<h3 id="spec">
+<code>spec/</code><a class="anchor" aria-label="anchor" href="#spec"></a>
+</h3>
+<p>This stores the saved instructions used for the run.</p>
+</div>
+<div class="section level3">
+<h3 id="results">
+<code>results/</code><a class="anchor" aria-label="anchor" href="#results"></a>
+</h3>
+<p>This contains the main data outputs created during the workflow.</p>
+</div>
+<div class="section level3">
+<h3 id="models">
+<code>models/</code><a class="anchor" aria-label="anchor" href="#models"></a>
+</h3>
+<p>This is where exported model bundles are written.</p>
+</div>
+<div class="section level3">
+<h3 id="plots">
+<code>plots/</code><a class="anchor" aria-label="anchor" href="#plots"></a>
+</h3>
+<p>This contains figures that help you inspect model behaviour.</p>
+</div>
+<div class="section level3">
+<h3 id="qc">
+<code>qc/</code><a class="anchor" aria-label="anchor" href="#qc"></a>
+</h3>
+<p>This holds previews and quality-check files, especially helpful when
+you want to confirm that data import worked as expected.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="key-files-you-are-likely-to-use">Key files you are likely to use<a class="anchor" aria-label="anchor" href="#key-files-you-are-likely-to-use"></a>
+</h2>
+<div class="section level3">
+<h3 id="for-the-r-user">For the R user<a class="anchor" aria-label="anchor" href="#for-the-r-user"></a>
+</h3>
+<ul>
 <li><code>metrics_overall.csv</code></li>
 <li><code>metrics_by_class.csv</code></li>
 <li><code>confusion_matrix.csv</code></li>
+<li>prediction outputs in <code>results/</code>
+</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="for-collaborators-checking-the-model">For collaborators checking the model<a class="anchor" aria-label="anchor" href="#for-collaborators-checking-the-model"></a>
+</h3>
+<ul>
+<li><code>feature_manifest.csv</code></li>
 <li><code>test_vectors.csv</code></li>
 <li><code>test_vectors_all.csv</code></li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="for-someone-implementing-the-model-elsewhere">For someone implementing the model elsewhere<a class="anchor" aria-label="anchor" href="#for-someone-implementing-the-model-elsewhere"></a>
+</h3>
+<ul>
 <li><code>rf_tree_dump.json</code></li>
+<li><code>feature_manifest.csv</code></li>
+<li><code>model_spec.json</code></li>
+<li>test vectors for checking feature values and predictions</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2 id="what-the-exported-model-bundle-is-for">What the exported model bundle is for<a class="anchor" aria-label="anchor" href="#what-the-exported-model-bundle-is-for"></a>
+</h2>
+<p>The model bundle is the shareable package of files that lets
+someone:</p>
+<ul>
+<li>reload the model in R</li>
+<li>inspect what features were used</li>
+<li>test another implementation against known outputs</li>
+<li>understand how the model was configured</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="feature-specification">Feature specification<a class="anchor" aria-label="anchor" href="#feature-specification"></a>
+<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
 </h2>
-<p>The feature manifest records:</p>
+<p>You should be able to answer these practical questions:</p>
 <ul>
-<li>feature names</li>
-<li>whether a feature is rolling</li>
-<li>textual definitions</li>
+<li>Which file tells me the overall model performance?</li>
+<li>Which folder contains the exported model I can share?</li>
+<li>Which files would a collaborator use to check their own
+implementation?</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="embedded-deployment">Embedded deployment<a class="anchor" aria-label="anchor" href="#embedded-deployment"></a>
+<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
 </h2>
-<p>The RF tree dump JSON is intended to help collaborators recreate the
-trained model logic outside R.</p>
-<p>Test vectors are included so that collaborators can check:</p>
 <ul>
-<li>feature calculations</li>
-<li>class predictions</li>
-<li>class probabilities</li>
+<li>Looking at <code>_internal/</code> before checking the run
+folder.</li>
+<li>Treating every output file as equally important.</li>
+<li>Sharing only the model object and forgetting the feature manifest
+and test vectors.</li>
 </ul>
-<p>against an independent implementation.</p>
+</div>
+<div class="section level2">
+<h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
+</h2>
+<p>If you want to make a model smaller for deployment, continue to <a href="optimise-a-model-for-deployment.html">Optimise a Model for
+Deployment</a>. If you are not there yet, that is completely fine.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

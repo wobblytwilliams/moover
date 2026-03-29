@@ -1,18 +1,18 @@
 # moover
 
-`moover` converts movement data into behaviour workflows for animal
-scientists.
+`moover` helps animal scientists turn movement data into behaviour
+outputs.
 
-It is designed to support both:
+It is designed for people who want to work locally on their own
+computer, without needing a high-performance computing (HPC)
+environment. Larger runs can still take time, but the goal is to make
+behaviour modelling practical and approachable for beginners.
 
-- beginner-friendly guided workflows
-- reproducible scripted workflows from JSON specs
+## Who `moover` is for
 
-It is designed to work locally on a normal computer, without requiring
-access to a high-performance computing (HPC) environment. Larger runs
-can still take time, but the goal is to make model building,
-optimisation, and prediction accessible to beginners working on their
-own machines.
+`moover` is for animal scientists, including nutritionists and other
+researchers who may be new to accelerometer pipelines, machine learning,
+or R package workflows.
 
 ## Installation
 
@@ -23,72 +23,49 @@ install.packages("devtools")
 devtools::install_github("wobblytwilliams/moover")
 ```
 
-## What `moover` does
+## Start here
 
-- ingests raw accelerometer data
-- converts it to a canonical movement format
-- generates epoch features
-- trains and optimises Random Forest models
-- evaluates models with LOCO metrics and plots
-- exports reusable and embedded-friendly model bundles
-- predicts behaviour on new datasets using existing bundles
+If you are new to `moover`, start with the first tutorial:
 
-## Core workflows
+[Start Here: Your First Successful
+Run](https://wobblytwilliams.github.io/moover/articles/getting-started.html)
 
-### 1. Use an existing model
+That walkthrough uses packaged example data so you can get one complete
+success before working with your own files.
 
-``` r
-spec <- moover::create_spec(
-  predict = list(model_bundle = "path/to/exported_bundle")
-)
+## Typical beginner journey
 
-moover::run_pipeline(spec, stage = "predict")
-```
+1.  Set up a workspace on your computer.
+2.  Try the packaged example data.
+3.  Prepare your own accelerometer files.
+4.  Record or tidy your observations for training.
+5.  Build a model.
+6.  Predict behaviour on new data.
 
-### 2. Train and export a new model
+## Advanced users
 
-``` r
-spec <- moover::create_spec(
-  labels = list(
-    tech_file = "tech.csv",
-    path = "observations.csv"
-  )
-)
+If you already know the workflow and want reproducible reruns, saved
+instructions, or command-line execution, see the advanced tutorial on
+scripted reruns and saved specs:
 
-moover::run_pipeline(spec, stage = "all")
-```
-
-### 3. Optimise for embedded deployment
-
-``` r
-spec <- moover::create_spec(
-  optimise = list(enabled = TRUE)
-)
-
-moover::run_pipeline(spec, stage = "all")
-```
-
-## Getting started
-
-``` r
-moover::init_workspace()
-moover::wizard_train()
-```
+[Scripted Reruns and Saved
+Specs](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.html)
 
 ## Documentation
 
-The pkgdown site is intended to be the main tutorial and reference hub:
+The full tutorial and reference site is here:
 
 <https://wobblytwilliams.github.io/moover/>
 
-It includes walkthroughs for:
+The beginner path walks through:
 
-- setting up folders
-- formatting observations
-- formatting accelerometer input files
-- understanding exported deployment bundles
-- building a model
+- your first successful run
+- setting up folders and understanding the workspace
+- preparing accelerometer files
+- recording observations for training
+- building a first model
 - predicting with an existing model
+- understanding the results and export folder
 
 ## Included example data
 
@@ -97,6 +74,23 @@ The package ships with a small example workspace under:
 ``` r
 system.file("extdata", "example_workspace", package = "moover")
 ```
+
+## What `moover` does
+
+- ingests raw accelerometer data
+- converts it into a standard 5-column movement format
+- generates features from fixed time blocks
+- trains and optimises Random Forest models
+- evaluates models with beginner-friendly summaries and metrics
+- exports reusable model bundles
+- predicts behaviour on new datasets
+
+## Current focus for v1
+
+- beginner-friendly local workflows
+- Random Forest models
+- reusable and shareable model bundles
+- support for CQU-style and generic delimited input files
 
 ## TODO
 

@@ -1,45 +1,120 @@
-# Deployment Export Format
+# Understand Your Results and Export Folder
 
-Every exported model bundle is designed to support:
+## You are here
 
-- prediction in R
-- inspection by collaborators
-- implementation in another language
-- embedded deployment
+This is **7 of 10** in the beginner path.
 
-## Bundle contents
+## Who this page is for
 
-Expected files include:
+This page is for users who have finished a run and want help
+understanding the output folders.
 
-- `rf_model_full.rds`
-- `model_spec.json`
-- `export_config.json`
-- `feature_manifest.csv`
-- `feature_manifest.json`
+## What you will achieve
+
+By the end of this page, you will know:
+
+- what the main output folders are for
+- which files matter most for everyday use
+- which files are useful for collaborators or embedded deployment work
+- where to look first when checking whether a run behaved as expected
+
+## Why this matters
+
+A finished run can look busy. This page helps you understand which files
+are the practical ones and which files are mainly there for
+reproducibility or sharing.
+
+## What we’re doing
+
+We are walking through a completed run folder and explaining the most
+important outputs in plain language.
+
+## A typical run structure
+
+A run usually looks something like this:
+
+``` text
+runs/<run_id>/
+  spec/
+  results/
+  models/
+  plots/
+  qc/
+```
+
+## The folders in plain language
+
+### `spec/`
+
+This stores the saved instructions used for the run.
+
+### `results/`
+
+This contains the main data outputs created during the workflow.
+
+### `models/`
+
+This is where exported model bundles are written.
+
+### `plots/`
+
+This contains figures that help you inspect model behaviour.
+
+### `qc/`
+
+This holds previews and quality-check files, especially helpful when you
+want to confirm that data import worked as expected.
+
+## Key files you are likely to use
+
+### For the R user
+
 - `metrics_overall.csv`
 - `metrics_by_class.csv`
 - `confusion_matrix.csv`
+- prediction outputs in `results/`
+
+### For collaborators checking the model
+
+- `feature_manifest.csv`
 - `test_vectors.csv`
 - `test_vectors_all.csv`
+
+### For someone implementing the model elsewhere
+
 - `rf_tree_dump.json`
+- `feature_manifest.csv`
+- `model_spec.json`
+- test vectors for checking feature values and predictions
 
-## Feature specification
+## What the exported model bundle is for
 
-The feature manifest records:
+The model bundle is the shareable package of files that lets someone:
 
-- feature names
-- whether a feature is rolling
-- textual definitions
+- reload the model in R
+- inspect what features were used
+- test another implementation against known outputs
+- understand how the model was configured
 
-## Embedded deployment
+## What success looks like
 
-The RF tree dump JSON is intended to help collaborators recreate the
-trained model logic outside R.
+You should be able to answer these practical questions:
 
-Test vectors are included so that collaborators can check:
+- Which file tells me the overall model performance?
+- Which folder contains the exported model I can share?
+- Which files would a collaborator use to check their own
+  implementation?
 
-- feature calculations
-- class predictions
-- class probabilities
+## Common mistakes
 
-against an independent implementation.
+- Looking at `_internal/` before checking the run folder.
+- Treating every output file as equally important.
+- Sharing only the model object and forgetting the feature manifest and
+  test vectors.
+
+## What’s next
+
+If you want to make a model smaller for deployment, continue to
+[Optimise a Model for
+Deployment](https://wobblytwilliams.github.io/moover/articles/optimise-a-model-for-deployment.md).
+If you are not there yet, that is completely fine.

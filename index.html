@@ -35,12 +35,16 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="articles/recording-observations.html">Recording Observations</a></li>
-    <li><a class="dropdown-item" href="articles/accelerometer-input-formats.html">Accelerometer Input Formats</a></li>
-    <li><a class="dropdown-item" href="articles/deployment-export-format.html">Deployment Export Format</a></li>
-    <li><a class="dropdown-item" href="articles/build-a-model.html">Build a Model</a></li>
-    <li><a class="dropdown-item" href="articles/predict-with-existing-model.html">Predict with an Existing Model</a></li>
+<li><a class="dropdown-item" href="articles/getting-started.html">Start Here: Your First Successful Run</a></li>
+    <li><a class="dropdown-item" href="articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="articles/recording-observations.html">Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="articles/build-a-model.html">Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -56,13 +60,13 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="moover">moover<a class="anchor" aria-label="anchor" href="#moover"></a>
 </h1></div>
-<p><code>moover</code> converts movement data into behaviour workflows for animal scientists.</p>
-<p>It is designed to support both:</p>
-<ul>
-<li>beginner-friendly guided workflows</li>
-<li>reproducible scripted workflows from JSON specs</li>
-</ul>
-<p>It is designed to work locally on a normal computer, without requiring access to a high-performance computing (HPC) environment. Larger runs can still take time, but the goal is to make model building, optimisation, and prediction accessible to beginners working on their own machines.</p>
+<p><code>moover</code> helps animal scientists turn movement data into behaviour outputs.</p>
+<p>It is designed for people who want to work locally on their own computer, without needing a high-performance computing (HPC) environment. Larger runs can still take time, but the goal is to make behaviour modelling practical and approachable for beginners.</p>
+<div class="section level2">
+<h2 id="who-moover-is-for">Who <code>moover</code> is for<a class="anchor" aria-label="anchor" href="#who-moover-is-for"></a>
+</h2>
+<p><code>moover</code> is for animal scientists, including nutritionists and other researchers who may be new to accelerometer pipelines, machine learning, or R package workflows.</p>
+</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -72,83 +76,75 @@
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"wobblytwilliams/moover"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-moover-does">What <code>moover</code> does<a class="anchor" aria-label="anchor" href="#what-moover-does"></a>
+<h2 id="start-here">Start here<a class="anchor" aria-label="anchor" href="#start-here"></a>
 </h2>
-<ul>
-<li>ingests raw accelerometer data</li>
-<li>converts it to a canonical movement format</li>
-<li>generates epoch features</li>
-<li>trains and optimises Random Forest models</li>
-<li>evaluates models with LOCO metrics and plots</li>
-<li>exports reusable and embedded-friendly model bundles</li>
-<li>predicts behaviour on new datasets using existing bundles</li>
-</ul>
+<p>If you are new to <code>moover</code>, start with the first tutorial:</p>
+<p><a href="https://wobblytwilliams.github.io/moover/articles/getting-started.html">Start Here: Your First Successful Run</a></p>
+<p>That walkthrough uses packaged example data so you can get one complete success before working with your own files.</p>
 </div>
 <div class="section level2">
-<h2 id="core-workflows">Core workflows<a class="anchor" aria-label="anchor" href="#core-workflows"></a>
+<h2 id="typical-beginner-journey">Typical beginner journey<a class="anchor" aria-label="anchor" href="#typical-beginner-journey"></a>
 </h2>
-<div class="section level3">
-<h3 id="id_1-use-an-existing-model">1. Use an existing model<a class="anchor" aria-label="anchor" href="#id_1-use-an-existing-model"></a>
-</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  predict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>model_bundle <span class="op">=</span> <span class="st">"path/to/exported_bundle"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"predict"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="id_2-train-and-export-a-new-model">2. Train and export a new model<a class="anchor" aria-label="anchor" href="#id_2-train-and-export-a-new-model"></a>
-</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
-<span>    path <span class="op">=</span> <span class="st">"observations.csv"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="id_3-optimise-for-embedded-deployment">3. Optimise for embedded deployment<a class="anchor" aria-label="anchor" href="#id_3-optimise-for-embedded-deployment"></a>
-</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>enabled <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
-</div>
+<ol style="list-style-type: decimal">
+<li>Set up a workspace on your computer.</li>
+<li>Try the packaged example data.</li>
+<li>Prepare your own accelerometer files.</li>
+<li>Record or tidy your observations for training.</li>
+<li>Build a model.</li>
+<li>Predict behaviour on new data.</li>
+</ol>
 </div>
 <div class="section level2">
-<h2 id="getting-started">Getting started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+<h2 id="advanced-users">Advanced users<a class="anchor" aria-label="anchor" href="#advanced-users"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/init_workspace.html">init_workspace</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">moover</span><span class="fu">::</span><span class="fu"><a href="reference/wizard_train.html">wizard_train</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>If you already know the workflow and want reproducible reruns, saved instructions, or command-line execution, see the advanced tutorial on scripted reruns and saved specs:</p>
+<p><a href="https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></p>
 </div>
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>The pkgdown site is intended to be the main tutorial and reference hub:</p>
+<p>The full tutorial and reference site is here:</p>
 <p><a href="https://wobblytwilliams.github.io/moover/" class="uri">https://wobblytwilliams.github.io/moover/</a></p>
-<p>It includes walkthroughs for:</p>
+<p>The beginner path walks through:</p>
 <ul>
-<li>setting up folders</li>
-<li>formatting observations</li>
-<li>formatting accelerometer input files</li>
-<li>understanding exported deployment bundles</li>
-<li>building a model</li>
+<li>your first successful run</li>
+<li>setting up folders and understanding the workspace</li>
+<li>preparing accelerometer files</li>
+<li>recording observations for training</li>
+<li>building a first model</li>
 <li>predicting with an existing model</li>
+<li>understanding the results and export folder</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="included-example-data">Included example data<a class="anchor" aria-label="anchor" href="#included-example-data"></a>
 </h2>
 <p>The package ships with a small example workspace under:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_workspace"</span>, package <span class="op">=</span> <span class="st">"moover"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="what-moover-does">What <code>moover</code> does<a class="anchor" aria-label="anchor" href="#what-moover-does"></a>
+</h2>
+<ul>
+<li>ingests raw accelerometer data</li>
+<li>converts it into a standard 5-column movement format</li>
+<li>generates features from fixed time blocks</li>
+<li>trains and optimises Random Forest models</li>
+<li>evaluates models with beginner-friendly summaries and metrics</li>
+<li>exports reusable model bundles</li>
+<li>predicts behaviour on new datasets</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="current-focus-for-v1">Current focus for v1<a class="anchor" aria-label="anchor" href="#current-focus-for-v1"></a>
+</h2>
+<ul>
+<li>beginner-friendly local workflows</li>
+<li>Random Forest models</li>
+<li>reusable and shareable model bundles</li>
+<li>support for CQU-style and generic delimited input files</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="todo">TODO<a class="anchor" aria-label="anchor" href="#todo"></a>

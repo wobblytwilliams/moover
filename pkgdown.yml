@@ -6,9 +6,13 @@ articles:
   build-a-model: build-a-model.html
   deployment-export-format: deployment-export-format.html
   getting-started: getting-started.html
+  optimise-a-model-for-deployment: optimise-a-model-for-deployment.html
   predict-with-existing-model: predict-with-existing-model.html
   recording-observations: recording-observations.html
-last_built: 2026-03-27T07:21Z
+  scripted-reruns-and-saved-specs: scripted-reruns-and-saved-specs.html
+  set-up-your-workspace: set-up-your-workspace.html
+  troubleshooting-and-glossary: troubleshooting-and-glossary.html
+last_built: 2026-03-29T22:03Z
 urls:
   reference: https://wobblytwilliams.github.io/moover/reference
   article: https://wobblytwilliams.github.io/moover/articles

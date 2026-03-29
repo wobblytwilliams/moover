@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Predict with an Existing Model • moover</title>
+<title>Predict Behaviour with an Existing Model • moover</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Predict with an Existing Model">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Predict Behaviour with an Existing Model">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,12 +33,16 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/recording-observations.html">Recording Observations</a></li>
-    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Accelerometer Input Formats</a></li>
-    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Deployment Export Format</a></li>
-    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build a Model</a></li>
-    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict with an Existing Model</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Start Here: Your First Successful Run</a></li>
+    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="../articles/recording-observations.html">Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -57,7 +61,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Predict with an Existing Model</h1>
+      <h1>Predict Behaviour with an Existing Model</h1>
             
       
 
@@ -66,46 +70,127 @@
 
     
     
-<p>Use this workflow when you already have an exported model bundle.</p>
 <div class="section level2">
-<h2 id="step-1--create-a-prediction-spec">Step 1. Create a prediction spec<a class="anchor" aria-label="anchor" href="#step-1--create-a-prediction-spec"></a>
+<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  predict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    model_bundle <span class="op">=</span> <span class="st">"path/to/exported_bundle"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    path <span class="op">=</span> <span class="cn">NULL</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<p>This is <strong>6 of 10</strong> in the beginner path.</p>
 </div>
 <div class="section level2">
-<h2 id="step-2--run-prediction">Step 2. Run prediction<a class="anchor" aria-label="anchor" href="#step-2--run-prediction"></a>
+<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+</h2>
+<p>This page is for users who already have an exported model bundle and
+want to apply it to new accelerometer data.</p>
+</div>
+<div class="section level2">
+<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
+</h2>
+<p>By the end of this page, you will know:</p>
+<ul>
+<li>when to use an existing model instead of training a new one</li>
+<li>which files you need for prediction</li>
+<li>where to find the epoch-level output</li>
+<li>how to request simple summaries if you need them</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+</h2>
+<p>Many collaborators will never train a model themselves. They only
+need a safe and understandable way to use an existing one.</p>
+</div>
+<div class="section level2">
+<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
+</h2>
+<p>We are taking a model bundle that already exists and applying it to
+new raw movement data.</p>
+</div>
+<div class="section level2">
+<h2 id="what-you-need">What you need<a class="anchor" aria-label="anchor" href="#what-you-need"></a>
+</h2>
+<p>You need:</p>
+<ul>
+<li>a model bundle folder</li>
+<li>a workspace with raw files in <code>data_raw/</code>
+</li>
+<li>a <code>tech.csv</code> file if your IDs need mapping</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="the-beginner-path">The beginner path<a class="anchor" aria-label="anchor" href="#the-beginner-path"></a>
+</h2>
+<p>The guided option is:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_predict.html">wizard_predict</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="the-same-workflow-in-copy-pasteable-code">The same workflow in copy-pasteable code<a class="anchor" aria-label="anchor" href="#the-same-workflow-in-copy-pasteable-code"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"predict"</span><span class="op">)</span></span></code></pre></div>
-<p>The default output is an epoch-level predictions file written into
-the run’s <code>results/</code> folder.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moover</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
+<span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>  predict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    model_bundle <span class="op">=</span> <span class="st">"path/to/exported_bundle"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"predict"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="optional-summaries">Optional summaries<a class="anchor" aria-label="anchor" href="#optional-summaries"></a>
 </h2>
-<p>You can also request summaries:</p>
+<p>If you want more than epoch-level predictions, you can request hourly
+or daily summaries:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
+<span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
 <span>  predict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    model_bundle <span class="op">=</span> <span class="st">"path/to/exported_bundle"</span>,</span>
 <span>    summary_outputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="beginner-option">Beginner option<a class="anchor" aria-label="anchor" href="#beginner-option"></a>
+<h2 id="compatibility-checklist">Compatibility checklist<a class="anchor" aria-label="anchor" href="#compatibility-checklist"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_predict.html">wizard_predict</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>Before predicting with an existing model, check that you are
+using:</p>
+<ul>
+<li>the same type of sensor data</li>
+<li>the same expected feature inputs</li>
+<li>a broadly similar recording setup where that matters</li>
+<li>the right ID mapping for your animals or devices</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+</h2>
+<p>A successful run should give you an epoch-level prediction file in
+the run’s <code>results/</code> folder. If you requested summaries, you
+should also see those files written there.</p>
+</div>
+<div class="section level2">
+<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
+</h2>
+<ul>
+<li>Pointing to the wrong bundle directory.</li>
+<li>Predicting on raw files that do not match the expected input
+style.</li>
+<li>Forgetting to provide <code>tech.csv</code> when IDs need
+mapping.</li>
+<li>Expecting a prediction model to work well on very different data
+collection setups without checking compatibility.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
+</h2>
+<p>To understand the files created by training and prediction runs,
+continue to <a href="deployment-export-format.html">Understand Your
+Results and Export Folder</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

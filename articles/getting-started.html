@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Getting Started • moover</title>
+<title>Start Here: Your First Successful Run • moover</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting Started">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Start Here: Your First Successful Run">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,12 +33,16 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/recording-observations.html">Recording Observations</a></li>
-    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Accelerometer Input Formats</a></li>
-    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Deployment Export Format</a></li>
-    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build a Model</a></li>
-    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict with an Existing Model</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Start Here: Your First Successful Run</a></li>
+    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="../articles/recording-observations.html">Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -57,7 +61,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Getting Started</h1>
+      <h1>Start Here: Your First Successful Run</h1>
             
       
 
@@ -66,51 +70,129 @@
 
     
     
-<p><code>moover</code> works in any folder. You do not need an
-<code>.Rproj</code> file.</p>
 <div class="section level2">
-<h2 id="initialise-a-workspace">1. Initialise a workspace<a class="anchor" aria-label="anchor" href="#initialise-a-workspace"></a>
+<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
+</h2>
+<p>You are at the start of the beginner path: <strong>1 of
+10</strong>.</p>
+<p>If you already have a model and only want predictions, you can jump
+ahead to <a href="predict-with-existing-model.html">Predict Behaviour
+with an Existing Model</a>.</p>
+</div>
+<div class="section level2">
+<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+</h2>
+<p>This page is for first-time <code>moover</code> users who want one
+complete success before using their own data.</p>
+</div>
+<div class="section level2">
+<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
+</h2>
+<p>By the end of this page, you will have:</p>
+<ul>
+<li>copied the packaged example workspace to a writable folder</li>
+<li>run a complete training workflow</li>
+<li>found the output folder for that run</li>
+<li>seen what a finished <code>moover</code> run looks like</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+</h2>
+<p>Starting with example data lowers the pressure. It helps you learn
+the workflow first, so that when you move to your own files you are only
+solving one new problem at a time.</p>
+</div>
+<div class="section level2">
+<h2 id="before-you-start">Before you start<a class="anchor" aria-label="anchor" href="#before-you-start"></a>
+</h2>
+<p>You need:</p>
+<ul>
+<li>
+<code>moover</code> installed</li>
+<li>a normal writable folder on your computer</li>
+<li>a little patience while the run completes locally</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
+</h2>
+<p>We are going to copy the packaged example workspace into a temporary
+writable folder and run a full beginner-friendly model build from that
+example data.</p>
+<p>Because the beginner wizard is interactive, the code below shows the
+same job in a copy-pasteable scripted form. When you do this on your own
+machine, you can also use <code><a href="../reference/wizard_train.html">wizard_train()</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moover</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/init_workspace.html">init_workspace</a></span><span class="op">(</span><span class="st">"my_moover_workspace"</span><span class="op">)</span></span></code></pre></div>
-<p>This creates:</p>
-<ul>
-<li><code>data_raw/</code></li>
-<li><code>runs/</code></li>
-<li><code>_internal/</code></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="add-your-files">2. Add your files<a class="anchor" aria-label="anchor" href="#add-your-files"></a>
-</h2>
-<p>Put raw accelerometer files into <code>data_raw/</code>.</p>
-<p>For training workflows, also place:</p>
-<ul>
-<li><code>tech.csv</code></li>
-<li><code>observations.csv</code></li>
-</ul>
-<p>in the workspace root, or point to them explicitly in your spec.</p>
-</div>
-<div class="section level2">
-<h2 id="choose-your-workflow">3. Choose your workflow<a class="anchor" aria-label="anchor" href="#choose-your-workflow"></a>
-</h2>
-<p>For beginners:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_train.html">wizard_train</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/wizard_predict.html">wizard_predict</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>For scripted reruns:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">example_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_workspace"</span>, package <span class="op">=</span> <span class="st">"moover"</span><span class="op">)</span></span>
+<span><span class="va">workspace_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"moover_first_run"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">workspace_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span>
+<span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">example_dir</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span>, all.files <span class="op">=</span> <span class="cn">TRUE</span>, no.. <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  to <span class="op">=</span> <span class="va">workspace_dir</span>,</span>
+<span>  recursive <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
+<span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="va">workspace_dir</span><span class="op">)</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
+<span>    path <span class="op">=</span> <span class="st">"observations.csv"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    selection <span class="op">=</span> <span class="st">"standard"</span>,</span>
+<span>    standard_set <span class="op">=</span> <span class="st">"manual5"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>enabled <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<p>If you would rather be guided step by step, use the wizard
+instead:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_train.html">wizard_train</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example-data">4. Example data<a class="anchor" aria-label="anchor" href="#example-data"></a>
+<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
 </h2>
-<p>You can inspect the packaged example workspace:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_workspace"</span>, package <span class="op">=</span> <span class="st">"moover"</span><span class="op">)</span></span></code></pre></div>
+<p>A successful first run will leave you with:</p>
+<ul>
+<li>a new folder inside <code>runs/</code>
+</li>
+<li>a <code>results/</code> folder containing summaries and intermediate
+outputs</li>
+<li>a <code>models/</code> folder containing an exported model
+bundle</li>
+<li>plots and quality-check files you can inspect later</li>
+</ul>
+<p>If you open the workspace folder after the run, you should be able to
+point to a specific run directory and say, “That is the run I just
+completed.”</p>
+</div>
+<div class="section level2">
+<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
+</h2>
+<ul>
+<li>Trying to run inside the installed package folder instead of a
+writable copy.</li>
+<li>Forgetting that local runs can take a little time, even on example
+data.</li>
+<li>Starting with your own files before you have seen a successful
+run.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
+</h2>
+<p>Now that you have seen one complete run, continue to <a href="set-up-your-workspace.html">Set Up Your Workspace</a> to
+understand the folder structure you will use for your own projects.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

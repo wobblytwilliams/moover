@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Accelerometer Input Formats • moover</title>
+<title>Prepare Your Accelerometer Files • moover</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Accelerometer Input Formats">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Prepare Your Accelerometer Files">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -33,12 +33,16 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/recording-observations.html">Recording Observations</a></li>
-    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Accelerometer Input Formats</a></li>
-    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Deployment Export Format</a></li>
-    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build a Model</a></li>
-    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict with an Existing Model</a></li>
+<li><a class="dropdown-item" href="../articles/getting-started.html">Start Here: Your First Successful Run</a></li>
+    <li><a class="dropdown-item" href="../articles/set-up-your-workspace.html">Set Up Your Workspace</a></li>
+    <li><a class="dropdown-item" href="../articles/accelerometer-input-formats.html">Prepare Your Accelerometer Files</a></li>
+    <li><a class="dropdown-item" href="../articles/recording-observations.html">Record Observations for Training</a></li>
+    <li><a class="dropdown-item" href="../articles/build-a-model.html">Build Your First Behaviour Model</a></li>
+    <li><a class="dropdown-item" href="../articles/predict-with-existing-model.html">Predict Behaviour with an Existing Model</a></li>
+    <li><a class="dropdown-item" href="../articles/deployment-export-format.html">Understand Your Results and Export Folder</a></li>
+    <li><a class="dropdown-item" href="../articles/optimise-a-model-for-deployment.html">Optimise a Model for Deployment</a></li>
+    <li><a class="dropdown-item" href="../articles/scripted-reruns-and-saved-specs.html">Scripted Reruns and Saved Specs</a></li>
+    <li><a class="dropdown-item" href="../articles/troubleshooting-and-glossary.html">Troubleshooting and Glossary</a></li>
   </ul>
 </li>
       </ul>
@@ -57,7 +61,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Accelerometer Input Formats</h1>
+      <h1>Prepare Your Accelerometer Files</h1>
             
       
 
@@ -66,11 +70,49 @@
 
     
     
-<p><code>moover</code> supports two input modes in v1.</p>
 <div class="section level2">
-<h2 id="cqu-style-accelerometer-files">1. CQU-style accelerometer files<a class="anchor" aria-label="anchor" href="#cqu-style-accelerometer-files"></a>
+<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
 </h2>
-<p>This is the default.</p>
+<p>This is <strong>3 of 10</strong> in the beginner path.</p>
+</div>
+<div class="section level2">
+<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+</h2>
+<p>This page is for users preparing their own accelerometer files for
+the first time.</p>
+</div>
+<div class="section level2">
+<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
+</h2>
+<p>By the end of this page, you will know:</p>
+<ul>
+<li>which file styles <code>moover</code> supports in v1</li>
+<li>what the timestamp column needs to represent</li>
+<li>how <code>moover</code> turns different files into one standard
+5-column format</li>
+<li>which common file problems to check before running the pipeline</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+</h2>
+<p>If the raw files are not interpreted correctly, everything downstream
+becomes harder. Good inputs make the rest of the workflow much
+calmer.</p>
+</div>
+<div class="section level2">
+<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
+</h2>
+<p>We are making sure your accelerometer files are in a shape that
+<code>moover</code> can understand.</p>
+</div>
+<div class="section level2">
+<h2 id="the-two-supported-input-routes">The two supported input routes<a class="anchor" aria-label="anchor" href="#the-two-supported-input-routes"></a>
+</h2>
+<div class="section level3">
+<h3 id="cqu-style-files">1. CQU-style files<a class="anchor" aria-label="anchor" href="#cqu-style-files"></a>
+</h3>
+<p>This is the default input route.</p>
 <p>Expected columns:</p>
 <ul>
 <li><code>datetime</code></li>
@@ -82,16 +124,16 @@
 <pre class="text"><code>datetime,x,y,z
 2025-01-01T00:00:00Z,0.01,0.02,1.00
 2025-01-01T00:00:01Z,0.03,0.01,0.99</code></pre>
-<p>For training workflows, filenames are expected to include the
-accelerometer id, for example:</p>
+<p>A typical filename looks like this:</p>
 <pre class="text"><code><span><span class="va">demo</span><span class="op">-</span><span class="va">A01_cquFormat.csv</span></span></code></pre>
 </div>
-<div class="section level2">
-<h2 id="generic-delimited-files">2. Generic delimited files<a class="anchor" aria-label="anchor" href="#generic-delimited-files"></a>
-</h2>
-<p>You can also import generic delimited files by mapping columns
-interactively or in the spec.</p>
-<p>Example:</p>
+<div class="section level3">
+<h3 id="generic-delimited-files">2. Generic delimited files<a class="anchor" aria-label="anchor" href="#generic-delimited-files"></a>
+</h3>
+<p>If your files use different column names, <code>moover</code> can
+still work with them. You just need to tell it which columns contain the
+timestamp, x, y, z, and animal or accelerometer identifier.</p>
+<p>Example mapping:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"generic"</span><span class="op">)</span>,</span>
@@ -108,10 +150,23 @@ interactively or in the spec.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="canonical-format-downstream">Canonical format downstream<a class="anchor" aria-label="anchor" href="#canonical-format-downstream"></a>
+<h2 id="why-the-timestamp-matters-so-much">Why the timestamp matters so much<a class="anchor" aria-label="anchor" href="#why-the-timestamp-matters-so-much"></a>
 </h2>
-<p>All raw data is converted to:</p>
+<p>Your timestamp tells <code>moover</code> when each movement sample
+happened. Later in the pipeline, the package groups samples into fixed
+time blocks so it can calculate features and make behaviour
+predictions.</p>
+<p>In v1, <code>moover</code> converts times internally into a standard
+UTC millisecond clock. You do not need to hand-build that format
+yourself, but you do need to map the input time correctly.</p>
+</div>
+<div class="section level2">
+<h2 id="the-standard-5-column-format-used-downstream">The standard 5-column format used downstream<a class="anchor" aria-label="anchor" href="#the-standard-5-column-format-used-downstream"></a>
+</h2>
+<p>No matter which input route you choose, <code>moover</code> converts
+raw data into the same internal layout:</p>
 <ul>
 <li><code>id</code></li>
 <li><code>t_unix_ms</code></li>
@@ -119,11 +174,65 @@ interactively or in the spec.</p>
 <li><code>y</code></li>
 <li><code>z</code></li>
 </ul>
+<p>This is helpful because it means the rest of the workflow can stay
+consistent.</p>
 </div>
 <div class="section level2">
-<h2 id="todo">TODO<a class="anchor" aria-label="anchor" href="#todo"></a>
+<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
 </h2>
-<p>Parquet and arrow support are planned, but are not part of v1.</p>
+<p>If you are unsure about your file layout, start with the import
+wizard:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_import.html">wizard_import</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>The wizard previews the data and helps you confirm that the right
+columns are being used.</p>
+</div>
+<div class="section level2">
+<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+</h2>
+<p>After a successful import, you should be able to confirm that:</p>
+<ul>
+<li>the right animal or accelerometer IDs were recognised</li>
+<li>timestamps look sensible</li>
+<li>x, y, and z are numeric</li>
+<li>the preview file in the run folder looks like your real data</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="good-files-versus-common-problems">Good files versus common problems<a class="anchor" aria-label="anchor" href="#good-files-versus-common-problems"></a>
+</h2>
+<p>A good file usually has:</p>
+<ul>
+<li>one row per sample</li>
+<li>a clear timestamp column</li>
+<li>separate x, y, and z columns</li>
+<li>consistent formatting from top to bottom</li>
+</ul>
+<p>Common problems include:</p>
+<ul>
+<li>wrong timestamp interpretation</li>
+<li>mismatched animal IDs</li>
+<li>missing headers</li>
+<li>swapped axis columns</li>
+<li>mixed file formats in the same folder</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
+</h2>
+<ul>
+<li>Using local times but telling the package they are already UTC.</li>
+<li>Giving different files different header styles.</li>
+<li>Mixing accelerometer IDs and animal IDs without a proper
+<code>tech.csv</code> mapping.</li>
+<li>Forgetting to check the preview after import.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
+</h2>
+<p>Once your raw files make sense, continue to <a href="recording-observations.html">Record Observations for
+Training</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

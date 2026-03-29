@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Build Your First Behaviour Model • moover</title>
+<title>Scripted Reruns and Saved Specs • moover</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Build Your First Behaviour Model">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Scripted Reruns and Saved Specs">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -61,11 +61,11 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Build Your First Behaviour Model</h1>
+      <h1>Scripted Reruns and Saved Specs</h1>
             
       
 
-      <div class="d-none name"><code>build-a-model.Rmd</code></div>
+      <div class="d-none name"><code>scripted-reruns-and-saved-specs.Rmd</code></div>
     </div>
 
     
@@ -73,55 +73,55 @@
 <div class="section level2">
 <h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
 </h2>
-<p>This is <strong>5 of 10</strong> in the beginner path.</p>
-<p>If you already have a trained model and only want predictions, you
-can skip ahead to <a href="predict-with-existing-model.html">Predict
-Behaviour with an Existing Model</a>.</p>
+<p>This is <strong>9 of 10</strong> in the tutorial path, and it is
+aimed at advanced or repeat users.</p>
 </div>
 <div class="section level2">
 <h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
 </h2>
-<p>This page is for users who have raw files and observations ready and
-want to train a first model.</p>
+<p>This page is for users who already understand the beginner workflow
+and now want reproducible reruns or automation.</p>
 </div>
 <div class="section level2">
 <h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
 </h2>
 <p>By the end of this page, you will know:</p>
 <ul>
-<li>how to start a beginner-friendly training run</li>
-<li>what <code>moover</code> is doing during that run</li>
-<li>where to find your outputs</li>
-<li>how to interpret the first few metrics without drowning in
-jargon</li>
+<li>what a saved instruction file is in <code>moover</code>
+</li>
+<li>how to create one</li>
+<li>how to rerun a pipeline from it</li>
+<li>when scripted reruns are more helpful than the wizard</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
 </h2>
-<p>This is the point where your prepared files turn into a behaviour
-model you can reuse and share.</p>
+<p>The wizard is a great way to learn. Saved instructions are a great
+way to repeat a workflow reliably.</p>
 </div>
 <div class="section level2">
 <h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
 </h2>
-<p>We are using raw accelerometer data plus behaviour observations to
-build, validate, and export a first Random Forest model.</p>
+<p>We are taking the same choices you might make in the wizard and
+saving them as a reusable spec.</p>
 </div>
 <div class="section level2">
-<h2 id="the-beginner-path">The beginner path<a class="anchor" aria-label="anchor" href="#the-beginner-path"></a>
+<h2 id="a-beginner-friendly-way-to-think-about-a-spec">A beginner-friendly way to think about a spec<a class="anchor" aria-label="anchor" href="#a-beginner-friendly-way-to-think-about-a-spec"></a>
 </h2>
-<p>For most new users, the easiest option is the guided wizard:</p>
+<p>A spec is just a saved set of instructions for a run.</p>
+<p>It records things like:</p>
+<ul>
+<li>where your files are</li>
+<li>what the timestamps mean</li>
+<li>which workflow you want to run</li>
+<li>which model settings you chose</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/wizard_train.html">wizard_train</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The wizard asks you where your files are, whether you want to
-optimise for deployment, and which label should be treated as the
-positive class in a binary model.</p>
-</div>
-<div class="section level2">
-<h2 id="the-same-workflow-in-copy-pasteable-code">The same workflow in copy-pasteable code<a class="anchor" aria-label="anchor" href="#the-same-workflow-in-copy-pasteable-code"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">moover</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
@@ -133,88 +133,48 @@ positive class in a binary model.</p>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    selection <span class="op">=</span> <span class="st">"standard"</span>,</span>
 <span>    standard_set <span class="op">=</span> <span class="st">"manual5"</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>enabled <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
-<span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>positive_class <span class="op">=</span> <span class="st">"grazing"</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<p>If you want to write the spec to disk:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
+<span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
+<span>  path <span class="op">=</span> <span class="st">"saved_run_spec.json"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>To rerun from that saved file later:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="st">"saved_run_spec.json"</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-moover-does-during-the-run">What <code>moover</code> does during the run<a class="anchor" aria-label="anchor" href="#what-moover-does-during-the-run"></a>
+<h2 id="command-line-option">Command-line option<a class="anchor" aria-label="anchor" href="#command-line-option"></a>
 </h2>
-<p>In plain language, the workflow does this:</p>
-<ol style="list-style-type: decimal">
-<li>reads your raw accelerometer files</li>
-<li>standardises the timestamps</li>
-<li>groups the samples into fixed time blocks</li>
-<li>calculates features from each block</li>
-<li>matches the blocks to the behaviour observations</li>
-<li>trains and validates the model</li>
-<li>exports the model bundle and support files</li>
-</ol>
-</div>
-<div class="section level2">
-<h2 id="what-the-main-metrics-mean">What the main metrics mean<a class="anchor" aria-label="anchor" href="#what-the-main-metrics-mean"></a>
-</h2>
-<div class="section level3">
-<h3 id="accuracy">Accuracy<a class="anchor" aria-label="anchor" href="#accuracy"></a>
-</h3>
-<p>This is the proportion of predictions that were correct overall.</p>
-</div>
-<div class="section level3">
-<h3 id="macro-f1">Macro F1<a class="anchor" aria-label="anchor" href="#macro-f1"></a>
-</h3>
-<p>This gives each behaviour class equal weight, which helps when
-classes are unbalanced.</p>
-</div>
-<div class="section level3">
-<h3 id="confusion-matrix">Confusion matrix<a class="anchor" aria-label="anchor" href="#confusion-matrix"></a>
-</h3>
-<p>This shows where the model is getting behaviours right and where it
-is mixing them up.</p>
-</div>
-<div class="section level3">
-<h3 id="loco">LOCO<a class="anchor" aria-label="anchor" href="#loco"></a>
-</h3>
-<p><code>moover</code> uses LOCO evaluation, which means testing on
-animals the model has not seen in training. This is a more realistic
-check than simply testing on the same animals used to build the
-model.</p>
-</div>
+<p>You can also run the packaged script from the command line:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/scripts/run_pipeline.R <span class="at">--spec</span> saved_run_spec.json <span class="at">--stage</span> all</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
 </h2>
-<p>After a successful run, you should have:</p>
-<ul>
-<li>a run folder in <code>runs/</code>
-</li>
-<li>results files and plots</li>
-<li>an exported model bundle in the run’s <code>models/</code>
-folder</li>
-<li>test vectors and feature manifest files for sharing or checking the
-model later</li>
-</ul>
+<p>You should be able to save a workflow once and rerun it later without
+clicking back through the wizard.</p>
 </div>
 <div class="section level2">
 <h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
 </h2>
 <ul>
-<li>Starting a training run before checking raw-file previews.</li>
-<li>Using observation labels that do not match the intended behaviour
-classes.</li>
-<li>Forgetting that a local run may take time.</li>
-<li>Turning optimisation on too early when you only want a first working
-model.</li>
+<li>Jumping into specs before understanding the beginner workflow.</li>
+<li>Editing a saved spec without keeping track of what changed.</li>
+<li>Assuming a saved spec will work if the file layout has changed
+underneath it.</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="whats-next">What’s next<a class="anchor" aria-label="anchor" href="#whats-next"></a>
 </h2>
-<p>If you already have a model bundle to apply to new data, continue to
-<a href="predict-with-existing-model.html">Predict Behaviour with an
-Existing Model</a>.</p>
+<p>For help with common problems and a plain-language glossary of terms,
+continue to <a href="troubleshooting-and-glossary.html">Troubleshooting
+and Glossary</a>.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

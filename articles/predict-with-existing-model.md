@@ -1,45 +1,106 @@
-# Predict with an Existing Model
+# Predict Behaviour with an Existing Model
 
-Use this workflow when you already have an exported model bundle.
+## You are here
 
-## Step 1. Create a prediction spec
+This is **6 of 10** in the beginner path.
 
-``` r
-spec <- create_spec(
-  predict = list(
-    model_bundle = "path/to/exported_bundle"
-  ),
-  labels = list(
-    path = NULL
-  )
-)
-```
+## Who this page is for
 
-## Step 2. Run prediction
+This page is for users who already have an exported model bundle and
+want to apply it to new accelerometer data.
 
-``` r
-run_pipeline(spec, stage = "predict")
-```
+## What you will achieve
 
-The default output is an epoch-level predictions file written into the
-run’s `results/` folder.
+By the end of this page, you will know:
 
-## Optional summaries
+- when to use an existing model instead of training a new one
+- which files you need for prediction
+- where to find the epoch-level output
+- how to request simple summaries if you need them
 
-You can also request summaries:
+## Why this matters
 
-``` r
-spec <- create_spec(
-  predict = list(
-    model_bundle = "path/to/exported_bundle",
-    summary_outputs = c("hourly", "daily")
-  ),
-  labels = list(path = NULL)
-)
-```
+Many collaborators will never train a model themselves. They only need a
+safe and understandable way to use an existing one.
 
-## Beginner option
+## What we’re doing
+
+We are taking a model bundle that already exists and applying it to new
+raw movement data.
+
+## What you need
+
+You need:
+
+- a model bundle folder
+- a workspace with raw files in `data_raw/`
+- a `tech.csv` file if your IDs need mapping
+
+## The beginner path
+
+The guided option is:
 
 ``` r
 wizard_predict()
 ```
+
+## The same workflow in copy-pasteable code
+
+``` r
+library(moover)
+
+spec <- create_spec(
+  workspace = list(root = "my_moover_workspace"),
+  labels = list(path = NULL),
+  predict = list(
+    model_bundle = "path/to/exported_bundle"
+  )
+)
+
+run_pipeline(spec, stage = "predict")
+```
+
+## Optional summaries
+
+If you want more than epoch-level predictions, you can request hourly or
+daily summaries:
+
+``` r
+spec <- create_spec(
+  workspace = list(root = "my_moover_workspace"),
+  labels = list(path = NULL),
+  predict = list(
+    model_bundle = "path/to/exported_bundle",
+    summary_outputs = c("hourly", "daily")
+  )
+)
+```
+
+## Compatibility checklist
+
+Before predicting with an existing model, check that you are using:
+
+- the same type of sensor data
+- the same expected feature inputs
+- a broadly similar recording setup where that matters
+- the right ID mapping for your animals or devices
+
+## What success looks like
+
+A successful run should give you an epoch-level prediction file in the
+run’s `results/` folder. If you requested summaries, you should also see
+those files written there.
+
+## Common mistakes
+
+- Pointing to the wrong bundle directory.
+- Predicting on raw files that do not match the expected input style.
+- Forgetting to provide `tech.csv` when IDs need mapping.
+- Expecting a prediction model to work well on very different data
+  collection setups without checking compatibility.
+
+## What’s next
+
+To understand the files created by training and prediction runs,
+continue to [Understand Your Results and Export
+Folder](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md).
