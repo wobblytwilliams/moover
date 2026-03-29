@@ -1,5 +1,28 @@
 # Troubleshooting and Glossary
 
+Open the chapter list
+
+1.  [Chapter 1. Start
+    Here](https://wobblytwilliams.github.io/moover/articles/getting-started.md)
+2.  [Chapter 2. Set Up Your
+    Workspace](https://wobblytwilliams.github.io/moover/articles/set-up-your-workspace.md)
+3.  [Chapter 3. Prepare Accelerometer
+    Files](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md)
+4.  [Chapter 4. Record
+    Observations](https://wobblytwilliams.github.io/moover/articles/recording-observations.md)
+5.  [Chapter 5. Build Your First
+    Model](https://wobblytwilliams.github.io/moover/articles/build-a-model.md)
+6.  [Chapter 6. Predict with a
+    Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md)
+7.  [Chapter 7. Understand Your
+    Results](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md)
+8.  [Chapter 8. Optimise for
+    Deployment](https://wobblytwilliams.github.io/moover/articles/optimise-a-model-for-deployment.md)
+9.  [Chapter 9. Scripted
+    Reruns](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.md)
+10. [Chapter 10.
+    Troubleshooting](https://wobblytwilliams.github.io/moover/articles/troubleshooting-and-glossary.md)
+
 ## You are here
 
 This is **Chapter 10 of 10** in the tutorial path.
