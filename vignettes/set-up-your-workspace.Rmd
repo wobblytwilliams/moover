@@ -1,0 +1,121 @@
+﻿---
+title: "Set Up Your Workspace"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Set Up Your Workspace}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## You are here
+
+This is **2 of 10** in the beginner path.
+
+If you have already run the example workflow once, this page helps you understand the folder structure before you add your own files.
+
+## Who this page is for
+
+This page is for users who want to feel comfortable with the project folders before training or prediction.
+
+## What you will achieve
+
+By the end of this page, you will understand:
+
+- what `data_raw/`, `runs/`, and `_internal/` are for
+- where `tech.csv` and `observations.csv` belong
+- what a run folder contains
+- what to expect from a local workflow on a normal computer
+
+## Why this matters
+
+Many beginners feel unsure before they even start because the folder layout looks unfamiliar. This page is here to make the workspace feel predictable rather than technical.
+
+## What we're doing
+
+We are creating a clean workspace and walking through each folder in plain language.
+
+## Do this
+
+```r
+library(moover)
+
+init_workspace("my_moover_workspace")
+```
+
+After that, your workspace should contain this basic structure:
+
+```text
+my_moover_workspace/
+  data_raw/
+  runs/
+  _internal/
+```
+
+For a training workflow, you will usually also have:
+
+```text
+my_moover_workspace/
+  tech.csv
+  observations.csv
+  data_raw/
+  runs/
+  _internal/
+```
+
+## What the folders mean
+
+### `data_raw/`
+
+This is where your raw accelerometer files go.
+
+### `runs/`
+
+Every time you run a workflow, `moover` creates a new run folder here. This keeps outputs separate and helps you track what happened in each run.
+
+### `_internal/`
+
+This is working space used by the package. Most beginners do not need to edit anything in here.
+
+### `tech.csv`
+
+This links animal IDs and accelerometer IDs when needed.
+
+### `observations.csv`
+
+This contains the behaviour observations used for training.
+
+## Why each run gets its own folder
+
+A run folder is a saved record of one attempt. That means you can:
+
+- keep old runs
+- compare runs
+- come back later and see what settings were used
+- avoid overwriting previous work by accident
+
+## What success looks like
+
+You should be able to look at your workspace and answer these questions confidently:
+
+- Where do my raw files go?
+- Where do my observation files go?
+- Where will the outputs appear?
+
+## Common mistakes
+
+- Putting raw files directly in the workspace root instead of `data_raw/`.
+- Putting `tech.csv` or `observations.csv` inside `runs/`.
+- Deleting `_internal/` while a workflow is still running.
+- Expecting a local workflow to finish instantly on large datasets.
+
+## A note on runtime
+
+`moover` is designed to work locally on a normal computer. You do not need HPC. Some jobs can still take time, especially when you optimise several models, but the folder structure is designed to help you work step by step and keep track of progress.
+
+## What's next
+
+If you are ready to prepare your own raw files, continue to [Prepare Your Accelerometer Files](accelerometer-input-formats.html).

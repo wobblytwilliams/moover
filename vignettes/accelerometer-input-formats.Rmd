@@ -1,17 +1,46 @@
----
-title: "Accelerometer Input Formats"
+﻿---
+title: "Prepare Your Accelerometer Files"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Accelerometer Input Formats}
+  %\VignetteIndexEntry{Prepare Your Accelerometer Files}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-`moover` supports two input modes in v1.
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
 
-## 1. CQU-style accelerometer files
+## You are here
 
-This is the default.
+This is **3 of 10** in the beginner path.
+
+## Who this page is for
+
+This page is for users preparing their own accelerometer files for the first time.
+
+## What you will achieve
+
+By the end of this page, you will know:
+
+- which file styles `moover` supports in v1
+- what the timestamp column needs to represent
+- how `moover` turns different files into one standard 5-column format
+- which common file problems to check before running the pipeline
+
+## Why this matters
+
+If the raw files are not interpreted correctly, everything downstream becomes harder. Good inputs make the rest of the workflow much calmer.
+
+## What we're doing
+
+We are making sure your accelerometer files are in a shape that `moover` can understand.
+
+## The two supported input routes
+
+### 1. CQU-style files
+
+This is the default input route.
 
 Expected columns:
 
@@ -28,17 +57,17 @@ datetime,x,y,z
 2025-01-01T00:00:01Z,0.03,0.01,0.99
 ```
 
-For training workflows, filenames are expected to include the accelerometer id, for example:
+A typical filename looks like this:
 
 ```text
 demo-A01_cquFormat.csv
 ```
 
-## 2. Generic delimited files
+### 2. Generic delimited files
 
-You can also import generic delimited files by mapping columns interactively or in the spec.
+If your files use different column names, `moover` can still work with them. You just need to tell it which columns contain the timestamp, x, y, z, and animal or accelerometer identifier.
 
-Example:
+Example mapping:
 
 ```r
 spec <- create_spec(
@@ -57,9 +86,15 @@ spec <- create_spec(
 )
 ```
 
-## Canonical format downstream
+## Why the timestamp matters so much
 
-All raw data is converted to:
+Your timestamp tells `moover` when each movement sample happened. Later in the pipeline, the package groups samples into fixed time blocks so it can calculate features and make behaviour predictions.
+
+In v1, `moover` converts times internally into a standard UTC millisecond clock. You do not need to hand-build that format yourself, but you do need to map the input time correctly.
+
+## The standard 5-column format used downstream
+
+No matter which input route you choose, `moover` converts raw data into the same internal layout:
 
 - `id`
 - `t_unix_ms`
@@ -67,6 +102,51 @@ All raw data is converted to:
 - `y`
 - `z`
 
-## TODO
+This is helpful because it means the rest of the workflow can stay consistent.
 
-Parquet and arrow support are planned, but are not part of v1.
+## Do this
+
+If you are unsure about your file layout, start with the import wizard:
+
+```r
+wizard_import()
+```
+
+The wizard previews the data and helps you confirm that the right columns are being used.
+
+## What success looks like
+
+After a successful import, you should be able to confirm that:
+
+- the right animal or accelerometer IDs were recognised
+- timestamps look sensible
+- x, y, and z are numeric
+- the preview file in the run folder looks like your real data
+
+## Good files versus common problems
+
+A good file usually has:
+
+- one row per sample
+- a clear timestamp column
+- separate x, y, and z columns
+- consistent formatting from top to bottom
+
+Common problems include:
+
+- wrong timestamp interpretation
+- mismatched animal IDs
+- missing headers
+- swapped axis columns
+- mixed file formats in the same folder
+
+## Common mistakes
+
+- Using local times but telling the package they are already UTC.
+- Giving different files different header styles.
+- Mixing accelerometer IDs and animal IDs without a proper `tech.csv` mapping.
+- Forgetting to check the preview after import.
+
+## What's next
+
+Once your raw files make sense, continue to [Record Observations for Training](recording-observations.html).

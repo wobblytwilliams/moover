@@ -1,0 +1,118 @@
+﻿---
+title: "Troubleshooting and Glossary"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Troubleshooting and Glossary}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## Who this page is for
+
+This page is for anyone who got stuck, feels unsure about a term, or wants a quick place to look before asking for help.
+
+## What you will achieve
+
+By the end of this page, you will have:
+
+- a checklist of common problems
+- plain-language definitions for important `moover` terms
+- pointers to the most relevant tutorial pages
+
+## Why this matters
+
+Beginners often do not need more detail. They need the right next clue.
+
+## Common problems and where to look
+
+### My raw files are not being read correctly
+
+Check:
+
+- the file format tutorial: [Prepare Your Accelerometer Files](accelerometer-input-formats.html)
+- the preview file written into `qc/`
+- whether your timestamp column was mapped correctly
+
+### My observations are not matching properly
+
+Check:
+
+- the observation tutorial: [Record Observations for Training](recording-observations.html)
+- whether IDs match the accelerometer workflow
+- whether start and end times are in the correct timezone or format
+
+### I do not understand where the outputs went
+
+Check:
+
+- [Set Up Your Workspace](set-up-your-workspace.html)
+- [Understand Your Results and Export Folder](deployment-export-format.html)
+
+### My run is taking longer than I expected
+
+This can be normal on a local computer, especially for optimisation or larger datasets. Start with a simpler run first, then add complexity once you trust the workflow.
+
+### I only want predictions, not model training
+
+Go straight to [Predict Behaviour with an Existing Model](predict-with-existing-model.html).
+
+## Plain-language glossary
+
+### Workspace
+
+The folder that holds your raw files, runs, and internal working files.
+
+### Standard 5-column movement format
+
+The internal layout used downstream by `moover`: `id`, `t_unix_ms`, `x`, `y`, `z`.
+
+### Fixed time block
+
+A short, fixed chunk of time used to group raw samples before calculating features. In more technical writing this is often called an epoch.
+
+### Feature
+
+A summary value calculated from a fixed time block of movement data.
+
+### Observation bout
+
+One labelled behaviour period with a start time and end time.
+
+### Model bundle
+
+The shareable folder containing the trained model plus supporting files.
+
+### Test vectors
+
+Reference rows used by collaborators to check that they can reproduce the same feature values and predictions in another implementation.
+
+### LOCO
+
+Short for leave-one-cow-out. In plain language, it means testing on animals the model has not seen in training.
+
+### Saved spec
+
+A saved set of instructions describing how a run should be carried out.
+
+## When to ask for help
+
+Ask for help when:
+
+- you cannot tell whether the imported timestamps are correct
+- your IDs are not matching between files
+- you are unsure whether your output files are sensible
+- you are deciding between model candidates for deployment
+
+When you ask, it helps to share:
+
+- a small example of the file you are using
+- the run folder or the relevant quality-check files
+- the exact step where you became unsure
+
+## What next
+
+If you are still learning, go back to [Start Here: Your First Successful Run](getting-started.html). If you are ready for repeatable workflows, use [Scripted Reruns and Saved Specs](scripted-reruns-and-saved-specs.html).

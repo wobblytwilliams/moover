@@ -1,0 +1,85 @@
+﻿---
+title: "Optimise a Model for Deployment"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Optimise a Model for Deployment}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## You are here
+
+This is **8 of 10** in the beginner path, and it is optional.
+
+## Who this page is for
+
+This page is for users who already have a working model and now need to make choices about size, speed, and performance.
+
+## What you will achieve
+
+By the end of this page, you will understand:
+
+- why a smaller model may be useful
+- what tradeoffs are involved
+- where the candidate comparison files are written
+- how to choose a candidate that matches your priorities
+
+## Why this matters
+
+If you are deploying onto a device with limited memory, the best model is not always the largest or most accurate one. Sometimes a slightly smaller model is the better practical choice.
+
+## What we're doing
+
+We are comparing multiple candidate models and choosing one based on a tradeoff among accuracy, macro F1, and model size.
+
+## The beginner message
+
+You do not need to do this for your first successful run. Optimisation is a later step once you already trust the basic workflow.
+
+## Do this
+
+You can turn optimisation on in the wizard, or in code like this:
+
+```r
+spec <- create_spec(
+  workspace = list(root = "my_moover_workspace"),
+  optimise = list(enabled = TRUE)
+)
+
+run_pipeline(spec, stage = "all")
+```
+
+## What to look at in the candidate tables
+
+The main candidate comparison table helps you compare things like:
+
+- accuracy
+- macro F1
+- number of features
+- number of trees
+- minimum node size
+- model size proxy
+
+A practical way to read the table is:
+
+1. decide what minimum performance you can accept
+2. filter to candidates above that level
+3. choose the smallest or simplest remaining model
+
+## What success looks like
+
+A good optimisation outcome is not “the biggest table.” It is a confident choice that matches your real deployment needs.
+
+## Common mistakes
+
+- Optimising before you have a baseline model that already works.
+- Focusing only on accuracy and ignoring size.
+- Making the model tiny without checking whether the performance drop is acceptable.
+
+## What's next
+
+If you want reproducible reruns or want to save a workflow for later, continue to [Scripted Reruns and Saved Specs](scripted-reruns-and-saved-specs.html).

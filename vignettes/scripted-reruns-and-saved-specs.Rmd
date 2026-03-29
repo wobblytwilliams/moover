@@ -1,0 +1,105 @@
+﻿---
+title: "Scripted Reruns and Saved Specs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Scripted Reruns and Saved Specs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+## You are here
+
+This is **9 of 10** in the tutorial path, and it is aimed at advanced or repeat users.
+
+## Who this page is for
+
+This page is for users who already understand the beginner workflow and now want reproducible reruns or automation.
+
+## What you will achieve
+
+By the end of this page, you will know:
+
+- what a saved instruction file is in `moover`
+- how to create one
+- how to rerun a pipeline from it
+- when scripted reruns are more helpful than the wizard
+
+## Why this matters
+
+The wizard is a great way to learn. Saved instructions are a great way to repeat a workflow reliably.
+
+## What we're doing
+
+We are taking the same choices you might make in the wizard and saving them as a reusable spec.
+
+## A beginner-friendly way to think about a spec
+
+A spec is just a saved set of instructions for a run.
+
+It records things like:
+
+- where your files are
+- what the timestamps mean
+- which workflow you want to run
+- which model settings you chose
+
+## Do this
+
+```r
+library(moover)
+
+spec <- create_spec(
+  workspace = list(root = "my_moover_workspace"),
+  labels = list(
+    tech_file = "tech.csv",
+    path = "observations.csv"
+  ),
+  features = list(
+    selection = "standard",
+    standard_set = "manual5"
+  )
+)
+
+run_pipeline(spec, stage = "all")
+```
+
+If you want to write the spec to disk:
+
+```r
+create_spec(
+  workspace = list(root = "my_moover_workspace"),
+  path = "saved_run_spec.json"
+)
+```
+
+To rerun from that saved file later:
+
+```r
+run_pipeline("saved_run_spec.json", stage = "all")
+```
+
+## Command-line option
+
+You can also run the packaged script from the command line:
+
+```sh
+Rscript inst/scripts/run_pipeline.R --spec saved_run_spec.json --stage all
+```
+
+## What success looks like
+
+You should be able to save a workflow once and rerun it later without clicking back through the wizard.
+
+## Common mistakes
+
+- Jumping into specs before understanding the beginner workflow.
+- Editing a saved spec without keeping track of what changed.
+- Assuming a saved spec will work if the file layout has changed underneath it.
+
+## What's next
+
+For help with common problems and a plain-language glossary of terms, continue to [Troubleshooting and Glossary](troubleshooting-and-glossary.html).
