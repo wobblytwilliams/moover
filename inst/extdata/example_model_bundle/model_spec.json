@@ -1,0 +1,29 @@
+{
+  "package_version": "0.0.0.9000",
+  "epochs": {
+    "lengths": [
+      10
+    ],
+    "raw_epoch_seconds": 10,
+    "alignment": "absolute"
+  },
+  "features": {
+    "selection": "manual",
+    "standard_set": "manual5",
+    "manual_features": ["z_mean", "Incl_mean", "Energy_mean", "z_min", "SVM_sd"],
+    "include_rolling": false,
+    "roll_windows_seconds": [30, 60],
+    "roll_fns": ["mean", "sd", "cv"],
+    "roll_on_selected_base_features_only": true
+  },
+  "model": {
+    "backend": "ranger_rf",
+    "mode": "binary",
+    "positive_class": "grazing",
+    "seed": 1,
+    "num_threads": 1,
+    "include_class_weights": false,
+    "num_trees": 10,
+    "min_node_size": 5
+  }
+}

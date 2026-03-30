@@ -13,13 +13,13 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 You are at the start of the beginner path: **Chapter 1 of 10**.
 
-If you already have a model and only want predictions, jump to [Chapter 6: Predict Behaviour with an Existing Model](predict-with-existing-model.html).
+If you already have a model and only want predictions, jump to [Chapter 6: Predict Behaviour with a Shipped Model](train-and-predict-with-real-data.html#walkthrough-2).
 
 This chapter is for first-time `moover` users who want one clean, successful run before they bring in their own files. That first successful run matters. It tells you that the software is working, that your local setup is working, and that you know where the outputs will appear.
 
 We'll do four things in this chapter:
 
-1. find the example workspace that ships with `moover`
+1. find the example training workspace that ships with `moover`
 2. copy it into a writable folder on your own computer
 3. create a simple run specification
 4. run the full beginner workflow
@@ -28,17 +28,17 @@ We'll do four things in this chapter:
 
 When people begin with their own files straight away, there are often two problems tangled together: learning the workflow and checking the data structure. The example workspace separates those two jobs. First we learn the workflow. Then we move on to your files.
 
-## Find and copy the example workspace
+## Find and copy the example training workspace
 
-The package ships with a small example workspace. We don't run directly inside the installed package folder, because installed package files should be treated as read-only. Instead, we copy that example workspace into a folder we can write to.
+The package ships with a curated real-data training workspace. We don't run directly inside the installed package folder, because installed package files should be treated as read-only. Instead, we copy that example workspace into a folder we can write to.
 
 ```{r, eval = FALSE}
 library(moover)
 
-# Find the example workspace that ships inside the moover package.
-# This folder already contains raw accelerometer files, a tech table,
-# and an observations table.
-example_dir <- system.file("extdata", "example_workspace", package = "moover")
+# Find the packaged real-data training workspace that ships inside moover.
+# This folder already contains curated raw accelerometer files, a tech table,
+# and a labelled observations table.
+example_dir <- system.file("extdata", "example_train_workspace", package = "moover")
 
 # Choose a writable folder on your own computer.
 # In a real session you would usually point this somewhere permanent,
@@ -63,7 +63,7 @@ Next, we create a small object that stores the instructions for the run. `moover
 
 In this first example we keep things simple:
 
-- we point `moover` to the example workspace
+- we point `moover` to the copied training workspace
 - we tell it where the tech and observation files are
 - we use the standard beginner feature set
 - we turn optimisation off for now
@@ -117,7 +117,7 @@ wizard_train()
 
 ## Look at what the run created
 
-After the run finishes, the most important thing is simply to open the workspace and look around. A finished `moover` run should not feel mysterious. You should be able to point to the run folder and say, “That is the run I just completed.”
+After the run finishes, the most important thing is simply to open the workspace and look around. A finished `moover` run should not feel mysterious. You should be able to point to the run folder and say, "That is the run I just completed."
 
 You should now see:
 

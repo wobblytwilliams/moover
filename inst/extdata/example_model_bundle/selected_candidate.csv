@@ -1,0 +1,2 @@
+candidate_id,epoch_seconds,topN_label,rolling_enabled,n_base_features,selected_base_features,num_trees,min_node_size
+ep10s_manual5_noroll_trees10_node5,10,manual5,FALSE,5,z_mean|Incl_mean|Energy_mean|z_min|SVM_sd,10,5

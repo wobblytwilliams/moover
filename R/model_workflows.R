@@ -324,6 +324,17 @@ print.moover_model_bundle <- function(x, ...) {
   invisible(x)
 }
 
+moover_prediction_spec <- function(spec, model_bundle = NULL) {
+  pred_spec <- spec
+  if (!is.null(pred_spec$predict$raw_dir) && nzchar(pred_spec$predict$raw_dir)) {
+    pred_spec$ingest$raw_dir <- pred_spec$predict$raw_dir
+  }
+  if (!is.null(model_bundle)) {
+    pred_spec$predict$model_bundle <- model_bundle
+  }
+  pred_spec
+}
+
 moover_roll_settings_from_predictors <- function(predictors) {
   roll_cols <- predictors[startsWith(predictors, "roll")]
   if (length(roll_cols) == 0L) {
@@ -421,19 +432,21 @@ predict_behaviour <- function(spec, model_bundle = NULL) {
   if (!inherits(bundle, "moover_model_bundle")) {
     bundle <- load_model_bundle(bundle)
   }
-  run_paths <- moover_run_paths(spec)
-  moover_prepare_inputs(spec, run_paths, require_labels = FALSE)
-  tech <- moover_load_tech(spec, required = FALSE)
-  canonical <- moover_collect_canonical_accel(spec, tech = tech)
+  pred_spec <- moover_prediction_spec(spec, model_bundle = bundle$path)
+  run_paths <- moover_run_paths(pred_spec)
+  moover_prepare_inputs(pred_spec, run_paths, require_labels = FALSE)
+  tech <- moover_load_tech(pred_spec, required = FALSE)
+  canonical <- moover_collect_canonical_accel(pred_spec, tech = tech)
   epoch_seconds <- bundle$model_spec$epochs$lengths[[1]] %||%
     bundle$export_config$candidate$epoch_seconds %||%
+    bundle$export_config$params$epoch_seconds_keep %||%
     10L
   predictors <- as.character(bundle$feature_manifest$feature)
   feat_dt <- moover_build_prediction_features(
     canonical_dt = canonical,
     epoch_seconds = as.integer(epoch_seconds),
     predictors = predictors,
-    include_raw = isTRUE(spec$predict$include_raw)
+    include_raw = isTRUE(pred_spec$predict$include_raw)
   )
   probs <- predict(bundle$model, data = feat_dt[, ..predictors])$predictions
   prob_dt <- data.table::as.data.table(probs)
@@ -447,12 +460,17 @@ predict_behaviour <- function(spec, model_bundle = NULL) {
   )
   out <- cbind(out, prob_dt)
   data.table::fwrite(out, file.path(run_paths$results_dir, "epoch_predictions.csv"))
-  moover_write_prediction_summaries(out, run_paths, summary_outputs = spec$predict$summary_outputs)
+  moover_write_prediction_summaries(out, run_paths, summary_outputs = pred_spec$predict$summary_outputs)
   out
 }
 
 moover_pipeline_start <- function(spec, stage, run_paths) {
-  raw_dir <- moover_normalize_path(spec$ingest$raw_dir, base = spec$workspace$root, must_work = FALSE)
+  raw_dir_value <- if (identical(stage, "predict") && !is.null(spec$predict$raw_dir) && nzchar(spec$predict$raw_dir)) {
+    spec$predict$raw_dir
+  } else {
+    spec$ingest$raw_dir
+  }
+  raw_dir <- moover_normalize_path(raw_dir_value, base = spec$workspace$root, must_work = FALSE)
   workspace_root <- moover_normalize_path(spec$workspace$root, must_work = FALSE)
   chunk_rows <- spec$ingest$chunk_rows
   moover_console_header(
@@ -671,14 +689,19 @@ run_pipeline <- function(spec, stage = c("import", "features", "train", "optimis
   export_dir <- export_model(spec, fit)
   moover_report_export_summary(export_dir, fit$config)
   
-  if (isTRUE(spec$predict$predict_after_export) && !is.null(spec$predict$model_bundle)) {
+  if (isTRUE(spec$predict$predict_after_export)) {
     step_no <- step_no + 1L
     moover_console_step(
       step_no,
       "Run prediction on new data",
       "Apply the model bundle to new accelerometer files and write epoch-level predictions."
     )
-    predict_behaviour(spec)
+    pred_spec <- spec
+    if (is.null(pred_spec$predict$model_bundle)) {
+      pred_spec$predict$model_bundle <- export_dir
+    }
+    pred_out <- predict_behaviour(pred_spec)
+    moover_report_prediction_summary(pred_out, run_paths, summary_outputs = pred_spec$predict$summary_outputs)
   }
   moover_pipeline_finish("Pipeline complete.")
   invisible(export_dir)

@@ -1,0 +1,42 @@
+[
+  {
+    "feature": "z_mean",
+    "is_rolling": false,
+    "definition": "Epoch mean of z samples (static component; mean of samples within epoch).",
+    "epoch_seconds": 10,
+    "mode": "binary",
+    "rolling_enabled": false
+  },
+  {
+    "feature": "Incl_mean",
+    "is_rolling": false,
+    "definition": "Epoch mean of Incl_deg = atan2(sqrt(x^2 + y^2), z) * 180/pi.",
+    "epoch_seconds": 10,
+    "mode": "binary",
+    "rolling_enabled": false
+  },
+  {
+    "feature": "Energy_mean",
+    "is_rolling": false,
+    "definition": "Epoch mean of Energy_samp = (x^2 + y^2 + z^2)^2.",
+    "epoch_seconds": 10,
+    "mode": "binary",
+    "rolling_enabled": false
+  },
+  {
+    "feature": "z_min",
+    "is_rolling": false,
+    "definition": "Epoch minimum of z samples.",
+    "epoch_seconds": 10,
+    "mode": "binary",
+    "rolling_enabled": false
+  },
+  {
+    "feature": "SVM_sd",
+    "is_rolling": false,
+    "definition": "Epoch standard deviation of SVM_samp = sqrt(x^2 + y^2 + z^2).",
+    "epoch_seconds": 10,
+    "mode": "binary",
+    "rolling_enabled": false
+  }
+]

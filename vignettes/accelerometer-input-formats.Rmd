@@ -30,14 +30,14 @@ That means you do **not** need to rewrite every dataset into a new file format j
 
 ## A CQU-style file
 
-Let's look at one of the example files that ships with `moover`.
+Let's look at one of the real example files that ships with `moover`.
 
 ```{r, eval = FALSE}
 library(moover)
 
-# Find one example CQU-style accelerometer file.
+# Find one real example CQU-style accelerometer file.
 cqu_file <- system.file(
-  "extdata", "example_workspace", "data_raw", "demo-A01_cquFormat.csv",
+  "extdata", "example_train_workspace", "data_raw", "example-A01_cquFormat.csv",
   package = "moover"
 )
 

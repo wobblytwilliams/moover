@@ -1,4 +1,4 @@
-﻿url: https://wobblytwilliams.github.io/moover/
+url: https://wobblytwilliams.github.io/moover/
 
 template:
   bootstrap: 5
@@ -23,10 +23,10 @@ navbar:
         href: articles/accelerometer-input-formats.html
       - text: "Chapter 4: Record Observations for Training"
         href: articles/recording-observations.html
-      - text: "Chapter 5: Build Your First Behaviour Model"
-        href: articles/build-a-model.html
-      - text: "Chapter 6: Predict Behaviour with an Existing Model"
-        href: articles/predict-with-existing-model.html
+      - text: "Chapter 5: Train, Validate, Export, and Predict"
+        href: articles/train-and-predict-with-real-data.html#walkthrough-1
+      - text: "Chapter 6: Predict Behaviour with a Shipped Model"
+        href: articles/train-and-predict-with-real-data.html#walkthrough-2
       - text: "Chapter 7: Understand Your Results and Export Folder"
         href: articles/deployment-export-format.html
       - text: "Chapter 8: Optimise a Model for Deployment"
@@ -69,8 +69,7 @@ articles:
   - set-up-your-workspace
   - accelerometer-input-formats
   - recording-observations
-  - build-a-model
-  - predict-with-existing-model
+  - train-and-predict-with-real-data
   - deployment-export-format
   - optimise-a-model-for-deployment
   - scripted-reruns-and-saved-specs

@@ -1,4 +1,4 @@
-﻿# moover
+# moover
 
 `moover` helps animal scientists turn movement data into behaviour outputs.
 
@@ -29,16 +29,16 @@ If you are new to `moover`, start with the first tutorial:
 
 [Start Here: Your First Successful Run](https://wobblytwilliams.github.io/moover/articles/getting-started.html)
 
-That walkthrough uses packaged example data so you can get one complete success before working with your own files.
+That walkthrough uses packaged real-data examples so you can get one complete success before working with your own files.
 
 ## Typical beginner journey
 
 1. Set up a workspace on your computer.
-2. Try the packaged example data.
+2. Try the packaged real-data examples.
 3. Prepare your own accelerometer files.
 4. Record or tidy your observations for training.
-5. Build a model.
-6. Predict behaviour on new data.
+5. Train, validate, and export a model.
+6. Predict behaviour on a larger raw dataset or with a shared bundle.
 
 ## Advanced users
 
@@ -58,17 +58,25 @@ The beginner path is organised as a 10-chapter walkthrough and walks through:
 - setting up folders and understanding the workspace
 - preparing accelerometer files
 - recording observations for training
-- building a first model
-- predicting with an existing model
+- training, validating, exporting, and then predicting on a larger raw dataset
+- predicting with a shipped model bundle
 - understanding the results and export folder
 
 ## Included example data
 
-The package ships with a small example workspace under:
+The package ships with three beginner-friendly real-data examples:
 
 ```r
-system.file("extdata", "example_workspace", package = "moover")
+system.file("extdata", "example_train_workspace", package = "moover")
+system.file("extdata", "example_predict_raw", package = "moover")
+system.file("extdata", "example_model_bundle", package = "moover")
 ```
+
+These are designed to work together:
+
+- `example_train_workspace` is a curated labelled training workspace
+- `example_predict_raw` is a larger raw-only dataset used for prediction
+- `example_model_bundle` is a shipped model bundle you can apply directly
 
 ## What `moover` does
 

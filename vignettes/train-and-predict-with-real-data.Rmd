@@ -1,0 +1,253 @@
+---
+title: "Train and Predict with Real Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Train and Predict with Real Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+```
+
+This page covers **Chapter 5 and Chapter 6** of the beginner path.
+
+This chapter holds **two walkthroughs on one page** because they are really two starting points for the same `moover` workflow.
+
+- **Walkthrough 1** starts from labelled raw data and takes us all the way through training, validation, export, and prediction on a larger dataset.
+- **Walkthrough 2** starts from a ready-made model bundle and shows how to apply it straight to raw data.
+
+If you are learning `moover` as a full workflow, begin with Walkthrough 1. If you already have a model and only care about prediction, jump straight to Walkthrough 2.
+
+## Walkthrough 1: Train, Validate, Export, Predict {#walkthrough-1}
+
+In this first walkthrough, we will:
+
+1. copy a packaged real-data training workspace into a folder we can write to
+2. train and validate a Random Forest model
+3. export that model as a reusable bundle
+4. apply the newly exported model to a second, larger packaged raw dataset
+
+### What we are using
+
+This training example is a curated subset of real `RF_Embed_v2` data. The package ships it as a normal `moover` workspace so you do not have to assemble the files yourself.
+
+```{r, eval = FALSE}
+library(moover)
+
+# This packaged folder contains:
+# - data_raw/ with curated accelerometer files
+# - tech.csv linking animal ids to accelerometer ids
+# - observations.csv in moover's default labelled-bout schema
+train_example <- system.file("extdata", "example_train_workspace", package = "moover")
+
+# This second packaged folder contains a larger raw-only dataset.
+# We will use it after training to show prediction beyond the labelled subset.
+predict_example <- system.file("extdata", "example_predict_raw", package = "moover")
+```
+
+### Copy the training workspace to your computer
+
+We copy the packaged training workspace before running anything because installed package files should be treated as read-only.
+
+```{r, eval = FALSE}
+# Choose a writable folder on your own computer.
+workspace_dir <- file.path(tempdir(), "moover_real_data_walkthrough")
+dir.create(workspace_dir, recursive = TRUE, showWarnings = FALSE)
+
+# Copy the packaged training workspace so this run can write outputs into it.
+file.copy(
+  from = list.files(train_example, full.names = TRUE, all.files = TRUE, no.. = TRUE),
+  to = workspace_dir,
+  recursive = TRUE
+)
+```
+
+### Create the run specification
+
+This spec does two jobs.
+
+First, it tells `moover` how to train the model from the labelled raw data in the copied workspace.  
+Second, it tells `moover` to use the newly exported model to predict on the larger raw-only dataset after training finishes.
+
+```{r, eval = FALSE}
+# Create a spec that trains first and then predicts on a second raw dataset.
+spec <- create_spec(
+  workspace = list(root = workspace_dir),
+  ingest = list(
+    # Training raw data lives inside the copied example workspace.
+    raw_dir = file.path(workspace_dir, "data_raw")
+  ),
+  labels = list(
+    # These two files provide the training labels and the id mapping.
+    tech_file = file.path(workspace_dir, "tech.csv"),
+    path = file.path(workspace_dir, "observations.csv")
+  ),
+  features = list(
+    # Keep the example simple and use the standard beginner feature set.
+    selection = "standard",
+    standard_set = "manual5"
+  ),
+  optimise = list(
+    # We are teaching the main workflow here, so keep optimisation off.
+    enabled = FALSE
+  ),
+  model = list(
+    positive_class = "grazing",
+    num_threads = 1L,
+    num_trees = 3L,
+    min_node_size = 30L
+  ),
+  predict = list(
+    # After the model is exported, use it on the second packaged raw dataset.
+    raw_dir = predict_example,
+    predict_after_export = TRUE
+  )
+)
+```
+
+### Run the full workflow
+
+This is the main beginner command. In this case, `stage = "all"` means:
+
+1. import and check the training raw data
+2. build 10-second epochs and calculate features
+3. match those epochs to the labelled behaviour bouts
+4. train and validate the model with LOCO
+5. export the model bundle
+6. use the new export bundle to predict on the larger raw dataset
+
+```{r, eval = FALSE}
+# Run the complete workflow from labelled raw data through to prediction.
+run_pipeline(spec, stage = "all")
+```
+
+If you prefer prompts instead of code, the training wizard can guide you through the same path:
+
+```{r, eval = FALSE}
+# The training wizard can also ask whether you want to predict on another
+# raw-data folder after export.
+wizard_train()
+```
+
+### What success looks like
+
+After the run finishes, there are three places to check.
+
+1. **LOCO validation outputs**
+   - these tell you how the model performed on animals it did not see during training
+   - look for files such as `metrics_overall.csv`, `confusion_matrix.csv`, and `metrics_by_class.csv`
+2. **The export bundle**
+   - this lives in the run's `models/` folder
+   - it contains the fitted model, feature manifest, tree dump JSON, metrics, and test vectors
+3. **Prediction outputs**
+   - these live in the run's `results/` folder
+   - the main file is `epoch_predictions.csv`
+
+This is the key idea of Walkthrough 1: we use a labelled subset to build the model, and then we immediately use that model on a larger raw dataset.
+
+## Walkthrough 2: Predict With a Shipped Model {#walkthrough-2}
+
+Now let's start from the other end.
+
+In this walkthrough, we assume the model has already been built for you. You simply want to apply it to raw data.
+
+We will:
+
+1. locate the packaged example model bundle
+2. point `moover` to the packaged prediction raw dataset
+3. run prediction and inspect the output
+
+### Locate the packaged model bundle
+
+This bundle ships with the package and already contains the feature manifest and model settings needed for prediction.
+
+```{r, eval = FALSE}
+# This packaged folder contains the shipped example bundle.
+# It includes rf_model_full.rds, feature_manifest.csv, export_config.json,
+# model_spec.json, and rf_tree_dump.json.
+bundle_dir <- system.file("extdata", "example_model_bundle", package = "moover")
+
+# Reuse the packaged raw-only prediction dataset from Walkthrough 1.
+predict_example <- system.file("extdata", "example_predict_raw", package = "moover")
+```
+
+### Create a prediction-only spec
+
+Notice what is missing here:
+
+- no observations file
+- no feature list written by hand
+- no epoch length chosen by hand
+
+That is the point of the bundle. It tells `moover` what to rebuild.
+
+```{r, eval = FALSE}
+predict_workspace <- file.path(tempdir(), "moover_prediction_only")
+init_workspace(predict_workspace)
+
+predict_spec <- create_spec(
+  workspace = list(root = predict_workspace),
+  ingest = list(
+    # Point to the raw accelerometer files you want to classify.
+    raw_dir = predict_example,
+    # This dataset is large enough that chunked reading is sensible.
+    chunk_rows = 50000L
+  ),
+  labels = list(
+    # No labelled observations are needed for prediction-only work.
+    tech_file = "",
+    path = NULL
+  ),
+  predict = list(
+    # The model bundle contains the information needed to rebuild the features.
+    model_bundle = bundle_dir
+  )
+)
+```
+
+### Run prediction
+
+```{r, eval = FALSE}
+# Predict behaviour on the packaged raw-only dataset.
+run_pipeline(predict_spec, stage = "predict")
+```
+
+The prediction wizard can help with the same workflow if you prefer prompts:
+
+```{r, eval = FALSE}
+wizard_predict()
+```
+
+### What happens during prediction
+
+During prediction, `moover`:
+
+1. reads the raw accelerometer files
+2. rebuilds the correct 10-second epochs
+3. calculates the exact features required by the bundle
+4. applies the model
+5. writes `epoch_predictions.csv`
+
+The important beginner message here is that the bundle carries the instructions. You do not manually restate the feature set or epoch definition when you already have a model bundle.
+
+## When to use walkthrough 1 versus walkthrough 2
+
+Use **Walkthrough 1** when:
+
+- you have labelled observations
+- you need to train or validate a model
+- you want to export a new bundle for sharing or deployment
+
+Use **Walkthrough 2** when:
+
+- a model bundle already exists
+- you mainly want predictions on new raw data
+- you are acting as the collaborator applying a shared model rather than building one from scratch
+
+<div class="moover-next-steps">
+<strong>Move through the tutorial</strong><br>
+Previous chapter: <a href="recording-observations.html">Chapter 4. Record Observations for Training</a><br>
+Next chapter: <a href="deployment-export-format.html">Chapter 7. Understand Your Results and Export Folder</a>
+</div>

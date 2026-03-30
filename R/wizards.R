@@ -160,7 +160,8 @@ moover_wizard_show_saved_spec <- function(spec) {
   moover_wizard_text("You do not need to edit this JSON file by hand. moover keeps it so the same run can be repeated later without answering the same questions again.")
 }
 
-moover_wizard_show_pipeline_steps <- function(include_optimise = FALSE, mode = c("train", "predict", "import")) {
+moover_wizard_show_pipeline_steps <- function(include_optimise = FALSE, include_predict_after_export = FALSE,
+                                              mode = c("train", "predict", "import")) {
   mode <- match.arg(mode)
   moover_wizard_text("If you continue, moover will do the following:")
   if (identical(mode, "import")) {
@@ -176,6 +177,9 @@ moover_wizard_show_pipeline_steps <- function(include_optimise = FALSE, mode = c
     }
     moover_wizard_bullet("Train and validate the final Random Forest model.")
     moover_wizard_bullet("Write an export folder containing the model, metrics, feature specification, and test vectors.")
+    if (isTRUE(include_predict_after_export)) {
+      moover_wizard_bullet("Apply the exported model to a second raw-data folder and save epoch-level predictions for that larger dataset.")
+    }
   } else if (identical(mode, "predict")) {
     moover_wizard_bullet("Read your new raw accelerometer files and convert them into the standard internal format.")
     moover_wizard_bullet("Build the exact same features expected by the existing model bundle.")
@@ -335,7 +339,26 @@ wizard_train <- function() {
   )
 
   moover_wizard_section(
-    "Step 5. Save the Run Instructions",
+    "Step 5. Decide Whether to Predict on a Larger Dataset After Training",
+    what = "After training and exporting the model, moover can immediately apply that new model to a second raw-data folder.",
+    why = "This is helpful when you have a labelled subset for model building and a larger raw dataset that you want to classify afterwards."
+  )
+  do_predict_after_export <- moover_wizard_yes_no(
+    "Predict on another raw-data folder after export",
+    default = FALSE,
+    details = "Choose yes if you want moover to train the model first and then use that new export bundle to predict behaviour on a second dataset."
+  )
+  predict_raw_dir <- NULL
+  if (isTRUE(do_predict_after_export)) {
+    predict_raw_dir <- moover_prompt(
+      "Prediction raw data directory",
+      raw_dir,
+      details = "This can be the same as the training raw-data folder or a second folder containing the larger dataset you want to classify after training."
+    )
+  }
+
+  moover_wizard_section(
+    "Step 6. Save the Run Instructions",
     what = "moover will now save the settings you have chosen so far.",
     why = "Saving the instructions now means you can rerun the same workflow later without walking through the wizard again."
   )
@@ -359,17 +382,25 @@ wizard_train <- function() {
     ),
     model = list(
       positive_class = positive_class
+    ),
+    predict = list(
+      raw_dir = predict_raw_dir,
+      predict_after_export = do_predict_after_export
     )
   )
   moover_write_spec(spec)
   moover_wizard_show_saved_spec(spec)
 
   moover_wizard_section(
-    "Step 6. Decide Whether to Start the Full Training Run Now",
+    "Step 7. Decide Whether to Start the Full Training Run Now",
     what = "You can stop after creating the saved instructions, or you can ask moover to begin the full training workflow immediately.",
     why = "This gives beginners a chance to pause and check their files before committing to a longer run."
   )
-  moover_wizard_show_pipeline_steps(include_optimise = do_optimise, mode = "train")
+  moover_wizard_show_pipeline_steps(
+    include_optimise = do_optimise,
+    include_predict_after_export = do_predict_after_export,
+    mode = "train"
+  )
   if (moover_wizard_yes_no(
     "Run the full training workflow now",
     default = TRUE,
@@ -379,6 +410,9 @@ wizard_train <- function() {
     moover_wizard_text("Training complete. moover has written a full export bundle for this run.")
     moover_wizard_bullet(paste0("Export folder: ", export_dir))
     moover_wizard_bullet(paste0("Run folder: ", moover_run_paths(spec)$run_root))
+    if (isTRUE(do_predict_after_export)) {
+      moover_wizard_bullet(paste0("Prediction output: ", file.path(moover_run_paths(spec)$results_dir, "epoch_predictions.csv")))
+    }
     moover_wizard_text("What success looks like: your export folder should contain the fitted model, feature manifest, metrics, and test vectors. You can now share that folder or use it for prediction on new data.")
   } else {
     moover_wizard_text("No problem. The saved instructions are already on disk, so you can rerun this same training workflow later with run_pipeline().")

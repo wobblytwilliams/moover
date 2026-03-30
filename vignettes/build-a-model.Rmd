@@ -11,118 +11,17 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-This is **Chapter 5 of 10** in the beginner path.
+This page is kept as a short bridge for readers who arrive from an older link.
 
-By now, you should have a workspace, raw accelerometer files, and an observation file. In this chapter we turn those inputs into a first behaviour model.
+The beginner path now teaches training and prediction together on one shared page, because they are two starting points for the same `moover` workflow.
 
-In broad terms, we want to do three things:
+Go here instead:
 
-1. tell `moover` where the files are
-2. train and validate the model
-3. export a bundle we can reuse later
-
-Let's do those in turn.
-
-## The easiest path: use the wizard
-
-For a first run, the wizard is the easiest option because it explains each question before asking you to answer it.
-
-```{r, eval = FALSE}
-library(moover)
-
-# Open the training wizard.
-# The wizard will guide you through the file paths and settings,
-# and it can run the full workflow for you.
-wizard_train()
-```
-
-That is the right choice for many beginners. It is also a good way to learn the order of the steps before writing any code.
-
-## The same workflow in code
-
-If you prefer copy-pasteable code, we can express the same training run with a spec. The spec simply records the choices we want `moover` to use.
-
-```{r, eval = FALSE}
-library(moover)
-
-# Create a run specification for a beginner training run.
-spec <- create_spec(
-  workspace = list(root = "my_moover_workspace"),
-  ingest = list(
-    # Point this to the folder holding the raw accelerometer files.
-    # It can be the workspace data_raw folder, or it can be an external path.
-    raw_dir = "data_raw"
-  ),
-  labels = list(
-    # tech.csv links animal ids and accelerometer ids when that mapping is needed.
-    tech_file = "tech.csv",
-    # observations.csv contains the labelled behaviour periods used for training.
-    path = "observations.csv"
-  ),
-  features = list(
-    # Use the standard beginner feature set.
-    selection = "standard",
-    standard_set = "manual5"
-  ),
-  optimise = list(
-    # For a first model, keep optimisation off.
-    enabled = FALSE
-  ),
-  model = list(
-    # In a binary model, this is the behaviour treated as the positive class.
-    positive_class = "grazing"
-  )
-)
-
-# Run the complete workflow from import through export.
-run_pipeline(spec, stage = "all")
-```
-
-If your raw files already live somewhere else, you can replace `"data_raw"` with an absolute path such as `"E:/portable_drive/cattle_trial_raw"`. `moover` will read from that folder and still keep the epoch dataset, model bundle, and test vectors inside the workspace for this run.
-
-## What happens during the run
-
-A model-training run can feel like a lot is happening behind the scenes, so it helps to name the main steps plainly.
-
-During the run, `moover` will:
-
-1. read the raw accelerometer files
-2. standardise the timestamps
-3. group the samples into fixed time blocks
-4. calculate features for each block
-5. line those blocks up with the observed behaviour bouts
-6. train and validate the Random Forest model
-7. write an export bundle containing the fitted model and support files
-
-That is the full arc of the training workflow.
-
-If the raw files are large, `moover` can also read them in fixed-size chunks using `ingest$chunk_rows`. That option is there to make large local workflows more manageable, not to change the feature definitions or the final model outputs.
-
-## What the main metrics mean
-
-After the run, you will see several outputs. Three of the most useful are accuracy, macro F1, and the confusion matrix.
-
-**Accuracy** tells you the proportion of predictions that were correct overall.
-
-**Macro F1** gives each class equal weight. That is useful when one behaviour is much more common than another.
-
-The **confusion matrix** shows which behaviours are being confused with each other. That is often more informative than accuracy alone.
-
-`moover` also reports performance using LOCO, which means testing on animals the model has not seen during training. That usually gives a more realistic sense of how the model will behave on new animals.
-
-## What you should expect to find afterwards
-
-A successful run leaves behind a clear trail:
-
-- a run folder inside `runs/`
-- results files and quality checks
-- plots showing model performance
-- an exported model bundle inside the run's `models/` folder
-
-At this point you do not need to memorise every output file. The important thing is to know that the model bundle is there and that it can be used later for prediction or sharing.
+- [Chapter 5. Train, Validate, Export, and Predict](train-and-predict-with-real-data.html#walkthrough-1)
+- [Chapter 6. Predict Behaviour with a Shipped Model](train-and-predict-with-real-data.html#walkthrough-2)
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>
 Previous chapter: <a href="recording-observations.html">Chapter 4. Record Observations for Training</a><br>
-Next chapter: <a href="predict-with-existing-model.html">Chapter 6. Predict Behaviour with an Existing Model</a>
+Next chapter: <a href="train-and-predict-with-real-data.html#walkthrough-1">Chapter 5. Train, Validate, Export, and Predict</a>
 </div>

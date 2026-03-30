@@ -98,6 +98,7 @@ moover_default_spec <- function() {
       ),
       predict = list(
         model_bundle = NULL,
+        raw_dir = NULL,
         output_level = "epoch",
         summary_outputs = character(),
         include_raw = FALSE,

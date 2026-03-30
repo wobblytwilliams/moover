@@ -77,5 +77,5 @@ Those checks are not glamorous, but they usually matter more than the choice of 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>
 Previous chapter: <a href="accelerometer-input-formats.html">Chapter 3. Prepare Your Accelerometer Files</a><br>
-Next chapter: <a href="build-a-model.html">Chapter 5. Build Your First Behaviour Model</a>
+Next chapter: <a href="train-and-predict-with-real-data.html#walkthrough-1">Chapter 5. Train, Validate, Export, and Predict</a>
 </div>

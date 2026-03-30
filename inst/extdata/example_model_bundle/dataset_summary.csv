@@ -1,0 +1,2 @@
+n_animals,n_epochs_total,epoch_seconds,tz_epoch,mode,positive_class,n_predictors,start_time_min,end_time_max
+3,3469,10,Australia/Brisbane,binary,grazing,5,2026-01-03 13:30:10,2026-01-13 16:19:50

@@ -1,0 +1,5 @@
+truth,predicted,n
+grazing,grazing,1187
+not_grazing,grazing,141
+grazing,not_grazing,121
+not_grazing,not_grazing,2020

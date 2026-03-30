@@ -1,0 +1,37 @@
+{
+  "export_id": "example_model_bundle",
+  "created_utc": "2026-03-30 05:26:16 UTC",
+  "tz_epoch": "UTC",
+  "model": {
+    "mode": "binary",
+    "positive_class": "grazing",
+    "seed": 1,
+    "num_threads": 1,
+    "include_class_weights": false
+  },
+  "candidate": {
+    "candidate_id": "ep10s_manual5_noroll_trees10_node5",
+    "epoch_seconds": 10,
+    "topN_label": "manual5",
+    "rolling_enabled": false,
+    "n_base_features": 5,
+    "selected_base_features": "z_mean|Incl_mean|Energy_mean|z_min|SVM_sd",
+    "num_trees": 10,
+    "min_node_size": 5
+  },
+  "outputs": {
+    "rf_model_full_rds": "rf_model_full.rds",
+    "feature_manifest_csv": "feature_manifest.csv",
+    "feature_manifest_json": "feature_manifest.json",
+    "model_spec_json": "model_spec.json",
+    "metrics_overall_csv": "metrics_overall.csv",
+    "recall_by_class_csv": "recall_by_class.csv",
+    "confusion_matrix_csv": "confusion_matrix.csv",
+    "metrics_by_class_csv": "metrics_by_class.csv",
+    "metrics_by_cow_csv": "metrics_by_cow.csv",
+    "class_support_train_csv": "class_support_train.csv",
+    "dataset_summary_csv": "dataset_summary.csv",
+    "test_vectors_csv": "test_vectors.csv",
+    "rf_tree_dump_json": "rf_tree_dump.json"
+  }
+}

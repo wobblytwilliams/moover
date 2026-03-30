@@ -1,6 +1,10 @@
-example_workspace_copy <- function() {
-  src <- testthat::test_path("..", "..", "inst", "extdata", "example_workspace")
-  dst <- file.path(tempdir(), paste0("moover_example_", as.integer(Sys.time()), "_", sample.int(1000, 1)))
+example_asset_path <- function(name) {
+  normalizePath(testthat::test_path("..", "..", "inst", "extdata", name), winslash = "/", mustWork = TRUE)
+}
+
+example_workspace_copy <- function(name = "example_train_workspace") {
+  src <- example_asset_path(name)
+  dst <- file.path(tempdir(), paste0("moover_example_", name, "_", as.integer(Sys.time()), "_", sample.int(1000, 1)))
   dir.create(dst, recursive = TRUE, showWarnings = FALSE)
   file.copy(list.files(src, full.names = TRUE, all.files = TRUE, no.. = TRUE), dst, recursive = TRUE)
   dst
@@ -15,7 +19,15 @@ test_that("init_workspace creates the standard folders", {
   expect_true(dir.exists(file.path(root, "_internal")))
 })
 
-test_that("import and feature building work on the packaged example workspace", {
+test_that("real packaged example assets exist", {
+  expect_true(dir.exists(example_asset_path("example_train_workspace")))
+  expect_true(dir.exists(example_asset_path("example_predict_raw")))
+  expect_true(dir.exists(example_asset_path("example_model_bundle")))
+  pred_files <- list.files(example_asset_path("example_predict_raw"), pattern = "_cquFormat\\.csv$")
+  expect_setequal(pred_files, c("example-A01_cquFormat.csv", "example-A02_cquFormat.csv", "example-A03_cquFormat.csv"))
+})
+
+test_that("import and feature building work on the packaged real training workspace", {
   root <- example_workspace_copy()
   spec <- create_spec(
     workspace = list(root = root),
@@ -44,7 +56,7 @@ test_that("import and feature building work on the packaged example workspace", 
   expect_true(all(c("id", "epoch_start", "epoch_end", "behaviour") %in% names(dt)))
 })
 
-test_that("train, export, and predict work end to end", {
+test_that("train, export, and predict on a second raw dataset work end to end", {
   root <- example_workspace_copy()
   spec <- create_spec(
     workspace = list(root = root),
@@ -65,26 +77,17 @@ test_that("train, export, and predict work end to end", {
     ),
     optimise = list(enabled = FALSE),
     export = list(export_tag = "moover_export"),
-    run = list(run_id = "test_train")
+    predict = list(
+      raw_dir = example_asset_path("example_predict_raw"),
+      predict_after_export = TRUE
+    ),
+    run = list(run_id = "test_train_predict")
   )
-  fit <- train_model(spec)
-  expect_true(file.exists(fit$run_paths$fit_cache))
-  export_dir <- export_model(spec, fit)
+  export_dir <- run_pipeline(spec, stage = "all")
+  run_paths <- moover_run_paths(spec)
   expect_true(file.exists(file.path(export_dir, "rf_model_full.rds")))
   expect_true(file.exists(file.path(export_dir, "test_vectors.csv")))
-  pred_spec <- create_spec(
-    workspace = list(root = root),
-    ingest = list(raw_dir = file.path(root, "data_raw")),
-    labels = list(
-      tech_file = file.path(root, "tech.csv"),
-      path = NULL
-    ),
-    predict = list(model_bundle = export_dir),
-    run = list(run_id = "test_predict")
-  )
-  preds <- predict_behaviour(pred_spec)
-  expect_true(nrow(preds) > 0L)
-  expect_true(all(c("id", "predicted") %in% names(preds)))
+  expect_true(file.exists(file.path(run_paths$results_dir, "epoch_predictions.csv")))
 })
 
 test_that("raw files can live outside the workspace while outputs stay local", {
@@ -189,3 +192,33 @@ test_that("large-file preflight warning suggests chunked reading", {
   )
   expect_true(file.exists(imported$preview_file))
 })
+
+test_that("shipped example model bundle predicts on the packaged prediction raw dataset", {
+  root <- file.path(tempdir(), paste0("moover_predict_ws_", sample.int(1000, 1)))
+  init_workspace(root)
+  bundle_path <- example_asset_path("example_model_bundle")
+  bundle <- load_model_bundle(bundle_path)
+  expect_s3_class(bundle, "moover_model_bundle")
+
+  spec <- create_spec(
+    workspace = list(root = root),
+    ingest = list(
+      raw_dir = example_asset_path("example_predict_raw"),
+      chunk_rows = 50000L
+    ),
+    labels = list(
+      tech_file = "",
+      path = NULL
+    ),
+    predict = list(
+      model_bundle = bundle_path
+    ),
+    run = list(run_id = "test_example_bundle_predict")
+  )
+
+  preds <- run_pipeline(spec, stage = "predict")
+  expect_true(nrow(preds) > 0L)
+  expect_true(all(c("id", "predicted") %in% names(preds)))
+  expect_gt(data.table::uniqueN(preds$id), 1L)
+})
+

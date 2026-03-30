@@ -13,7 +13,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 
 This is **Chapter 7 of 10** in the beginner path.
 
-After the first successful run, many beginners ask the same question: “Which of these files do I actually care about?” That is a good question. A finished `moover` run contains several outputs, but you do not need to understand every file at once.
+After the first successful run, many beginners ask the same question: "Which of these files do I actually care about?" That is a good question. A finished `moover` run contains several outputs, but you do not need to understand every file at once.
 
 In this chapter, we'll walk through the main files and what they are for.
 
@@ -90,6 +90,6 @@ A common beginner mistake is to think that understanding `moover` means understa
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>
-Previous chapter: <a href="predict-with-existing-model.html">Chapter 6. Predict Behaviour with an Existing Model</a><br>
+Previous chapter: <a href="train-and-predict-with-real-data.html#walkthrough-2">Chapter 6. Predict Behaviour with a Shipped Model</a><br>
 Next chapter: <a href="optimise-a-model-for-deployment.html">Chapter 8. Optimise a Model for Deployment</a>
 </div>

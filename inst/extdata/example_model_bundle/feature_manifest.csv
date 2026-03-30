@@ -1,0 +1,6 @@
+feature,is_rolling,definition,epoch_seconds,mode,rolling_enabled,roll_windows_seconds,roll_fns
+z_mean,FALSE,Epoch mean of z samples (static component; mean of samples within epoch).,10,binary,FALSE,"",""
+Incl_mean,FALSE,"Epoch mean of Incl_deg = atan2(sqrt(x^2 + y^2), z) * 180/pi.",10,binary,FALSE,"",""
+Energy_mean,FALSE,Epoch mean of Energy_samp = (x^2 + y^2 + z^2)^2.,10,binary,FALSE,"",""
+z_min,FALSE,Epoch minimum of z samples.,10,binary,FALSE,"",""
+SVM_sd,FALSE,Epoch standard deviation of SVM_samp = sqrt(x^2 + y^2 + z^2).,10,binary,FALSE,"",""
