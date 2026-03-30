@@ -1,5 +1,9 @@
 # moover
 
+<p align="center">
+  <img src="moover_hex.png" alt="moover package logo" width="220">
+</p>
+
 `moover` helps animal scientists turn movement data into behaviour outputs.
 
 The main idea is simplicity. If you can load a package, read in data, and make a plot in R, you should be able to use `moover` to build a Random Forest behaviour model and apply it to predict behaviour.
