@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Record Observations for Training"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,111 +11,68 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## You are here
-
 This is **Chapter 4 of 10** in the beginner path.
 
-## Who this page is for
+A behaviour model can only learn if the observations are recorded in a consistent way. In `moover`, the observation file is not meant to describe every single accelerometer sample. Instead, it describes periods of time during which a known behaviour was observed.
 
-This page is for users who want to train a model from observed behaviours.
+We'll do three things in this chapter:
 
-## What you will achieve
+1. define what one observation row means
+2. look at the minimum fields the file needs
+3. check the most common problems before training
 
-By the end of this page, you will understand:
+## One row means one observed bout
 
-- what an observation bout is
-- how to organise one row per labelled behaviour period
-- why naming consistency matters
-- what to check before starting model training
+The easiest way to think about the observation file is this: each row describes one labelled behaviour period for one animal.
 
-## Why this matters
+For example, if animal A was grazing from 10:00:00 to 10:03:00, that is one row. If the same animal was then resting from 10:03:00 to 10:08:00, that is another row.
 
-A model can only learn from the behaviour labels you provide. Clear, consistent observations give you a much better chance of getting a useful model.
+## The minimum information you need
 
-## What we're doing
+At training time, `moover` needs to know four things from each row:
 
-We are building a training table where each row describes one labelled behaviour period for one animal.
+- which animal the observation belongs to
+- which behaviour label was observed
+- when the behaviour started
+- when the behaviour ended
 
-## A beginner-friendly way to think about the table
+Here is a simple example.
 
-Each row answers four simple questions:
-
-- Which animal was this?
-- What behaviour was it showing?
-- When did that behaviour start?
-- When did it end?
-
-A simple beginner-friendly example might look like this:
-
-```text
-animal_id,behaviour,start_time,end_time
-cow_1,grazing,2025-01-01 10:00:00,2025-01-01 10:02:00
-cow_1,resting,2025-01-01 10:02:00,2025-01-01 10:04:00
-```
-
-Internally, `moover` maps that information into the fields it needs for training.
-
-## A directly mapped example
-
-If your file is already in the package's preferred format, it may look like this:
-
-```text
-id,label,start_unix_ms,end_unix_ms
-cow_1,grazing,1735689600000,1735689720000
-cow_1,resting,1735689720000,1735689840000
-```
-
-## Do this
-
-The code below is trying to achieve one thing: tell `moover` which columns in your observation table correspond to animal ID, behaviour label, start time, and end time.
-
-```r
-spec <- create_spec(
-  schema = list(
-    observations = list(
-      # Column containing the animal identifier.
-      id = "animal_id",
-      # Column containing the behaviour name.
-      label = "behaviour",
-      # Column containing the start time of the observed bout.
-      start = "start_time",
-      # Column containing the end time of the observed bout.
-      end = "end_time",
-      # Tell moover how those times are written in the file.
-      time_format = "iso8601_local"
-    )
-  )
+```{r}
+obs_example <- data.frame(
+  id = c("Cow_01", "Cow_01", "Cow_02"),
+  label = c("grazing", "resting", "grazing"),
+  start_unix_ms = c(1712128800000, 1712128980000, 1712128800000),
+  end_unix_ms = c(1712128980000, 1712129280000, 1712129100000)
 )
+
+knitr::kable(obs_example)
 ```
 
-`create_spec()` does not train the model by itself. It stores the instructions that the later training step will use.
+That table is deliberately simple. In your own file, the columns can have different names if you map them in the spec, but those four ideas must still be present.
 
-## Why consistent label spelling matters
+## Why label spelling matters
 
-`grazing`, `Grazing`, and `graze` may look similar to a person, but to a model they are different labels unless you standardise them.
+The model does not know that `Graze`, `grazing`, and `GRAZING` might mean the same thing to a human reader. To the model, those are different labels unless you standardise them.
 
-Choose one spelling per behaviour and stick to it.
+A good beginner habit is to choose one spelling for each behaviour and use it everywhere.
 
-## Observation quality-check checklist
+## Time needs the same care as labels
 
-Before training, check that:
+Observation times need to line up with the accelerometer times. If they are in the wrong timezone or mixed formats, the model may look as though it is performing badly when the real problem is simply that the labels are not lining up with the movement data.
 
-- each row is one behaviour period
-- IDs match the IDs used in your accelerometer workflow
-- start and end times are in the correct order
-- behaviour names are spelled consistently
-- there are no accidental overlaps unless they are truly intended
+This is why `moover` converts times internally to UTC milliseconds. It gives the later steps one consistent time scale to work with.
 
-## What success looks like
+## A short QC checklist before training
 
-A good observation table feels boring in the best way. It is tidy, consistent, and easy to scan.
+Before you start a training run, it is worth checking these questions:
 
-## Common mistakes
+- Do the animal ids match the ids used by the accelerometer data?
+- Are the behaviour names spelled consistently?
+- Do the start and end times make sense in the same timezone as the accelerometer recording?
+- Are there overlapping bouts that should be resolved first?
 
-- Overlapping bouts that should really be separate.
-- Inconsistent behaviour names.
-- IDs that do not match the accelerometer data.
-- Start and end times recorded in the wrong timezone or wrong format.
+Those checks are not glamorous, but they usually matter more than the choice of model settings in an early project.
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>

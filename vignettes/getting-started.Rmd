@@ -1,4 +1,4 @@
-Ôªø---
+---
 title: "Start Here: Your First Successful Run"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,128 +11,122 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## You are here
-
 You are at the start of the beginner path: **Chapter 1 of 10**.
 
 If you already have a model and only want predictions, jump to [Chapter 6: Predict Behaviour with an Existing Model](predict-with-existing-model.html).
 
-## Who this page is for
+This chapter is for first-time `moover` users who want one clean, successful run before they bring in their own files. That first successful run matters. It tells you that the software is working, that your local setup is working, and that you know where the outputs will appear.
 
-This page is for first-time `moover` users who want one complete success before using their own data.
+We'll do four things in this chapter:
 
-## What you will achieve
+1. find the example workspace that ships with `moover`
+2. copy it into a writable folder on your own computer
+3. create a simple run specification
+4. run the full beginner workflow
 
-By the end of this page, you will have:
+## Why start with example data?
 
-- copied the packaged example workspace to a writable folder
-- run a complete training workflow
-- found the output folder for that run
-- seen what a finished `moover` run looks like
+When people begin with their own files straight away, there are often two problems tangled together: learning the workflow and checking the data structure. The example workspace separates those two jobs. First we learn the workflow. Then we move on to your files.
 
-## Why this matters
+## Find and copy the example workspace
 
-Starting with example data lowers the pressure. It helps you learn the workflow first, so that when you move to your own files you are only solving one new problem at a time.
+The package ships with a small example workspace. We don't run directly inside the installed package folder, because installed package files should be treated as read-only. Instead, we copy that example workspace into a folder we can write to.
 
-## Before you start
-
-You need:
-
-- `moover` installed
-- a normal writable folder on your computer
-- a little patience while the run completes locally
-
-## What we're doing
-
-We are going to take the small example workspace that comes with `moover`, copy it into a folder that you are allowed to write into, create a simple run specification, and then run the full beginner workflow.
-
-This is a very deliberate first step:
-
-- `system.file()` finds the packaged example data
-- `file.copy()` moves that example into your own working area
-- `create_spec()` records the instructions for the run
-- `run_pipeline(..., stage = "all")` carries out the full workflow from input files to exported model bundle
-
-## Why we are not starting with your own files yet
-
-If something goes wrong on your very first run, it is helpful to know whether the problem is:
-
-- the software workflow itself, or
-- the structure of your own files
-
-Using packaged example data lets you separate those two questions.
-
-## Do this
-
-The code below is trying to achieve one complete successful run with known-good example data.
-
-```r
+```{r, eval = FALSE}
 library(moover)
 
 # Find the example workspace that ships inside the moover package.
-# This folder already contains sample raw files, a tech table, and observations.
+# This folder already contains raw accelerometer files, a tech table,
+# and an observations table.
 example_dir <- system.file("extdata", "example_workspace", package = "moover")
 
 # Choose a writable folder on your own computer.
-# We copy the example files there because installed package folders should be treated as read-only.
+# In a real session you would usually point this somewhere permanent,
+# such as a project folder in Documents.
 workspace_dir <- file.path(tempdir(), "moover_first_run")
 dir.create(workspace_dir, recursive = TRUE, showWarnings = FALSE)
 
 # Copy the example workspace into that writable location.
-# After this step, you have your own working copy of the example project.
+# After this step, you have your own working copy of the example files.
 file.copy(
   from = list.files(example_dir, full.names = TRUE, all.files = TRUE, no.. = TRUE),
   to = workspace_dir,
   recursive = TRUE
 )
+```
 
+At this point, you have a normal `moover` workspace on your own machine. In the next chapter we'll look at that folder structure in more detail. For now, we just need it in place so the run has somewhere to write its outputs.
+
+## Create a simple run specification
+
+Next, we create a small object that stores the instructions for the run. `moover` calls this a specification, or *spec* for short. You do not need to write JSON by hand. The `create_spec()` function builds that instruction set for you.
+
+In this first example we keep things simple:
+
+- we point `moover` to the example workspace
+- we tell it where the tech and observation files are
+- we use the standard beginner feature set
+- we turn optimisation off for now
+
+```{r, eval = FALSE}
 # Create a simple run specification.
-# - workspace: where the run should happen
-# - labels: which files contain the mapping table and behaviour observations
-# - features: use the beginner-friendly standard feature set
-# - optimise: FALSE keeps the first run simpler and quicker
+# The workspace root is the folder we just copied the example files into.
 spec <- create_spec(
   workspace = list(root = workspace_dir),
   labels = list(
+    # tech.csv links animal ids and accelerometer ids when needed.
     tech_file = "tech.csv",
+    # observations.csv contains the labelled behaviour periods.
     path = "observations.csv"
   ),
   features = list(
+    # Use the beginner-friendly standard feature set.
     selection = "standard",
     standard_set = "manual5"
   ),
-  optimise = list(enabled = FALSE)
+  optimise = list(
+    # Keep the first run simpler and quicker.
+    enabled = FALSE
+  )
 )
+```
 
-# Run the full workflow.
-# In this beginner example, "all" means:
-# import data -> build features -> train the model -> export the bundle.
+## Run the full workflow
+
+Now we can hand the spec to `run_pipeline()`. In this beginner example, `stage = "all"` means:
+
+1. import the raw accelerometer files
+2. build epoch features
+3. match those features to the observations
+4. train and validate the model
+5. export the finished model bundle
+
+```{r, eval = FALSE}
+# Run the full beginner workflow.
+# This may still take a little time on a normal computer, and that is expected.
 run_pipeline(spec, stage = "all")
 ```
 
-If you would rather be guided step by step, use the wizard instead:
+If you would rather answer questions interactively than write code, you can do the same job with the wizard:
 
-```r
-# This opens the beginner training wizard and asks you questions interactively.
+```{r, eval = FALSE}
+# Open the beginner training wizard.
+# The wizard explains each question before asking for input.
 wizard_train()
 ```
 
-## What success looks like
+## Look at what the run created
 
-A successful first run will leave you with:
+After the run finishes, the most important thing is simply to open the workspace and look around. A finished `moover` run should not feel mysterious. You should be able to point to the run folder and say, ìThat is the run I just completed.î
+
+You should now see:
 
 - a new folder inside `runs/`
-- a `results/` folder containing summaries and intermediate outputs
+- a `results/` folder containing intermediate outputs and summaries
 - a `models/` folder containing an exported model bundle
 - plots and quality-check files you can inspect later
 
-If you open the workspace folder after the run, you should be able to point to a specific run directory and say, ‚ÄúThat is the run I just completed.‚Äù
-
-## Common mistakes
-
-- Trying to run inside the installed package folder instead of a writable copy.
-- Forgetting that local runs can take a little time, even on example data.
-- Starting with your own files before you have seen a successful run.
+That is enough for a first success. You do not need to understand every file yet. Right now, the goal is confidence: you have a complete run, on your own machine, using the same workflow you will later use on your own data.
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>

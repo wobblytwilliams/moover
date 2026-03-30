@@ -1,4 +1,4 @@
-ï»¿---
+---
 title: "Understand Your Results and Export Folder"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,110 +11,82 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## You are here
-
 This is **Chapter 7 of 10** in the beginner path.
 
-## Who this page is for
+After the first successful run, many beginners ask the same question: “Which of these files do I actually care about?” That is a good question. A finished `moover` run contains several outputs, but you do not need to understand every file at once.
 
-This page is for users who have finished a run and want help understanding the output folders.
+In this chapter, we'll walk through the main files and what they are for.
 
-## What you will achieve
+## Start with the run folder
 
-By the end of this page, you will know:
+A completed run sits inside `runs/<run_id>/`. Inside that folder you will usually see several subfolders, including `results/`, `models/`, `plots/`, and `qc/`.
 
-- what the main output folders are for
-- which files matter most for everyday use
-- which files are useful for collaborators or embedded deployment work
-- where to look first when checking whether a run behaved as expected
+A useful way to think about them is this:
 
-## Why this matters
+- `results/` holds the data products from the run
+- `models/` holds the model export bundles
+- `plots/` holds figures that help you inspect performance
+- `qc/` holds previews and checks that help you confirm the data looked sensible
 
-A finished run can look busy. This page helps you understand which files are the practical ones and which files are mainly there for reproducibility or sharing.
+## The export bundle
 
-## What we're doing
+Inside the run's `models/` folder, you will find one or more exported model bundles. That bundle is the part most likely to be shared with collaborators.
 
-We are walking through a completed run folder and explaining the most important outputs in plain language.
+A typical bundle includes:
 
-## A typical run structure
-
-A run usually looks something like this:
-
-```text
-runs/<run_id>/
-  spec/
-  results/
-  models/
-  plots/
-  qc/
-```
-
-## The folders in plain language
-
-### `spec/`
-
-This stores the saved instructions used for the run.
-
-### `results/`
-
-This contains the main data outputs created during the workflow.
-
-### `models/`
-
-This is where exported model bundles are written.
-
-### `plots/`
-
-This contains figures that help you inspect model behaviour.
-
-### `qc/`
-
-This holds previews and quality-check files, especially helpful when you want to confirm that data import worked as expected.
-
-## Key files you are likely to use
-
-### For the R user
-
+- `rf_model_full.rds`
+- `feature_manifest.csv`
+- `model_spec.json`
 - `metrics_overall.csv`
 - `metrics_by_class.csv`
 - `confusion_matrix.csv`
-- prediction outputs in `results/`
+- `test_vectors.csv`
+- `rf_tree_dump.json`
 
-### For collaborators checking the model
+## Which files matter to different people?
+
+Different users care about different parts of the export.
+
+### For the R user
+
+The most important files are usually:
+
+- the model bundle folder itself
+- `rf_model_full.rds`
+- `feature_manifest.csv`
+- the metrics files
+
+These are the files you need to inspect the model in R or use it again later.
+
+### For a collaborator checking calculations
+
+The most useful files are often:
 
 - `feature_manifest.csv`
 - `test_vectors.csv`
-- `test_vectors_all.csv`
+- `test_vectors_all.csv` if present
+- the metrics files
+
+These help another person confirm that features and predictions are being reproduced correctly.
 
 ### For someone implementing the model elsewhere
 
-- `rf_tree_dump.json`
+The most useful files are usually:
+
 - `feature_manifest.csv`
 - `model_spec.json`
-- test vectors for checking feature values and predictions
+- `rf_tree_dump.json`
+- the test vector files
 
-## What the exported model bundle is for
+Those files define what needs to be rebuilt outside R and provide concrete examples to test against.
 
-The model bundle is the shareable package of files that lets someone:
+## Why test vectors matter
 
-- reload the model in R
-- inspect what features were used
-- test another implementation against known outputs
-- understand how the model was configured
+The test vector files are especially useful because they give you real examples of inputs and expected outputs from the model. If somebody is reimplementing the feature calculations in Python or on an embedded device, the test vectors are usually the quickest way to check whether they are getting the same results.
 
-## What success looks like
+## You do not need to memorise everything
 
-You should be able to answer these practical questions:
-
-- Which file tells me the overall model performance?
-- Which folder contains the exported model I can share?
-- Which files would a collaborator use to check their own implementation?
-
-## Common mistakes
-
-- Looking at `_internal/` before checking the run folder.
-- Treating every output file as equally important.
-- Sharing only the model object and forgetting the feature manifest and test vectors.
+A common beginner mistake is to think that understanding `moover` means understanding every file at once. It doesn't. Start with the run folder, the export bundle, and the main metrics. The rest becomes easier once those parts feel familiar.
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>

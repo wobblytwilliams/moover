@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Build Your First Behaviour Model"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,128 +11,106 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## You are here
-
 This is **Chapter 5 of 10** in the beginner path.
 
-If you already have a trained model and only want predictions, you can skip ahead to [Chapter 6: Predict Behaviour with an Existing Model](predict-with-existing-model.html).
+By now, you should have a workspace, raw accelerometer files, and an observation file. In this chapter we turn those inputs into a first behaviour model.
 
-## Who this page is for
+In broad terms, we want to do three things:
 
-This page is for users who have raw files and observations ready and want to train a first model.
+1. tell `moover` where the files are
+2. train and validate the model
+3. export a bundle we can reuse later
 
-## What you will achieve
+Let's do those in turn.
 
-By the end of this page, you will know:
+## The easiest path: use the wizard
 
-- how to start a beginner-friendly training run
-- what `moover` is doing during that run
-- where to find your outputs
-- how to interpret the first few metrics without drowning in jargon
+For a first run, the wizard is the easiest option because it explains each question before asking you to answer it.
 
-## Why this matters
+```{r, eval = FALSE}
+library(moover)
 
-This is the point where your prepared files turn into a behaviour model you can reuse and share.
-
-## What we're doing
-
-We are using raw accelerometer data plus behaviour observations to build, validate, and export a first Random Forest model.
-
-## The beginner path
-
-For most new users, the easiest option is the guided wizard:
-
-```r
 # Open the training wizard.
-# The wizard asks where your files are and then runs the beginner workflow.
+# The wizard will guide you through the file paths and settings,
+# and it can run the full workflow for you.
 wizard_train()
 ```
 
-The wizard asks you where your files are, whether you want to optimise for deployment, and which label should be treated as the positive class in a binary model.
+That is the right choice for many beginners. It is also a good way to learn the order of the steps before writing any code.
 
-## The same workflow in copy-pasteable code
+## The same workflow in code
 
-The code below is trying to achieve a complete beginner training run without optimisation.
+If you prefer copy-pasteable code, we can express the same training run with a spec. The spec simply records the choices we want `moover` to use.
 
-```r
+```{r, eval = FALSE}
 library(moover)
 
-# Create a run specification that points moover at your workspace.
-# The workspace root is the folder that contains data_raw/, tech.csv, and observations.csv.
+# Create a run specification for a beginner training run.
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
   labels = list(
-    # tech.csv links animal ids and accelerometer ids when needed.
+    # tech.csv links animal ids and accelerometer ids when that mapping is needed.
     tech_file = "tech.csv",
-    # observations.csv contains the labelled behaviour periods for training.
+    # observations.csv contains the labelled behaviour periods used for training.
     path = "observations.csv"
   ),
   features = list(
-    # Use the standard beginner-friendly feature set.
+    # Use the standard beginner feature set.
     selection = "standard",
     standard_set = "manual5"
   ),
   optimise = list(
-    # Keep the first run simple.
-    # We are not searching over many candidate models here.
+    # For a first model, keep optimisation off.
     enabled = FALSE
   ),
   model = list(
-    # In a binary model, this is the class treated as the positive outcome.
+    # In a binary model, this is the behaviour treated as the positive class.
     positive_class = "grazing"
   )
 )
 
-# Run the full workflow.
-# Here, stage = "all" means import, feature building, training, evaluation, and export.
+# Run the complete workflow from import through export.
 run_pipeline(spec, stage = "all")
 ```
 
-## What `moover` does during the run
+## What happens during the run
 
-In plain language, the workflow does this:
+A model-training run can feel like a lot is happening behind the scenes, so it helps to name the main steps plainly.
 
-1. reads your raw accelerometer files
-2. standardises the timestamps
-3. groups the samples into fixed time blocks
-4. calculates features from each block
-5. matches the blocks to the behaviour observations
-6. trains and validates the model
-7. exports the model bundle and support files
+During the run, `moover` will:
+
+1. read the raw accelerometer files
+2. standardise the timestamps
+3. group the samples into fixed time blocks
+4. calculate features for each block
+5. line those blocks up with the observed behaviour bouts
+6. train and validate the Random Forest model
+7. write an export bundle containing the fitted model and support files
+
+That is the full arc of the training workflow.
 
 ## What the main metrics mean
 
-### Accuracy
+After the run, you will see several outputs. Three of the most useful are accuracy, macro F1, and the confusion matrix.
 
-This is the proportion of predictions that were correct overall.
+**Accuracy** tells you the proportion of predictions that were correct overall.
 
-### Macro F1
+**Macro F1** gives each class equal weight. That is useful when one behaviour is much more common than another.
 
-This gives each behaviour class equal weight, which helps when classes are unbalanced.
+The **confusion matrix** shows which behaviours are being confused with each other. That is often more informative than accuracy alone.
 
-### Confusion matrix
+`moover` also reports performance using LOCO, which means testing on animals the model has not seen during training. That usually gives a more realistic sense of how the model will behave on new animals.
 
-This shows where the model is getting behaviours right and where it is mixing them up.
+## What you should expect to find afterwards
 
-### LOCO
+A successful run leaves behind a clear trail:
 
-`moover` uses LOCO evaluation, which means testing on animals the model has not seen in training. This is a more realistic check than simply testing on the same animals used to build the model.
+- a run folder inside `runs/`
+- results files and quality checks
+- plots showing model performance
+- an exported model bundle inside the run's `models/` folder
 
-## What success looks like
-
-After a successful run, you should have:
-
-- a run folder in `runs/`
-- results files and plots
-- an exported model bundle in the run's `models/` folder
-- test vectors and feature manifest files for sharing or checking the model later
-
-## Common mistakes
-
-- Starting a training run before checking raw-file previews.
-- Using observation labels that do not match the intended behaviour classes.
-- Forgetting that a local run may take time.
-- Turning optimisation on too early when you only want a first working model.
+At this point you do not need to memorise every output file. The important thing is to know that the model bundle is there and that it can be used later for prediction or sharing.
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>

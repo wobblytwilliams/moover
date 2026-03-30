@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Optimise a Model for Deployment"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,79 +11,76 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## You are here
+This is **Chapter 8 of 10** in the beginner path.
 
-This is **Chapter 8 of 10** in the beginner path, and it is optional.
+This chapter is optional. You do not need optimisation to build a useful first model. Optimisation becomes helpful when you want to balance model performance against model size, memory use, or embedded deployment constraints.
 
-## Who this page is for
+## Why optimise at all?
 
-This page is for users who already have a working model and now need to make choices about size, speed, and performance.
+A model with the best possible accuracy is not always the most practical model. On an embedded device, for example, you may need a smaller model even if that means giving up a little performance.
 
-## What you will achieve
+So optimisation is really about choosing a trade-off. In `moover`, that usually means comparing candidates that differ in things like:
 
-By the end of this page, you will understand:
+- feature subset size
+- number of trees
+- minimum node size
+- rolling features on or off
 
-- why a smaller model may be useful
-- what tradeoffs are involved
-- where the candidate comparison files are written
-- how to choose a candidate that matches your priorities
+## The idea of a candidate model
 
-## Why this matters
+When `moover` optimises, it does not commit to one model immediately. Instead, it trains and evaluates multiple candidate models and writes tables that help you compare them.
 
-If you are deploying onto a device with limited memory, the best model is not always the largest or most accurate one. Sometimes a slightly smaller model is the better practical choice.
+In other words, optimisation answers a practical question: *Which model is good enough, and small enough, for the job I care about?*
 
-## What we're doing
+## Running optimisation
 
-We are comparing multiple candidate models and choosing one based on a tradeoff among accuracy, macro F1, and model size.
+You can turn optimisation on in the training wizard, or you can do it explicitly in code.
 
-## The beginner message
+```{r, eval = FALSE}
+library(moover)
 
-You do not need to do this for your first successful run. Optimisation is a later step once you already trust the basic workflow.
-
-## Do this
-
-The code below is trying to achieve a full run where `moover` tests multiple model candidates instead of training just one fixed model.
-
-```r
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
+  labels = list(
+    tech_file = "tech.csv",
+    path = "observations.csv"
+  ),
   optimise = list(
-    # Turn on candidate search.
-    # This tells moover to compare multiple model settings before exporting one.
     enabled = TRUE
   )
 )
 
-# Run the full workflow, including optimisation.
-run_pipeline(spec, stage = "all")
+# Run only the optimisation stage.
+optimise_model(spec)
 ```
 
-## What to look at in the candidate tables
+## How to read the candidate tables
 
-The main candidate comparison table helps you compare things like:
+The optimisation output usually includes candidate tables that list, for each model:
 
 - accuracy
 - macro F1
-- number of features
-- number of trees
-- minimum node size
 - model size proxy
+- key model settings
 
-A practical way to read the table is:
+A good way to read those tables is to start by deciding what you care about most. For example:
 
-1. decide what minimum performance you can accept
-2. filter to candidates above that level
-3. choose the smallest or simplest remaining model
+- Do you want the best possible accuracy?
+- Do you want the smallest model above a threshold?
+- Do you want a balanced compromise?
 
-## What success looks like
+Once that decision is clear, the candidate tables become much easier to interpret.
 
-A good optimisation outcome is not “the biggest table.” It is a confident choice that matches your real deployment needs.
+## A beginner-friendly way to think about the trade-off
 
-## Common mistakes
+If you are new to optimisation, this is a sensible order to follow:
 
-- Optimising before you have a baseline model that already works.
-- Focusing only on accuracy and ignoring size.
-- Making the model tiny without checking whether the performance drop is acceptable.
+1. build a working model first
+2. decide what size or speed constraint matters
+3. compare candidates against that constraint
+4. choose the smallest model that still performs well enough
+
+That order keeps optimisation grounded in a practical goal rather than turning it into a search for abstract "best" settings.
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Scripted Reruns and Saved Specs"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,102 +11,69 @@ vignette: >
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 ```
 
-## You are here
+This is **Chapter 9 of 10** in the beginner path.
 
-This is **Chapter 9 of 10** in the tutorial path, and it is aimed at advanced or repeat users.
+Up to this point, we have focused on the beginner path. Now we move one step toward reproducibility and automation.
 
-## Who this page is for
+The key idea in this chapter is simple: a *spec* is just a saved set of instructions for a `moover` run.
 
-This page is for users who already understand the beginner workflow and now want reproducible reruns or automation.
+## Why saved specs are useful
 
-## What you will achieve
+When people run a workflow interactively, they often remember the broad choices but forget the exact settings. A saved spec solves that problem. It records the file locations and settings in a form that can be reused.
 
-By the end of this page, you will know:
+That means a spec is useful for at least three reasons:
 
-- what a saved instruction file is in `moover`
-- how to create one
-- how to rerun a pipeline from it
-- when scripted reruns are more helpful than the wizard
+1. you can rerun the same workflow later
+2. you can share the run instructions with a colleague
+3. you can move from interactive work to scripted work without changing the underlying pipeline
 
-## Why this matters
+## Create a spec in code
 
-The wizard is a great way to learn. Saved instructions are a great way to repeat a workflow reliably.
+Here is a simple example of a spec for a training workflow.
 
-## What we're doing
-
-We are taking the same choices you might make in the wizard and saving them as a reusable spec.
-
-## A beginner-friendly way to think about a spec
-
-A spec is just a saved set of instructions for a run.
-
-It records things like:
-
-- where your files are
-- what the timestamps mean
-- which workflow you want to run
-- which model settings you chose
-
-## Do this
-
-The first code block is trying to create a reusable in-memory spec and run it immediately.
-
-```r
+```{r, eval = FALSE}
 library(moover)
 
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
   labels = list(
-    # Path to the animal/device mapping file.
     tech_file = "tech.csv",
-    # Path to the behaviour observations used for training.
     path = "observations.csv"
   ),
   features = list(
-    # Use the standard beginner-friendly feature set.
     selection = "standard",
     standard_set = "manual5"
-  )
+  ),
+  optimise = list(enabled = FALSE)
 )
+```
 
-# Run the saved instructions.
+Once you have the spec, you can rerun the same workflow directly.
+
+```{r, eval = FALSE}
 run_pipeline(spec, stage = "all")
 ```
 
-The second code block is trying to write those instructions to a JSON file so you can reuse them later.
+## Use a saved JSON spec
 
-```r
-create_spec(
-  workspace = list(root = "my_moover_workspace"),
-  # Write the saved instructions to disk.
-  path = "saved_run_spec.json"
-)
+`moover` also writes specs to JSON so that runs can be reproduced later without stepping through the wizard again.
+
+```{r, eval = FALSE}
+# Re-run a workflow from a previously saved JSON spec.
+run_pipeline("runs/20260330_012345/spec/run_spec.json", stage = "all")
 ```
 
-To rerun from that saved file later:
+You do not need to hand-edit JSON to benefit from this. Most beginners can think of the JSON file as a saved record of the choices they already made.
 
-```r
-# Read the saved instructions from disk and run them again.
-run_pipeline("saved_run_spec.json", stage = "all")
-```
+## A good workflow to aim for
 
-## Command-line option
+A common pattern is:
 
-You can also run the packaged script from the command line:
+1. start with the wizard
+2. let `moover` save the spec for you
+3. rerun that same spec later in code when you want something repeatable
 
-```sh
-Rscript inst/scripts/run_pipeline.R --spec saved_run_spec.json --stage all
-```
-
-## What success looks like
-
-You should be able to save a workflow once and rerun it later without clicking back through the wizard.
-
-## Common mistakes
-
-- Jumping into specs before understanding the beginner workflow.
-- Editing a saved spec without keeping track of what changed.
-- Assuming a saved spec will work if the file layout has changed underneath it.
+That is a nice bridge between beginner and advanced use. You do not have to jump straight into scripting on day one.
 
 <div class="moover-next-steps">
 <strong>Move through the tutorial</strong><br>
