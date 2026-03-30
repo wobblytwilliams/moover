@@ -100,158 +100,125 @@
 
     
     
-<div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
-</h2>
 <p>This is <strong>Chapter 2 of 10</strong> in the beginner path.</p>
-</div>
+<p>A <code>moover</code> workspace is just an ordinary folder on your
+computer. You do not need a high-performance cluster, and you do not
+need an <code>.Rproj</code> file. What you do need is a consistent place
+for raw data, run outputs, and a small number of support files.</p>
+<p>In this chapter, we’ll do three things:</p>
+<ol style="list-style-type: decimal">
+<li>create a workspace</li>
+<li>look at the folder structure</li>
+<li>decide where your main input files belong</li>
+</ol>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="create-the-workspace">Create the workspace<a class="anchor" aria-label="anchor" href="#create-the-workspace"></a>
 </h2>
-<p>This page is for users who want to feel comfortable with the project
-folders before training or prediction.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will understand:</p>
-<ul>
-<li>what <code>data_raw/</code>, <code>runs/</code>, and
-<code>_internal/</code> are for</li>
-<li>where <code>tech.csv</code> and <code>observations.csv</code>
-belong</li>
-<li>what a run folder contains</li>
-<li>what to expect from a local workflow on a normal computer</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
-</h2>
-<p>Many beginners feel unsure before they even start because the folder
-layout looks unfamiliar. This page is here to make the workspace feel
-predictable rather than technical.</p>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are creating a clean workspace and walking through each folder in
-plain language.</p>
-<p>The key idea is that <code>moover</code> separates:</p>
-<ul>
-<li>your raw input files</li>
-<li>the outputs from each run</li>
-<li>the temporary internal working files used while the package is doing
-its job</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
-</h2>
-<p>The code below is trying to create the standard folder structure that
-<code>moover</code> expects.</p>
+<p>The <code><a href="../reference/init_workspace.html">init_workspace()</a></code> function creates the standard
+folder structure. If the folders already exist, it leaves them in
+place.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create a new moover workspace called "my_moover_workspace".</span></span>
-<span><span class="co"># This is your project folder for one piece of work.</span></span>
-<span><span class="fu"><a href="../reference/init_workspace.html">init_workspace</a></span><span class="op">(</span><span class="st">"my_moover_workspace"</span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/init_workspace.html">init_workspace()</a></code> does not train a model or import data.
-It simply prepares the folder structure so the next steps are easier to
-follow.</p>
-<p>After that, your workspace should contain this basic structure:</p>
-<pre class="text"><code>my_moover_workspace/
-  data_raw/
-  runs/
-  _internal/</code></pre>
-<p>For a training workflow, you will usually also have:</p>
-<pre class="text"><code>my_moover_workspace/
-  tech.csv
-  observations.csv
-  data_raw/
-  runs/
-  _internal/</code></pre>
+<span><span class="co"># Create a moover workspace in a folder of your choice.</span></span>
+<span><span class="co"># If the folder does not exist yet, moover will create it.</span></span>
+<span><span class="va">ws</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/init_workspace.html">init_workspace</a></span><span class="op">(</span><span class="st">"my_moover_workspace"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Print the key folder paths that moover will use.</span></span>
+<span><span class="va">ws</span></span></code></pre></div>
+<p>That one step gives you the basic structure <code>moover</code>
+expects.</p>
 </div>
 <div class="section level2">
-<h2 id="what-the-folders-mean">What the folders mean<a class="anchor" aria-label="anchor" href="#what-the-folders-mean"></a>
+<h2 id="what-the-folders-are-for">What the folders are for<a class="anchor" aria-label="anchor" href="#what-the-folders-are-for"></a>
 </h2>
+<p>A beginner-friendly workspace is helpful because the same questions
+come up every time: where do the raw files go, where are the model
+outputs, and where did the package save this run?</p>
+<p>A standard <code>moover</code> workspace looks like this:</p>
+<pre class="text"><code>my_moover_workspace/
+  data_raw/
+  runs/
+  _internal/
+  tech.csv
+  observations.csv</code></pre>
+<p>Here is what those folders mean in practice.</p>
 <div class="section level3">
 <h3 id="data_raw">
 <code>data_raw/</code><a class="anchor" aria-label="anchor" href="#data_raw"></a>
 </h3>
-<p>This is where your raw accelerometer files go.</p>
+<p>This is where your raw accelerometer files go. They stay here
+unchanged. <code>moover</code> reads from this folder; it does not
+expect you to hand-edit the files during a run.</p>
 </div>
 <div class="section level3">
 <h3 id="runs">
 <code>runs/</code><a class="anchor" aria-label="anchor" href="#runs"></a>
 </h3>
 <p>Every time you run a workflow, <code>moover</code> creates a new run
-folder here. This keeps outputs separate and helps you track what
-happened in each run.</p>
+folder here. That makes each run traceable. You can come back later and
+see exactly what happened during that run.</p>
 </div>
 <div class="section level3">
 <h3 id="internal">
 <code>_internal/</code><a class="anchor" aria-label="anchor" href="#internal"></a>
 </h3>
-<p>This is working space used by the package. Most beginners do not need
-to edit anything in here.</p>
-</div>
-<div class="section level3">
-<h3 id="tech-csv">
-<code>tech.csv</code><a class="anchor" aria-label="anchor" href="#tech-csv"></a>
-</h3>
-<p>This links animal IDs and accelerometer IDs when needed.</p>
-</div>
-<div class="section level3">
-<h3 id="observations-csv">
-<code>observations.csv</code><a class="anchor" aria-label="anchor" href="#observations-csv"></a>
-</h3>
-<p>This contains the behaviour observations used for training.</p>
+<p>This folder is for helper files that <code>moover</code> writes for
+its own use. Most beginners do not need to work directly in this folder,
+but it is part of keeping the workflow reproducible.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="why-each-run-gets-its-own-folder">Why each run gets its own folder<a class="anchor" aria-label="anchor" href="#why-each-run-gets-its-own-folder"></a>
+<h2 id="where-the-main-input-files-go">Where the main input files go<a class="anchor" aria-label="anchor" href="#where-the-main-input-files-go"></a>
 </h2>
-<p>A run folder is a saved record of one attempt. That means you
-can:</p>
+<p>For a training workflow, two extra files usually sit at the top level
+of the workspace:</p>
 <ul>
-<li>keep old runs</li>
-<li>compare runs</li>
-<li>come back later and see what settings were used</li>
-<li>avoid overwriting previous work by accident</li>
+<li><code>tech.csv</code></li>
+<li><code>observations.csv</code></li>
 </ul>
+<p>The <code>tech.csv</code> file links animal ids to accelerometer ids
+when that mapping is needed. The <code>observations.csv</code> file
+holds the labelled behaviour periods you want the model to learn
+from.</p>
+<p>A common beginner setup looks like this:</p>
+<pre class="text"><code>my_moover_workspace/
+  data_raw/
+    animal_01_cquFormat.csv
+    animal_02_cquFormat.csv
+  runs/
+  _internal/
+  tech.csv
+  observations.csv</code></pre>
 </div>
 <div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+<h2 id="what-a-run-folder-looks-like">What a run folder looks like<a class="anchor" aria-label="anchor" href="#what-a-run-folder-looks-like"></a>
 </h2>
-<p>You should be able to look at your workspace and answer these
-questions confidently:</p>
+<p>When you start a run, <code>moover</code> creates a self-contained
+folder inside <code>runs/</code>. The exact name changes from run to
+run, but the structure is consistent.</p>
+<pre class="text"><code>runs/
+  20260330_012345/
+    spec/
+    results/
+    models/
+    plots/
+    qc/</code></pre>
+<p>That structure is useful because it means you can answer practical
+questions later:</p>
 <ul>
-<li>Where do my raw files go?</li>
-<li>Where do my observation files go?</li>
-<li>Where will the outputs appear?</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
-<ul>
-<li>Putting raw files directly in the workspace root instead of
-<code>data_raw/</code>.</li>
-<li>Putting <code>tech.csv</code> or <code>observations.csv</code>
-inside <code>runs/</code>.</li>
-<li>Deleting <code>_internal/</code> while a workflow is still
-running.</li>
-<li>Expecting a local workflow to finish instantly on large
-datasets.</li>
+<li>Which settings did I use?</li>
+<li>Which model export belongs to this run?</li>
+<li>Where are the plots and metrics?</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="a-note-on-runtime">A note on runtime<a class="anchor" aria-label="anchor" href="#a-note-on-runtime"></a>
 </h2>
-<p><code>moover</code> is designed to work locally on a normal computer.
-You do not need HPC. Some jobs can still take time, especially when you
-optimise several models, but the folder structure is designed to help
-you work step by step and keep track of progress.</p>
+<p><code>moover</code> is designed to run locally on an ordinary
+computer. Larger datasets can still take time, and that is normal. The
+main goal of the package is not to pretend the work is instant; it is to
+make the work manageable and understandable for beginners.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="getting-started.html">Chapter 1. Start Here</a><br> Next

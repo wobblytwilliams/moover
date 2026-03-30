@@ -23,117 +23,122 @@ Open the chapter list
 10. [Chapter 10.
     Troubleshooting](https://wobblytwilliams.github.io/moover/articles/troubleshooting-and-glossary.md)
 
-## You are here
-
 This is **Chapter 6 of 10** in the beginner path.
 
-## Who this page is for
+Many people will use `moover` without ever training a model themselves.
+They may receive an exported model bundle from a collaborator and want
+to apply it to new accelerometer files. This chapter is for that
+workflow.
 
-This page is for users who already have an exported model bundle and
-want to apply it to new accelerometer data.
+We’ll do three things:
 
-## What you will achieve
+1.  identify the files you need
+2.  run prediction on new data
+3.  see what the outputs mean
 
-By the end of this page, you will know:
+## What you need before you begin
 
-- when to use an existing model instead of training a new one
-- which files you need for prediction
-- where to find the epoch-level output
-- how to request simple summaries if you need them
+For prediction, you need:
 
-## Why this matters
+- a model bundle that was exported by `moover`
+- a folder of raw accelerometer files
+- a `tech.csv` file if you need to map logger ids back to animal ids
 
-Many collaborators will never train a model themselves. They only need a
-safe and understandable way to use an existing one.
+In most cases, the model bundle is the main thing. It contains the
+fitted model, the feature list, and the settings needed to rebuild the
+same features on new data.
 
-## What we’re doing
+## The easiest path: use the prediction wizard
 
-We are taking a model bundle that already exists and applying it to new
-raw movement data.
-
-## What you need
-
-You need:
-
-- a model bundle folder
-- a workspace with raw files in `data_raw/`
-- a `tech.csv` file if your IDs need mapping
-
-## The beginner path
-
-The guided option is:
+The prediction wizard is a good choice when you want help checking the
+bundle path and raw data path before running.
 
 ``` r
+library(moover)
+
 # Open the prediction wizard.
-# The wizard asks where the model bundle is and where the new raw data lives.
+# The wizard explains what each path is for before asking for input.
 wizard_predict()
 ```
 
-## The same workflow in copy-pasteable code
+## The same workflow in code
 
-The code below is trying to achieve one prediction run on new raw data
-using a model that already exists.
+The same prediction run can also be written as a spec. Here, the most
+important choice is the `model_bundle` path.
 
 ``` r
 library(moover)
 
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
+  ingest = list(
+    # Point to the folder containing the new raw accelerometer files.
+    raw_dir = "data_raw"
+  ),
   labels = list(
-    # There are no training observations in this workflow.
+    # Supply tech.csv if you need it for id mapping.
+    tech_file = "tech.csv",
+    # No observation file is needed for prediction-only work.
     path = NULL
   ),
   predict = list(
-    # Point to the folder that contains the exported model bundle.
-    model_bundle = "path/to/exported_bundle"
+    # This should point to the exported model folder.
+    model_bundle = "path/to/exported_model_bundle",
+    # Keep the default epoch-level predictions.
+    summary_outputs = character()
   )
 )
 
-# Run only the prediction step.
-# This reads the new raw files, calculates the required features, and writes predictions.
+# Run prediction using the existing model bundle.
 run_pipeline(spec, stage = "predict")
 ```
 
-## Optional summaries
+## What happens during prediction
 
-If you want more than epoch-level predictions, the code below adds
-hourly and daily summaries.
+Prediction is shorter than model training, but the logic is similar.
+`moover` still needs to take the raw movement data through the same
+feature-building process that was used during training.
 
-``` r
-spec <- create_spec(
-  workspace = list(root = "my_moover_workspace"),
-  labels = list(path = NULL),
-  predict = list(
-    # Use an existing exported model.
-    model_bundle = "path/to/exported_bundle",
-    # Ask moover to also write summary tables.
-    summary_outputs = c("hourly", "daily")
-  )
-)
-```
+In practice, it will:
 
-## Compatibility checklist
+1.  read the new raw data
+2.  standardise the timestamps
+3.  build the same fixed time blocks used by the model
+4.  calculate the same features expected by the model bundle
+5.  write epoch-level predictions and class probabilities
 
-Before predicting with an existing model, check that you are using:
+The key idea is consistency. A model is only useful on new data if the
+features are rebuilt the same way.
 
-- the same type of sensor data
-- the same expected feature inputs
-- a broadly similar recording setup where that matters
-- the right ID mapping for your animals or devices
+## What the output looks like
 
-## What success looks like
+The main output file is `epoch_predictions.csv`. Each row represents one
+fixed time block, and the file includes:
 
-A successful run should give you an epoch-level prediction file in the
-run’s `results/` folder. If you requested summaries, you should also see
-those files written there.
+- the animal id
+- the start and end time of the block
+- the predicted behaviour
+- class probabilities
 
-## Common mistakes
+That is usually the most useful prediction output because it keeps the
+detail of the original time series.
 
-- Pointing to the wrong bundle directory.
-- Predicting on raw files that do not match the expected input style.
-- Forgetting to provide `tech.csv` when IDs need mapping.
-- Expecting a prediction model to work well on very different data
-  collection setups without checking compatibility.
+If you choose an optional summary, `moover` can also write hourly or
+daily proportion-of-time tables. Those are helpful when you want a quick
+behavioural summary rather than a row for every epoch.
+
+## A quick compatibility check
+
+Before trusting the predictions, it is worth asking three simple
+questions:
+
+- Is this the same kind of sensor data the model was trained on?
+- Can `moover` rebuild the same features the bundle expects?
+- Is the recording setup broadly similar to the one used during
+  training?
+
+Those questions are not there to discourage prediction. They are there
+because a good model still depends on sensible input data.
 
 **Move through the tutorial**  
 Previous chapter: [Chapter 5. Build Your First Behaviour

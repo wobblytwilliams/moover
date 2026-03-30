@@ -100,163 +100,145 @@
 
     
     
-<div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
-</h2>
 <p>You are at the start of the beginner path: <strong>Chapter 1 of
 10</strong>.</p>
 <p>If you already have a model and only want predictions, jump to <a href="predict-with-existing-model.html">Chapter 6: Predict Behaviour
 with an Existing Model</a>.</p>
+<p>This chapter is for first-time <code>moover</code> users who want one
+clean, successful run before they bring in their own files. That first
+successful run matters. It tells you that the software is working, that
+your local setup is working, and that you know where the outputs will
+appear.</p>
+<p>We’ll do four things in this chapter:</p>
+<ol style="list-style-type: decimal">
+<li>find the example workspace that ships with <code>moover</code>
+</li>
+<li>copy it into a writable folder on your own computer</li>
+<li>create a simple run specification</li>
+<li>run the full beginner workflow</li>
+</ol>
+<div class="section level2">
+<h2 id="why-start-with-example-data">Why start with example data?<a class="anchor" aria-label="anchor" href="#why-start-with-example-data"></a>
+</h2>
+<p>When people begin with their own files straight away, there are often
+two problems tangled together: learning the workflow and checking the
+data structure. The example workspace separates those two jobs. First we
+learn the workflow. Then we move on to your files.</p>
 </div>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="find-and-copy-the-example-workspace">Find and copy the example workspace<a class="anchor" aria-label="anchor" href="#find-and-copy-the-example-workspace"></a>
 </h2>
-<p>This page is for first-time <code>moover</code> users who want one
-complete success before using their own data.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will have:</p>
-<ul>
-<li>copied the packaged example workspace to a writable folder</li>
-<li>run a complete training workflow</li>
-<li>found the output folder for that run</li>
-<li>seen what a finished <code>moover</code> run looks like</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
-</h2>
-<p>Starting with example data lowers the pressure. It helps you learn
-the workflow first, so that when you move to your own files you are only
-solving one new problem at a time.</p>
-</div>
-<div class="section level2">
-<h2 id="before-you-start">Before you start<a class="anchor" aria-label="anchor" href="#before-you-start"></a>
-</h2>
-<p>You need:</p>
-<ul>
-<li>
-<code>moover</code> installed</li>
-<li>a normal writable folder on your computer</li>
-<li>a little patience while the run completes locally</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are going to take the small example workspace that comes with
-<code>moover</code>, copy it into a folder that you are allowed to write
-into, create a simple run specification, and then run the full beginner
-workflow.</p>
-<p>This is a very deliberate first step:</p>
-<ul>
-<li>
-<code><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file()</a></code> finds the packaged example data</li>
-<li>
-<code><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy()</a></code> moves that example into your own working
-area</li>
-<li>
-<code><a href="../reference/create_spec.html">create_spec()</a></code> records the instructions for the run</li>
-<li>
-<code>run_pipeline(..., stage = "all")</code> carries out the full
-workflow from input files to exported model bundle</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-we-are-not-starting-with-your-own-files-yet">Why we are not starting with your own files yet<a class="anchor" aria-label="anchor" href="#why-we-are-not-starting-with-your-own-files-yet"></a>
-</h2>
-<p>If something goes wrong on your very first run, it is helpful to know
-whether the problem is:</p>
-<ul>
-<li>the software workflow itself, or</li>
-<li>the structure of your own files</li>
-</ul>
-<p>Using packaged example data lets you separate those two
-questions.</p>
-</div>
-<div class="section level2">
-<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
-</h2>
-<p>The code below is trying to achieve one complete successful run with
-known-good example data.</p>
+<p>The package ships with a small example workspace. We don’t run
+directly inside the installed package folder, because installed package
+files should be treated as read-only. Instead, we copy that example
+workspace into a folder we can write to.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Find the example workspace that ships inside the moover package.</span></span>
-<span><span class="co"># This folder already contains sample raw files, a tech table, and observations.</span></span>
+<span><span class="co"># This folder already contains raw accelerometer files, a tech table,</span></span>
+<span><span class="co"># and an observations table.</span></span>
 <span><span class="va">example_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"example_workspace"</span>, package <span class="op">=</span> <span class="st">"moover"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Choose a writable folder on your own computer.</span></span>
-<span><span class="co"># We copy the example files there because installed package folders should be treated as read-only.</span></span>
+<span><span class="co"># In a real session you would usually point this somewhere permanent,</span></span>
+<span><span class="co"># such as a project folder in Documents.</span></span>
 <span><span class="va">workspace_dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"moover_first_run"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files2.html" class="external-link">dir.create</a></span><span class="op">(</span><span class="va">workspace_dir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span>, showWarnings <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Copy the example workspace into that writable location.</span></span>
-<span><span class="co"># After this step, you have your own working copy of the example project.</span></span>
+<span><span class="co"># After this step, you have your own working copy of the example files.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.copy</a></span><span class="op">(</span></span>
 <span>  from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="va">example_dir</span>, full.names <span class="op">=</span> <span class="cn">TRUE</span>, all.files <span class="op">=</span> <span class="cn">TRUE</span>, no.. <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  to <span class="op">=</span> <span class="va">workspace_dir</span>,</span>
 <span>  recursive <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create a simple run specification.</span></span>
-<span><span class="co"># - workspace: where the run should happen</span></span>
-<span><span class="co"># - labels: which files contain the mapping table and behaviour observations</span></span>
-<span><span class="co"># - features: use the beginner-friendly standard feature set</span></span>
-<span><span class="co"># - optimise: FALSE keeps the first run simpler and quicker</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>At this point, you have a normal <code>moover</code> workspace on
+your own machine. In the next chapter we’ll look at that folder
+structure in more detail. For now, we just need it in place so the run
+has somewhere to write its outputs.</p>
+</div>
+<div class="section level2">
+<h2 id="create-a-simple-run-specification">Create a simple run specification<a class="anchor" aria-label="anchor" href="#create-a-simple-run-specification"></a>
+</h2>
+<p>Next, we create a small object that stores the instructions for the
+run. <code>moover</code> calls this a specification, or <em>spec</em>
+for short. You do not need to write JSON by hand. The
+<code><a href="../reference/create_spec.html">create_spec()</a></code> function builds that instruction set for
+you.</p>
+<p>In this first example we keep things simple:</p>
+<ul>
+<li>we point <code>moover</code> to the example workspace</li>
+<li>we tell it where the tech and observation files are</li>
+<li>we use the standard beginner feature set</li>
+<li>we turn optimisation off for now</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Create a simple run specification.</span></span>
+<span><span class="co"># The workspace root is the folder we just copied the example files into.</span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="va">workspace_dir</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="co"># tech.csv links animal ids and accelerometer ids when needed.</span></span>
 <span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
+<span>    <span class="co"># observations.csv contains the labelled behaviour periods.</span></span>
 <span>    path <span class="op">=</span> <span class="st">"observations.csv"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Use the beginner-friendly standard feature set.</span></span>
 <span>    selection <span class="op">=</span> <span class="st">"standard"</span>,</span>
 <span>    standard_set <span class="op">=</span> <span class="st">"manual5"</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>enabled <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run the full workflow.</span></span>
-<span><span class="co"># In this beginner example, "all" means:</span></span>
-<span><span class="co"># import data -&gt; build features -&gt; train the model -&gt; export the bundle.</span></span>
+<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Keep the first run simpler and quicker.</span></span>
+<span>    enabled <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="run-the-full-workflow">Run the full workflow<a class="anchor" aria-label="anchor" href="#run-the-full-workflow"></a>
+</h2>
+<p>Now we can hand the spec to <code><a href="../reference/run_pipeline.html">run_pipeline()</a></code>. In this
+beginner example, <code>stage = "all"</code> means:</p>
+<ol style="list-style-type: decimal">
+<li>import the raw accelerometer files</li>
+<li>build epoch features</li>
+<li>match those features to the observations</li>
+<li>train and validate the model</li>
+<li>export the finished model bundle</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run the full beginner workflow.</span></span>
+<span><span class="co"># This may still take a little time on a normal computer, and that is expected.</span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
-<p>If you would rather be guided step by step, use the wizard
-instead:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># This opens the beginner training wizard and asks you questions interactively.</span></span>
+<p>If you would rather answer questions interactively than write code,
+you can do the same job with the wizard:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Open the beginner training wizard.</span></span>
+<span><span class="co"># The wizard explains each question before asking for input.</span></span>
 <span><span class="fu"><a href="../reference/wizard_train.html">wizard_train</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+<h2 id="look-at-what-the-run-created">Look at what the run created<a class="anchor" aria-label="anchor" href="#look-at-what-the-run-created"></a>
 </h2>
-<p>A successful first run will leave you with:</p>
+<p>After the run finishes, the most important thing is simply to open
+the workspace and look around. A finished <code>moover</code> run should
+not feel mysterious. You should be able to point to the run folder and
+say, “That is the run I just completed.”</p>
+<p>You should now see:</p>
 <ul>
 <li>a new folder inside <code>runs/</code>
 </li>
-<li>a <code>results/</code> folder containing summaries and intermediate
-outputs</li>
+<li>a <code>results/</code> folder containing intermediate outputs and
+summaries</li>
 <li>a <code>models/</code> folder containing an exported model
 bundle</li>
 <li>plots and quality-check files you can inspect later</li>
 </ul>
-<p>If you open the workspace folder after the run, you should be able to
-point to a specific run directory and say, “That is the run I just
-completed.”</p>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
-<ul>
-<li>Trying to run inside the installed package folder instead of a
-writable copy.</li>
-<li>Forgetting that local runs can take a little time, even on example
-data.</li>
-<li>Starting with your own files before you have seen a successful
-run.</li>
-</ul>
+<p>That is enough for a first success. You do not need to understand
+every file yet. Right now, the goal is confidence: you have a complete
+run, on your own machine, using the same workflow you will later use on
+your own data.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Next chapter:
 <a href="set-up-your-workspace.html">Chapter 2. Set Up Your

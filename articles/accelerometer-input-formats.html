@@ -100,93 +100,45 @@
 
     
     
-<div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
-</h2>
 <p>This is <strong>Chapter 3 of 10</strong> in the beginner path.</p>
+<p>Raw accelerometer data often looks intimidating at first, but
+<code>moover</code> only needs a small amount of structure from you. In
+version 1, the package supports two routes:</p>
+<ol style="list-style-type: decimal">
+<li>CQU-style accelerometer files</li>
+<li>generic delimited files, such as CSV files, that you map
+interactively</li>
+</ol>
+<p>We’ll look at both.</p>
+<div class="section level2">
+<h2 id="the-two-input-routes">The two input routes<a class="anchor" aria-label="anchor" href="#the-two-input-routes"></a>
+</h2>
+<p>If your files already look like the standard CQU format,
+<code>moover</code> can read them directly. If they do not, that is
+still fine. The wizard can preview a generic file and ask which columns
+contain the time stamp, the three axes, and the identifier.</p>
+<p>That means you do <strong>not</strong> need to rewrite every dataset
+into a new file format just to get started.</p>
 </div>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="a-cqu-style-file">A CQU-style file<a class="anchor" aria-label="anchor" href="#a-cqu-style-file"></a>
 </h2>
-<p>This page is for users preparing their own accelerometer files for
-the first time.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will know:</p>
-<ul>
-<li>which file styles <code>moover</code> supports in v1</li>
-<li>what the timestamp column needs to represent</li>
-<li>how <code>moover</code> turns different files into one standard
-5-column format</li>
-<li>which common file problems to check before running the pipeline</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
-</h2>
-<p>If the raw files are not interpreted correctly, everything downstream
-becomes harder. Good inputs make the rest of the workflow much
-calmer.</p>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are making sure your accelerometer files are in a shape that
-<code>moover</code> can understand.</p>
-<p>The package supports two starting points:</p>
-<ul>
-<li>CQU-style files, which are the default</li>
-<li>generic delimited files, where you tell the package which columns
-are which</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="the-two-supported-input-routes">The two supported input routes<a class="anchor" aria-label="anchor" href="#the-two-supported-input-routes"></a>
-</h2>
-<div class="section level3">
-<h3 id="cqu-style-files">1. CQU-style files<a class="anchor" aria-label="anchor" href="#cqu-style-files"></a>
-</h3>
-<p>This is the default input route.</p>
-<p>Expected columns:</p>
-<ul>
-<li><code>datetime</code></li>
-<li><code>x</code></li>
-<li><code>y</code></li>
-<li><code>z</code></li>
-</ul>
-<p>Example:</p>
-<pre class="text"><code>datetime,x,y,z
-2025-01-01T00:00:00Z,0.01,0.02,1.00
-2025-01-01T00:00:01Z,0.03,0.01,0.99</code></pre>
-<p>A typical filename looks like this:</p>
-<pre class="text"><code><span><span class="va">demo</span><span class="op">-</span><span class="va">A01_cquFormat.csv</span></span></code></pre>
-</div>
-<div class="section level3">
-<h3 id="generic-delimited-files">2. Generic delimited files<a class="anchor" aria-label="anchor" href="#generic-delimited-files"></a>
-</h3>
-<p>If your files use different column names, <code>moover</code> can
-still work with them. You just need to tell it which columns contain the
-timestamp, x, y, z, and animal or accelerometer identifier.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="why-the-timestamp-matters-so-much">Why the timestamp matters so much<a class="anchor" aria-label="anchor" href="#why-the-timestamp-matters-so-much"></a>
-</h2>
-<p>Your timestamp tells <code>moover</code> when each movement sample
-happened. Later in the pipeline, the package groups samples into fixed
-time blocks so it can calculate features and make behaviour
-predictions.</p>
-<p>In v1, <code>moover</code> converts times internally into a standard
-UTC millisecond clock. You do not need to hand-build that format
-yourself, but you do need to map the input time correctly.</p>
-</div>
-<div class="section level2">
-<h2 id="the-standard-5-column-format-used-downstream">The standard 5-column format used downstream<a class="anchor" aria-label="anchor" href="#the-standard-5-column-format-used-downstream"></a>
-</h2>
-<p>No matter which input route you choose, <code>moover</code> converts
-raw data into the same internal layout:</p>
+<p>Let’s look at one of the example files that ships with
+<code>moover</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Find one example CQU-style accelerometer file.</span></span>
+<span><span class="va">cqu_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span></span>
+<span>  <span class="st">"extdata"</span>, <span class="st">"example_workspace"</span>, <span class="st">"data_raw"</span>, <span class="st">"demo-A01_cquFormat.csv"</span>,</span>
+<span>  package <span class="op">=</span> <span class="st">"moover"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Preview the first few rows.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">cqu_file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>A CQU-style file is expected to have a time column plus
+<code>x</code>, <code>y</code>, and <code>z</code>. <code>moover</code>
+then converts that file into its internal standard format:</p>
 <ul>
 <li><code>id</code></li>
 <li><code>t_unix_ms</code></li>
@@ -194,86 +146,65 @@ raw data into the same internal layout:</p>
 <li><code>y</code></li>
 <li><code>z</code></li>
 </ul>
-<p>This is helpful because it means the rest of the workflow can stay
-consistent.</p>
+<p>You do not have to create those five columns yourself for a CQU-style
+file. <code>moover</code> creates them during import.</p>
 </div>
 <div class="section level2">
-<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
+<h2 id="a-generic-delimited-file">A generic delimited file<a class="anchor" aria-label="anchor" href="#a-generic-delimited-file"></a>
 </h2>
-<p>If your files are already in the CQU style, the simplest thing to do
-is use the import wizard.</p>
+<p>Now consider a dataset that is just a normal CSV file with column
+names chosen by the researcher or sensor software.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Preview the generic example file that ships with the package.</span></span>
+<span><span class="va">generic_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"generic_example.csv"</span>, package <span class="op">=</span> <span class="st">"moover"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">generic_file</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>This is where the generic import path helps. Instead of forcing you
+to rename everything in advance, <code>moover</code> can ask which
+columns mean what.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Open the import wizard.</span></span>
-<span><span class="co"># The wizard asks what type of raw file you have and where the files live.</span></span>
+<span><span class="co"># If you choose "Generic delimited files", moover will show a preview</span></span>
+<span><span class="co"># and ask which columns contain time, x, y, z, and id.</span></span>
 <span><span class="fu"><a href="../reference/wizard_import.html">wizard_import</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>If your files are generic delimited files, the code below is trying
-to achieve one very specific thing: it tells <code>moover</code> how to
-interpret the raw table.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a spec for generic files instead of the default CQU-style files.</span></span>
-<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"generic"</span><span class="op">)</span>,</span>
-<span>  schema <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    raw <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      <span class="co"># The source column that contains the timestamp.</span></span>
-<span>      datetime <span class="op">=</span> <span class="st">"timestamp_ms"</span>,</span>
-<span>      <span class="co"># The source columns for the x, y, and z acceleration values.</span></span>
-<span>      x <span class="op">=</span> <span class="st">"acc_x"</span>,</span>
-<span>      y <span class="op">=</span> <span class="st">"acc_y"</span>,</span>
-<span>      z <span class="op">=</span> <span class="st">"acc_z"</span>,</span>
-<span>      <span class="co"># The column that identifies the animal or device.</span></span>
-<span>      id <span class="op">=</span> <span class="st">"animal_id"</span>,</span>
-<span>      <span class="co"># Tell moover whether that id column contains animal ids or accelerometer ids.</span></span>
-<span>      id_type <span class="op">=</span> <span class="st">"id"</span>,</span>
-<span>      <span class="co"># Tell moover how to interpret the timestamp values.</span></span>
-<span>      time_format <span class="op">=</span> <span class="st">"unix_ms"</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><code><a href="../reference/create_spec.html">create_spec()</a></code> is not importing the data yet. It is
-saving the instructions that tell <code>moover</code> how the raw data
-should be read.</p>
 </div>
 <div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+<h2 id="what-moover-needs-to-know">What <code>moover</code> needs to know<a class="anchor" aria-label="anchor" href="#what-moover-needs-to-know"></a>
 </h2>
-<p>After a successful import, you should be able to confirm that:</p>
+<p>No matter which route you use, <code>moover</code> eventually needs
+the same pieces of information:</p>
 <ul>
-<li>the right animal or accelerometer IDs were recognised</li>
-<li>timestamps look sensible</li>
-<li>x, y, and z are numeric</li>
-<li>the preview file in the run folder looks like your real data</li>
+<li>when each sample was recorded</li>
+<li>the x, y, and z acceleration values</li>
+<li>which animal or logger the row belongs to</li>
 </ul>
+<p>Internally, it converts everything to one standard 5-column layout in
+UTC milliseconds. That standardisation is important because the later
+steps, such as building epochs and calculating features, depend on time
+being handled consistently.</p>
 </div>
 <div class="section level2">
-<h2 id="good-files-versus-common-problems">Good files versus common problems<a class="anchor" aria-label="anchor" href="#good-files-versus-common-problems"></a>
+<h2 id="common-problems-to-catch-early">Common problems to catch early<a class="anchor" aria-label="anchor" href="#common-problems-to-catch-early"></a>
 </h2>
-<p>A good file usually has:</p>
+<p>Most import problems are easier to fix before you start model
+building. Here are the main ones to watch for:</p>
 <ul>
-<li>one row per sample</li>
-<li>a clear timestamp column</li>
-<li>separate x, y, and z columns</li>
-<li>consistent formatting from top to bottom</li>
+<li>timestamps interpreted in the wrong format or timezone</li>
+<li>animal ids that do not match the ids used elsewhere in the
+workspace</li>
+<li>missing headers in generic files</li>
+<li>x, y, and z columns mapped in the wrong order</li>
+<li>a folder that mixes different file structures together</li>
 </ul>
-<p>Common problems include:</p>
-<ul>
-<li>wrong timestamp interpretation</li>
-<li>mismatched animal IDs</li>
-<li>missing headers</li>
-<li>swapped axis columns</li>
-<li>mixed file formats in the same folder</li>
-</ul>
+<p>The wizard helps here because it shows previews before going further.
+If the preview looks wrong, that is the moment to stop and correct the
+mapping.</p>
 </div>
 <div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
+<h2 id="a-good-beginner-habit">A good beginner habit<a class="anchor" aria-label="anchor" href="#a-good-beginner-habit"></a>
 </h2>
-<ul>
-<li>Using local times but telling the package they are already UTC.</li>
-<li>Giving different files different header styles.</li>
-<li>Mixing accelerometer IDs and animal IDs without a proper
-<code>tech.csv</code> mapping.</li>
-<li>Forgetting to check the preview after import.</li>
-</ul>
+<p>Before training a model, always do one small import run and look at
+the preview output. That one habit prevents a lot of confusion
+later.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="set-up-your-workspace.html">Chapter 2. Set Up Your

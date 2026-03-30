@@ -100,162 +100,118 @@
 
     
     
-<div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
-</h2>
 <p>This is <strong>Chapter 5 of 10</strong> in the beginner path.</p>
-<p>If you already have a trained model and only want predictions, you
-can skip ahead to <a href="predict-with-existing-model.html">Chapter 6:
-Predict Behaviour with an Existing Model</a>.</p>
-</div>
+<p>By now, you should have a workspace, raw accelerometer files, and an
+observation file. In this chapter we turn those inputs into a first
+behaviour model.</p>
+<p>In broad terms, we want to do three things:</p>
+<ol style="list-style-type: decimal">
+<li>tell <code>moover</code> where the files are</li>
+<li>train and validate the model</li>
+<li>export a bundle we can reuse later</li>
+</ol>
+<p>Let’s do those in turn.</p>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="the-easiest-path-use-the-wizard">The easiest path: use the wizard<a class="anchor" aria-label="anchor" href="#the-easiest-path-use-the-wizard"></a>
 </h2>
-<p>This page is for users who have raw files and observations ready and
-want to train a first model.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will know:</p>
-<ul>
-<li>how to start a beginner-friendly training run</li>
-<li>what <code>moover</code> is doing during that run</li>
-<li>where to find your outputs</li>
-<li>how to interpret the first few metrics without drowning in
-jargon</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
-</h2>
-<p>This is the point where your prepared files turn into a behaviour
-model you can reuse and share.</p>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are using raw accelerometer data plus behaviour observations to
-build, validate, and export a first Random Forest model.</p>
-</div>
-<div class="section level2">
-<h2 id="the-beginner-path">The beginner path<a class="anchor" aria-label="anchor" href="#the-beginner-path"></a>
-</h2>
-<p>For most new users, the easiest option is the guided wizard:</p>
+<p>For a first run, the wizard is the easiest option because it explains
+each question before asking you to answer it.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Open the training wizard.</span></span>
-<span><span class="co"># The wizard asks where your files are and then runs the beginner workflow.</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Open the training wizard.</span></span>
+<span><span class="co"># The wizard will guide you through the file paths and settings,</span></span>
+<span><span class="co"># and it can run the full workflow for you.</span></span>
 <span><span class="fu"><a href="../reference/wizard_train.html">wizard_train</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The wizard asks you where your files are, whether you want to
-optimise for deployment, and which label should be treated as the
-positive class in a binary model.</p>
+<p>That is the right choice for many beginners. It is also a good way to
+learn the order of the steps before writing any code.</p>
 </div>
 <div class="section level2">
-<h2 id="the-same-workflow-in-copy-pasteable-code">The same workflow in copy-pasteable code<a class="anchor" aria-label="anchor" href="#the-same-workflow-in-copy-pasteable-code"></a>
+<h2 id="the-same-workflow-in-code">The same workflow in code<a class="anchor" aria-label="anchor" href="#the-same-workflow-in-code"></a>
 </h2>
-<p>The code below is trying to achieve a complete beginner training run
-without optimisation.</p>
+<p>If you prefer copy-pasteable code, we can express the same training
+run with a spec. The spec simply records the choices we want
+<code>moover</code> to use.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create a run specification that points moover at your workspace.</span></span>
-<span><span class="co"># The workspace root is the folder that contains data_raw/, tech.csv, and observations.csv.</span></span>
+<span><span class="co"># Create a run specification for a beginner training run.</span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># tech.csv links animal ids and accelerometer ids when needed.</span></span>
+<span>    <span class="co"># tech.csv links animal ids and accelerometer ids when that mapping is needed.</span></span>
 <span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
-<span>    <span class="co"># observations.csv contains the labelled behaviour periods for training.</span></span>
+<span>    <span class="co"># observations.csv contains the labelled behaviour periods used for training.</span></span>
 <span>    path <span class="op">=</span> <span class="st">"observations.csv"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Use the standard beginner-friendly feature set.</span></span>
+<span>    <span class="co"># Use the standard beginner feature set.</span></span>
 <span>    selection <span class="op">=</span> <span class="st">"standard"</span>,</span>
 <span>    standard_set <span class="op">=</span> <span class="st">"manual5"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Keep the first run simple.</span></span>
-<span>    <span class="co"># We are not searching over many candidate models here.</span></span>
+<span>    <span class="co"># For a first model, keep optimisation off.</span></span>
 <span>    enabled <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># In a binary model, this is the class treated as the positive outcome.</span></span>
+<span>    <span class="co"># In a binary model, this is the behaviour treated as the positive class.</span></span>
 <span>    positive_class <span class="op">=</span> <span class="st">"grazing"</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Run the full workflow.</span></span>
-<span><span class="co"># Here, stage = "all" means import, feature building, training, evaluation, and export.</span></span>
+<span><span class="co"># Run the complete workflow from import through export.</span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-moover-does-during-the-run">What <code>moover</code> does during the run<a class="anchor" aria-label="anchor" href="#what-moover-does-during-the-run"></a>
+<h2 id="what-happens-during-the-run">What happens during the run<a class="anchor" aria-label="anchor" href="#what-happens-during-the-run"></a>
 </h2>
-<p>In plain language, the workflow does this:</p>
+<p>A model-training run can feel like a lot is happening behind the
+scenes, so it helps to name the main steps plainly.</p>
+<p>During the run, <code>moover</code> will:</p>
 <ol style="list-style-type: decimal">
-<li>reads your raw accelerometer files</li>
-<li>standardises the timestamps</li>
-<li>groups the samples into fixed time blocks</li>
-<li>calculates features from each block</li>
-<li>matches the blocks to the behaviour observations</li>
-<li>trains and validates the model</li>
-<li>exports the model bundle and support files</li>
+<li>read the raw accelerometer files</li>
+<li>standardise the timestamps</li>
+<li>group the samples into fixed time blocks</li>
+<li>calculate features for each block</li>
+<li>line those blocks up with the observed behaviour bouts</li>
+<li>train and validate the Random Forest model</li>
+<li>write an export bundle containing the fitted model and support
+files</li>
 </ol>
+<p>That is the full arc of the training workflow.</p>
 </div>
 <div class="section level2">
 <h2 id="what-the-main-metrics-mean">What the main metrics mean<a class="anchor" aria-label="anchor" href="#what-the-main-metrics-mean"></a>
 </h2>
-<div class="section level3">
-<h3 id="accuracy">Accuracy<a class="anchor" aria-label="anchor" href="#accuracy"></a>
-</h3>
-<p>This is the proportion of predictions that were correct overall.</p>
-</div>
-<div class="section level3">
-<h3 id="macro-f1">Macro F1<a class="anchor" aria-label="anchor" href="#macro-f1"></a>
-</h3>
-<p>This gives each behaviour class equal weight, which helps when
-classes are unbalanced.</p>
-</div>
-<div class="section level3">
-<h3 id="confusion-matrix">Confusion matrix<a class="anchor" aria-label="anchor" href="#confusion-matrix"></a>
-</h3>
-<p>This shows where the model is getting behaviours right and where it
-is mixing them up.</p>
-</div>
-<div class="section level3">
-<h3 id="loco">LOCO<a class="anchor" aria-label="anchor" href="#loco"></a>
-</h3>
-<p><code>moover</code> uses LOCO evaluation, which means testing on
-animals the model has not seen in training. This is a more realistic
-check than simply testing on the same animals used to build the
-model.</p>
-</div>
+<p>After the run, you will see several outputs. Three of the most useful
+are accuracy, macro F1, and the confusion matrix.</p>
+<p><strong>Accuracy</strong> tells you the proportion of predictions
+that were correct overall.</p>
+<p><strong>Macro F1</strong> gives each class equal weight. That is
+useful when one behaviour is much more common than another.</p>
+<p>The <strong>confusion matrix</strong> shows which behaviours are
+being confused with each other. That is often more informative than
+accuracy alone.</p>
+<p><code>moover</code> also reports performance using LOCO, which means
+testing on animals the model has not seen during training. That usually
+gives a more realistic sense of how the model will behave on new
+animals.</p>
 </div>
 <div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+<h2 id="what-you-should-expect-to-find-afterwards">What you should expect to find afterwards<a class="anchor" aria-label="anchor" href="#what-you-should-expect-to-find-afterwards"></a>
 </h2>
-<p>After a successful run, you should have:</p>
+<p>A successful run leaves behind a clear trail:</p>
 <ul>
-<li>a run folder in <code>runs/</code>
+<li>a run folder inside <code>runs/</code>
 </li>
-<li>results files and plots</li>
-<li>an exported model bundle in the run’s <code>models/</code>
+<li>results files and quality checks</li>
+<li>plots showing model performance</li>
+<li>an exported model bundle inside the run’s <code>models/</code>
 folder</li>
-<li>test vectors and feature manifest files for sharing or checking the
-model later</li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
-<ul>
-<li>Starting a training run before checking raw-file previews.</li>
-<li>Using observation labels that do not match the intended behaviour
-classes.</li>
-<li>Forgetting that a local run may take time.</li>
-<li>Turning optimisation on too early when you only want a first working
-model.</li>
-</ul>
+<p>At this point you do not need to memorise every output file. The
+important thing is to know that the model bundle is there and that it
+can be used later for prediction or sharing.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="recording-observations.html">Chapter 4. Record Observations for

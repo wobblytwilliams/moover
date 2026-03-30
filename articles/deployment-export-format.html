@@ -100,156 +100,113 @@
 
     
     
-<div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
-</h2>
 <p>This is <strong>Chapter 7 of 10</strong> in the beginner path.</p>
-</div>
+<p>After the first successful run, many beginners ask the same question:
+“Which of these files do I actually care about?” That is a good
+question. A finished <code>moover</code> run contains several outputs,
+but you do not need to understand every file at once.</p>
+<p>In this chapter, we’ll walk through the main files and what they are
+for.</p>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="start-with-the-run-folder">Start with the run folder<a class="anchor" aria-label="anchor" href="#start-with-the-run-folder"></a>
 </h2>
-<p>This page is for users who have finished a run and want help
-understanding the output folders.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will know:</p>
+<p>A completed run sits inside <code>runs/&lt;run_id&gt;/</code>. Inside
+that folder you will usually see several subfolders, including
+<code>results/</code>, <code>models/</code>, <code>plots/</code>, and
+<code>qc/</code>.</p>
+<p>A useful way to think about them is this:</p>
 <ul>
-<li>what the main output folders are for</li>
-<li>which files matter most for everyday use</li>
-<li>which files are useful for collaborators or embedded deployment
-work</li>
-<li>where to look first when checking whether a run behaved as
-expected</li>
+<li>
+<code>results/</code> holds the data products from the run</li>
+<li>
+<code>models/</code> holds the model export bundles</li>
+<li>
+<code>plots/</code> holds figures that help you inspect
+performance</li>
+<li>
+<code>qc/</code> holds previews and checks that help you confirm the
+data looked sensible</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+<h2 id="the-export-bundle">The export bundle<a class="anchor" aria-label="anchor" href="#the-export-bundle"></a>
 </h2>
-<p>A finished run can look busy. This page helps you understand which
-files are the practical ones and which files are mainly there for
-reproducibility or sharing.</p>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are walking through a completed run folder and explaining the most
-important outputs in plain language.</p>
-</div>
-<div class="section level2">
-<h2 id="a-typical-run-structure">A typical run structure<a class="anchor" aria-label="anchor" href="#a-typical-run-structure"></a>
-</h2>
-<p>A run usually looks something like this:</p>
-<pre class="text"><code>runs/&lt;run_id&gt;/
-  spec/
-  results/
-  models/
-  plots/
-  qc/</code></pre>
-</div>
-<div class="section level2">
-<h2 id="the-folders-in-plain-language">The folders in plain language<a class="anchor" aria-label="anchor" href="#the-folders-in-plain-language"></a>
-</h2>
-<div class="section level3">
-<h3 id="spec">
-<code>spec/</code><a class="anchor" aria-label="anchor" href="#spec"></a>
-</h3>
-<p>This stores the saved instructions used for the run.</p>
-</div>
-<div class="section level3">
-<h3 id="results">
-<code>results/</code><a class="anchor" aria-label="anchor" href="#results"></a>
-</h3>
-<p>This contains the main data outputs created during the workflow.</p>
-</div>
-<div class="section level3">
-<h3 id="models">
-<code>models/</code><a class="anchor" aria-label="anchor" href="#models"></a>
-</h3>
-<p>This is where exported model bundles are written.</p>
-</div>
-<div class="section level3">
-<h3 id="plots">
-<code>plots/</code><a class="anchor" aria-label="anchor" href="#plots"></a>
-</h3>
-<p>This contains figures that help you inspect model behaviour.</p>
-</div>
-<div class="section level3">
-<h3 id="qc">
-<code>qc/</code><a class="anchor" aria-label="anchor" href="#qc"></a>
-</h3>
-<p>This holds previews and quality-check files, especially helpful when
-you want to confirm that data import worked as expected.</p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="key-files-you-are-likely-to-use">Key files you are likely to use<a class="anchor" aria-label="anchor" href="#key-files-you-are-likely-to-use"></a>
-</h2>
-<div class="section level3">
-<h3 id="for-the-r-user">For the R user<a class="anchor" aria-label="anchor" href="#for-the-r-user"></a>
-</h3>
+<p>Inside the run’s <code>models/</code> folder, you will find one or
+more exported model bundles. That bundle is the part most likely to be
+shared with collaborators.</p>
+<p>A typical bundle includes:</p>
 <ul>
+<li><code>rf_model_full.rds</code></li>
+<li><code>feature_manifest.csv</code></li>
+<li><code>model_spec.json</code></li>
 <li><code>metrics_overall.csv</code></li>
 <li><code>metrics_by_class.csv</code></li>
 <li><code>confusion_matrix.csv</code></li>
-<li>prediction outputs in <code>results/</code>
-</li>
+<li><code>test_vectors.csv</code></li>
+<li><code>rf_tree_dump.json</code></li>
 </ul>
 </div>
+<div class="section level2">
+<h2 id="which-files-matter-to-different-people">Which files matter to different people?<a class="anchor" aria-label="anchor" href="#which-files-matter-to-different-people"></a>
+</h2>
+<p>Different users care about different parts of the export.</p>
 <div class="section level3">
-<h3 id="for-collaborators-checking-the-model">For collaborators checking the model<a class="anchor" aria-label="anchor" href="#for-collaborators-checking-the-model"></a>
+<h3 id="for-the-r-user">For the R user<a class="anchor" aria-label="anchor" href="#for-the-r-user"></a>
 </h3>
+<p>The most important files are usually:</p>
+<ul>
+<li>the model bundle folder itself</li>
+<li><code>rf_model_full.rds</code></li>
+<li><code>feature_manifest.csv</code></li>
+<li>the metrics files</li>
+</ul>
+<p>These are the files you need to inspect the model in R or use it
+again later.</p>
+</div>
+<div class="section level3">
+<h3 id="for-a-collaborator-checking-calculations">For a collaborator checking calculations<a class="anchor" aria-label="anchor" href="#for-a-collaborator-checking-calculations"></a>
+</h3>
+<p>The most useful files are often:</p>
 <ul>
 <li><code>feature_manifest.csv</code></li>
 <li><code>test_vectors.csv</code></li>
-<li><code>test_vectors_all.csv</code></li>
+<li>
+<code>test_vectors_all.csv</code> if present</li>
+<li>the metrics files</li>
 </ul>
+<p>These help another person confirm that features and predictions are
+being reproduced correctly.</p>
 </div>
 <div class="section level3">
 <h3 id="for-someone-implementing-the-model-elsewhere">For someone implementing the model elsewhere<a class="anchor" aria-label="anchor" href="#for-someone-implementing-the-model-elsewhere"></a>
 </h3>
+<p>The most useful files are usually:</p>
 <ul>
-<li><code>rf_tree_dump.json</code></li>
 <li><code>feature_manifest.csv</code></li>
 <li><code>model_spec.json</code></li>
-<li>test vectors for checking feature values and predictions</li>
+<li><code>rf_tree_dump.json</code></li>
+<li>the test vector files</li>
 </ul>
+<p>Those files define what needs to be rebuilt outside R and provide
+concrete examples to test against.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="what-the-exported-model-bundle-is-for">What the exported model bundle is for<a class="anchor" aria-label="anchor" href="#what-the-exported-model-bundle-is-for"></a>
+<h2 id="why-test-vectors-matter">Why test vectors matter<a class="anchor" aria-label="anchor" href="#why-test-vectors-matter"></a>
 </h2>
-<p>The model bundle is the shareable package of files that lets
-someone:</p>
-<ul>
-<li>reload the model in R</li>
-<li>inspect what features were used</li>
-<li>test another implementation against known outputs</li>
-<li>understand how the model was configured</li>
-</ul>
+<p>The test vector files are especially useful because they give you
+real examples of inputs and expected outputs from the model. If somebody
+is reimplementing the feature calculations in Python or on an embedded
+device, the test vectors are usually the quickest way to check whether
+they are getting the same results.</p>
 </div>
 <div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+<h2 id="you-do-not-need-to-memorise-everything">You do not need to memorise everything<a class="anchor" aria-label="anchor" href="#you-do-not-need-to-memorise-everything"></a>
 </h2>
-<p>You should be able to answer these practical questions:</p>
-<ul>
-<li>Which file tells me the overall model performance?</li>
-<li>Which folder contains the exported model I can share?</li>
-<li>Which files would a collaborator use to check their own
-implementation?</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
-<ul>
-<li>Looking at <code>_internal/</code> before checking the run
-folder.</li>
-<li>Treating every output file as equally important.</li>
-<li>Sharing only the model object and forgetting the feature manifest
-and test vectors.</li>
-</ul>
+<p>A common beginner mistake is to think that understanding
+<code>moover</code> means understanding every file at once. It doesn’t.
+Start with the run folder, the export bundle, and the main metrics. The
+rest becomes easier once those parts feel familiar.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="predict-with-existing-model.html">Chapter 6. Predict Behaviour

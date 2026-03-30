@@ -100,113 +100,73 @@
 
     
     
+<p>This is <strong>Chapter 9 of 10</strong> in the beginner path.</p>
+<p>Up to this point, we have focused on the beginner path. Now we move
+one step toward reproducibility and automation.</p>
+<p>The key idea in this chapter is simple: a <em>spec</em> is just a
+saved set of instructions for a <code>moover</code> run.</p>
 <div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
+<h2 id="why-saved-specs-are-useful">Why saved specs are useful<a class="anchor" aria-label="anchor" href="#why-saved-specs-are-useful"></a>
 </h2>
-<p>This is <strong>Chapter 9 of 10</strong> in the tutorial path, and it
-is aimed at advanced or repeat users.</p>
+<p>When people run a workflow interactively, they often remember the
+broad choices but forget the exact settings. A saved spec solves that
+problem. It records the file locations and settings in a form that can
+be reused.</p>
+<p>That means a spec is useful for at least three reasons:</p>
+<ol style="list-style-type: decimal">
+<li>you can rerun the same workflow later</li>
+<li>you can share the run instructions with a colleague</li>
+<li>you can move from interactive work to scripted work without changing
+the underlying pipeline</li>
+</ol>
 </div>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="create-a-spec-in-code">Create a spec in code<a class="anchor" aria-label="anchor" href="#create-a-spec-in-code"></a>
 </h2>
-<p>This page is for users who already understand the beginner workflow
-and now want reproducible reruns or automation.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will know:</p>
-<ul>
-<li>what a saved instruction file is in <code>moover</code>
-</li>
-<li>how to create one</li>
-<li>how to rerun a pipeline from it</li>
-<li>when scripted reruns are more helpful than the wizard</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
-</h2>
-<p>The wizard is a great way to learn. Saved instructions are a great
-way to repeat a workflow reliably.</p>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are taking the same choices you might make in the wizard and
-saving them as a reusable spec.</p>
-</div>
-<div class="section level2">
-<h2 id="a-beginner-friendly-way-to-think-about-a-spec">A beginner-friendly way to think about a spec<a class="anchor" aria-label="anchor" href="#a-beginner-friendly-way-to-think-about-a-spec"></a>
-</h2>
-<p>A spec is just a saved set of instructions for a run.</p>
-<p>It records things like:</p>
-<ul>
-<li>where your files are</li>
-<li>what the timestamps mean</li>
-<li>which workflow you want to run</li>
-<li>which model settings you chose</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
-</h2>
-<p>The first code block is trying to create a reusable in-memory spec
-and run it immediately.</p>
+<p>Here is a simple example of a spec for a training workflow.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Path to the animal/device mapping file.</span></span>
 <span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
-<span>    <span class="co"># Path to the behaviour observations used for training.</span></span>
 <span>    path <span class="op">=</span> <span class="st">"observations.csv"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Use the standard beginner-friendly feature set.</span></span>
 <span>    selection <span class="op">=</span> <span class="st">"standard"</span>,</span>
 <span>    standard_set <span class="op">=</span> <span class="st">"manual5"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run the saved instructions.</span></span>
-<span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
-<p>The second code block is trying to write those instructions to a JSON
-file so you can reuse them later.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
-<span>  <span class="co"># Write the saved instructions to disk.</span></span>
-<span>  path <span class="op">=</span> <span class="st">"saved_run_spec.json"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>enabled <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>To rerun from that saved file later:</p>
+<p>Once you have the spec, you can rerun the same workflow directly.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="use-a-saved-json-spec">Use a saved JSON spec<a class="anchor" aria-label="anchor" href="#use-a-saved-json-spec"></a>
+</h2>
+<p><code>moover</code> also writes specs to JSON so that runs can be
+reproduced later without stepping through the wizard again.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Read the saved instructions from disk and run them again.</span></span>
-<span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="st">"saved_run_spec.json"</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Re-run a workflow from a previously saved JSON spec.</span></span>
+<span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="st">"runs/20260330_012345/spec/run_spec.json"</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<p>You do not need to hand-edit JSON to benefit from this. Most
+beginners can think of the JSON file as a saved record of the choices
+they already made.</p>
 </div>
 <div class="section level2">
-<h2 id="command-line-option">Command-line option<a class="anchor" aria-label="anchor" href="#command-line-option"></a>
+<h2 id="a-good-workflow-to-aim-for">A good workflow to aim for<a class="anchor" aria-label="anchor" href="#a-good-workflow-to-aim-for"></a>
 </h2>
-<p>You can also run the packaged script from the command line:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">Rscript</span> inst/scripts/run_pipeline.R <span class="at">--spec</span> saved_run_spec.json <span class="at">--stage</span> all</span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
-</h2>
-<p>You should be able to save a workflow once and rerun it later without
-clicking back through the wizard.</p>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
-<ul>
-<li>Jumping into specs before understanding the beginner workflow.</li>
-<li>Editing a saved spec without keeping track of what changed.</li>
-<li>Assuming a saved spec will work if the file layout has changed
-underneath it.</li>
-</ul>
+<p>A common pattern is:</p>
+<ol style="list-style-type: decimal">
+<li>start with the wizard</li>
+<li>let <code>moover</code> save the spec for you</li>
+<li>rerun that same spec later in code when you want something
+repeatable</li>
+</ol>
+<p>That is a nice bridge between beginner and advanced use. You do not
+have to jump straight into scripting on day one.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="optimise-a-model-for-deployment.html">Chapter 8. Optimise a

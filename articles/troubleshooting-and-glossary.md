@@ -23,127 +23,92 @@ Open the chapter list
 10. [Chapter 10.
     Troubleshooting](https://wobblytwilliams.github.io/moover/articles/troubleshooting-and-glossary.md)
 
-## You are here
+This is **Chapter 10 of 10** in the beginner path.
 
-This is **Chapter 10 of 10** in the tutorial path.
+If something goes wrong, that does not mean you are “bad at R” or that
+the project is failing. Most problems in an early `moover` workflow are
+ordinary setup issues: a path is wrong, a timestamp is being interpreted
+incorrectly, or ids do not line up across files.
 
-## Who this page is for
+This chapter collects the most common issues in one place.
 
-This page is for anyone who got stuck, feels unsure about a term, or
-wants a quick place to look before asking for help.
+## When the import preview looks wrong
 
-## What you will achieve
+If the import preview does not look sensible, stop there and fix the
+import before doing anything else.
 
-By the end of this page, you will have:
+Typical causes are:
 
-- a checklist of common problems
-- plain-language definitions for important `moover` terms
-- pointers to the most relevant tutorial pages
+- the wrong timestamp format was chosen
+- the wrong columns were mapped in a generic file
+- the ids in the raw data are not the ids you expected
 
-## Why this matters
+The preview stage exists precisely so you can catch those problems
+early.
 
-Beginners often do not need more detail. They need the right next clue.
+## When training fails or behaves strangely
 
-## Common problems and where to look
+If training runs but the results look suspicious, the most common causes
+are usually in the inputs rather than the Random Forest settings.
 
-### My raw files are not being read correctly
+Things to check first:
 
-Check:
+- Do the observation ids match the raw-data ids?
+- Are the observation times in the right timezone and format?
+- Are the behaviour labels spelled consistently?
+- Do you actually have enough labelled examples for each behaviour?
 
-- the file format tutorial: [Chapter 3. Prepare Your Accelerometer
-  Files](https://wobblytwilliams.github.io/moover/articles/accelerometer-input-formats.md)
-- the preview file written into `qc/`
-- whether your timestamp column was mapped correctly
+These checks are usually more productive than changing model settings at
+random.
 
-### My observations are not matching properly
+## When prediction gives unexpected results
 
-Check:
+If a prediction run finishes but the outputs do not make sense, ask
+whether the new data really matches the conditions the model expects.
 
-- the observation tutorial: [Chapter 4. Record Observations for
-  Training](https://wobblytwilliams.github.io/moover/articles/recording-observations.md)
-- whether IDs match the accelerometer workflow
-- whether start and end times are in the correct timezone or format
+For example:
 
-### I do not understand where the outputs went
+- Is it the same type of accelerometer data?
+- Are the ids being mapped correctly?
+- Can the same features be rebuilt from the new files?
 
-Check:
+Unexpected predictions do not automatically mean the model is broken.
+Often they mean the new dataset is not aligned with the training setup.
 
-- [Chapter 2. Set Up Your
-  Workspace](https://wobblytwilliams.github.io/moover/articles/set-up-your-workspace.md)
-- [Chapter 7. Understand Your Results and Export
-  Folder](https://wobblytwilliams.github.io/moover/articles/deployment-export-format.md)
+## A short glossary
 
-### My run is taking longer than I expected
+**Accelerometer file**: the raw movement data recorded by the device.
 
-This can be normal on a local computer, especially for optimisation or
-larger datasets. Start with a simpler run first, then add complexity
-once you trust the workflow.
+**Canonical format**: the standard 5-column layout `moover` uses
+internally: `id`, `t_unix_ms`, `x`, `y`, `z`.
 
-### I only want predictions, not model training
+**Epoch**: a fixed time block. `moover` builds features for each block.
 
-Go straight to [Chapter 6. Predict Behaviour with an Existing
-Model](https://wobblytwilliams.github.io/moover/articles/predict-with-existing-model.md).
+**Feature**: a numeric summary calculated from the movement data within
+an epoch.
 
-## Plain-language glossary
+**Model bundle**: the exported folder containing the fitted model and
+supporting files.
 
-### Workspace
+**LOCO**: leave-one-cow-out validation, meaning the model is tested on
+animals not used for training.
 
-The folder that holds your raw files, runs, and internal working files.
-
-### Standard 5-column movement format
-
-The internal layout used downstream by `moover`: `id`, `t_unix_ms`, `x`,
-`y`, `z`.
-
-### Fixed time block
-
-A short, fixed chunk of time used to group raw samples before
-calculating features. In more technical writing this is often called an
-epoch.
-
-### Feature
-
-A summary value calculated from a fixed time block of movement data.
-
-### Observation bout
-
-One labelled behaviour period with a start time and end time.
-
-### Model bundle
-
-The shareable folder containing the trained model plus supporting files.
-
-### Test vectors
-
-Reference rows used by collaborators to check that they can reproduce
-the same feature values and predictions in another implementation.
-
-### LOCO
-
-Short for leave-one-cow-out. In plain language, it means testing on
-animals the model has not seen in training.
-
-### Saved spec
-
-A saved set of instructions describing how a run should be carried out.
+**Spec**: a saved set of instructions for a run.
 
 ## When to ask for help
 
-Ask for help when:
+A good moment to ask for help is after you have answered three
+questions:
 
-- you cannot tell whether the imported timestamps are correct
-- your IDs are not matching between files
-- you are unsure whether your output files are sensible
-- you are deciding between model candidates for deployment
+1.  Which chapter were you following?
+2.  Which file or step seems to be causing trouble?
+3.  What did the preview or output look like when it went wrong?
 
-When you ask, it helps to share:
-
-- a small example of the file you are using
-- the run folder or the relevant quality-check files
-- the exact step where you became unsure
+Those details usually make it much easier for someone else to help you
+quickly.
 
 **Move through the tutorial**  
 Previous chapter: [Chapter 9. Scripted Reruns and Saved
 Specs](https://wobblytwilliams.github.io/moover/articles/scripted-reruns-and-saved-specs.md)  
-Start again: [Chapter 1. Start
+Back to the start: [Chapter 1. Start
 Here](https://wobblytwilliams.github.io/moover/articles/getting-started.md)

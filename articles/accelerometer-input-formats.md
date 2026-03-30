@@ -23,87 +23,47 @@ Open the chapter list
 10. [Chapter 10.
     Troubleshooting](https://wobblytwilliams.github.io/moover/articles/troubleshooting-and-glossary.md)
 
-## You are here
-
 This is **Chapter 3 of 10** in the beginner path.
 
-## Who this page is for
+Raw accelerometer data often looks intimidating at first, but `moover`
+only needs a small amount of structure from you. In version 1, the
+package supports two routes:
 
-This page is for users preparing their own accelerometer files for the
-first time.
+1.  CQU-style accelerometer files
+2.  generic delimited files, such as CSV files, that you map
+    interactively
 
-## What you will achieve
+We’ll look at both.
 
-By the end of this page, you will know:
+## The two input routes
 
-- which file styles `moover` supports in v1
-- what the timestamp column needs to represent
-- how `moover` turns different files into one standard 5-column format
-- which common file problems to check before running the pipeline
+If your files already look like the standard CQU format, `moover` can
+read them directly. If they do not, that is still fine. The wizard can
+preview a generic file and ask which columns contain the time stamp, the
+three axes, and the identifier.
 
-## Why this matters
+That means you do **not** need to rewrite every dataset into a new file
+format just to get started.
 
-If the raw files are not interpreted correctly, everything downstream
-becomes harder. Good inputs make the rest of the workflow much calmer.
+## A CQU-style file
 
-## What we’re doing
+Let’s look at one of the example files that ships with `moover`.
 
-We are making sure your accelerometer files are in a shape that `moover`
-can understand.
+``` r
+library(moover)
 
-The package supports two starting points:
+# Find one example CQU-style accelerometer file.
+cqu_file <- system.file(
+  "extdata", "example_workspace", "data_raw", "demo-A01_cquFormat.csv",
+  package = "moover"
+)
 
-- CQU-style files, which are the default
-- generic delimited files, where you tell the package which columns are
-  which
-
-## The two supported input routes
-
-### 1. CQU-style files
-
-This is the default input route.
-
-Expected columns:
-
-- `datetime`
-- `x`
-- `y`
-- `z`
-
-Example:
-
-``` text
-datetime,x,y,z
-2025-01-01T00:00:00Z,0.01,0.02,1.00
-2025-01-01T00:00:01Z,0.03,0.01,0.99
+# Preview the first few rows.
+head(read.csv(cqu_file))
 ```
 
-A typical filename looks like this:
-
-``` text
-demo-A01_cquFormat.csv
-```
-
-### 2. Generic delimited files
-
-If your files use different column names, `moover` can still work with
-them. You just need to tell it which columns contain the timestamp, x,
-y, z, and animal or accelerometer identifier.
-
-## Why the timestamp matters so much
-
-Your timestamp tells `moover` when each movement sample happened. Later
-in the pipeline, the package groups samples into fixed time blocks so it
-can calculate features and make behaviour predictions.
-
-In v1, `moover` converts times internally into a standard UTC
-millisecond clock. You do not need to hand-build that format yourself,
-but you do need to map the input time correctly.
-
-## The standard 5-column format used downstream
-
-No matter which input route you choose, `moover` converts raw data into
-the same internal layout:
+A CQU-style file is expected to have a time column plus `x`, `y`, and
+`z`. `moover` then converts that file into its internal standard format:
 
 - `id`
 - `t_unix_ms`
@@ -111,84 +71,63 @@ the same internal layout:
 - `y`
 - `z`
 
-This is helpful because it means the rest of the workflow can stay
-consistent.
+You do not have to create those five columns yourself for a CQU-style
+file. `moover` creates them during import.
 
-## Do this
+## A generic delimited file
 
-If your files are already in the CQU style, the simplest thing to do is
-use the import wizard.
+Now consider a dataset that is just a normal CSV file with column names
+chosen by the researcher or sensor software.
+
+``` r
+# Preview the generic example file that ships with the package.
+generic_file <- system.file("extdata", "generic_example.csv", package = "moover")
+head(read.csv(generic_file))
+```
+
+This is where the generic import path helps. Instead of forcing you to
+rename everything in advance, `moover` can ask which columns mean what.
 
 ``` r
 # Open the import wizard.
-# The wizard asks what type of raw file you have and where the files live.
+# If you choose "Generic delimited files", moover will show a preview
+# and ask which columns contain time, x, y, z, and id.
 wizard_import()
 ```
 
-If your files are generic delimited files, the code below is trying to
-achieve one very specific thing: it tells `moover` how to interpret the
-raw table.
+## What `moover` needs to know
 
-``` r
-# Create a spec for generic files instead of the default CQU-style files.
-spec <- create_spec(
-  ingest = list(format = "generic"),
-  schema = list(
-    raw = list(
-      # The source column that contains the timestamp.
-      datetime = "timestamp_ms",
-      # The source columns for the x, y, and z acceleration values.
-      x = "acc_x",
-      y = "acc_y",
-      z = "acc_z",
-      # The column that identifies the animal or device.
-      id = "animal_id",
-      # Tell moover whether that id column contains animal ids or accelerometer ids.
-      id_type = "id",
-      # Tell moover how to interpret the timestamp values.
-      time_format = "unix_ms"
-    )
-  )
-)
-```
+No matter which route you use, `moover` eventually needs the same pieces
+of information:
 
-[`create_spec()`](https://wobblytwilliams.github.io/moover/reference/create_spec.md)
-is not importing the data yet. It is saving the instructions that tell
-`moover` how the raw data should be read.
+- when each sample was recorded
+- the x, y, and z acceleration values
+- which animal or logger the row belongs to
 
-## What success looks like
+Internally, it converts everything to one standard 5-column layout in
+UTC milliseconds. That standardisation is important because the later
+steps, such as building epochs and calculating features, depend on time
+being handled consistently.
 
-After a successful import, you should be able to confirm that:
+## Common problems to catch early
 
-- the right animal or accelerometer IDs were recognised
-- timestamps look sensible
-- x, y, and z are numeric
-- the preview file in the run folder looks like your real data
+Most import problems are easier to fix before you start model building.
+Here are the main ones to watch for:
 
-## Good files versus common problems
+- timestamps interpreted in the wrong format or timezone
+- animal ids that do not match the ids used elsewhere in the workspace
+- missing headers in generic files
+- x, y, and z columns mapped in the wrong order
+- a folder that mixes different file structures together
 
-A good file usually has:
+The wizard helps here because it shows previews before going further. If
+the preview looks wrong, that is the moment to stop and correct the
+mapping.
 
-- one row per sample
-- a clear timestamp column
-- separate x, y, and z columns
-- consistent formatting from top to bottom
+## A good beginner habit
 
-Common problems include:
-
-- wrong timestamp interpretation
-- mismatched animal IDs
-- missing headers
-- swapped axis columns
-- mixed file formats in the same folder
-
-## Common mistakes
-
-- Using local times but telling the package they are already UTC.
-- Giving different files different header styles.
-- Mixing accelerometer IDs and animal IDs without a proper `tech.csv`
-  mapping.
-- Forgetting to check the preview after import.
+Before training a model, always do one small import run and look at the
+preview output. That one habit prevents a lot of confusion later.
 
 **Move through the tutorial**  
 Previous chapter: [Chapter 2. Set Up Your

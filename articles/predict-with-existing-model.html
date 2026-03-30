@@ -100,132 +100,123 @@
 
     
     
-<div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
-</h2>
 <p>This is <strong>Chapter 6 of 10</strong> in the beginner path.</p>
-</div>
+<p>Many people will use <code>moover</code> without ever training a
+model themselves. They may receive an exported model bundle from a
+collaborator and want to apply it to new accelerometer files. This
+chapter is for that workflow.</p>
+<p>We’ll do three things:</p>
+<ol style="list-style-type: decimal">
+<li>identify the files you need</li>
+<li>run prediction on new data</li>
+<li>see what the outputs mean</li>
+</ol>
 <div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
+<h2 id="what-you-need-before-you-begin">What you need before you begin<a class="anchor" aria-label="anchor" href="#what-you-need-before-you-begin"></a>
 </h2>
-<p>This page is for users who already have an exported model bundle and
-want to apply it to new accelerometer data.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will know:</p>
+<p>For prediction, you need:</p>
 <ul>
-<li>when to use an existing model instead of training a new one</li>
-<li>which files you need for prediction</li>
-<li>where to find the epoch-level output</li>
-<li>how to request simple summaries if you need them</li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
-</h2>
-<p>Many collaborators will never train a model themselves. They only
-need a safe and understandable way to use an existing one.</p>
-</div>
-<div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
-</h2>
-<p>We are taking a model bundle that already exists and applying it to
-new raw movement data.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-need">What you need<a class="anchor" aria-label="anchor" href="#what-you-need"></a>
-</h2>
-<p>You need:</p>
-<ul>
-<li>a model bundle folder</li>
-<li>a workspace with raw files in <code>data_raw/</code>
+<li>a model bundle that was exported by <code>moover</code>
 </li>
-<li>a <code>tech.csv</code> file if your IDs need mapping</li>
+<li>a folder of raw accelerometer files</li>
+<li>a <code>tech.csv</code> file if you need to map logger ids back to
+animal ids</li>
 </ul>
+<p>In most cases, the model bundle is the main thing. It contains the
+fitted model, the feature list, and the settings needed to rebuild the
+same features on new data.</p>
 </div>
 <div class="section level2">
-<h2 id="the-beginner-path">The beginner path<a class="anchor" aria-label="anchor" href="#the-beginner-path"></a>
+<h2 id="the-easiest-path-use-the-prediction-wizard">The easiest path: use the prediction wizard<a class="anchor" aria-label="anchor" href="#the-easiest-path-use-the-prediction-wizard"></a>
 </h2>
-<p>The guided option is:</p>
+<p>The prediction wizard is a good choice when you want help checking
+the bundle path and raw data path before running.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Open the prediction wizard.</span></span>
-<span><span class="co"># The wizard asks where the model bundle is and where the new raw data lives.</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Open the prediction wizard.</span></span>
+<span><span class="co"># The wizard explains what each path is for before asking for input.</span></span>
 <span><span class="fu"><a href="../reference/wizard_predict.html">wizard_predict</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="the-same-workflow-in-copy-pasteable-code">The same workflow in copy-pasteable code<a class="anchor" aria-label="anchor" href="#the-same-workflow-in-copy-pasteable-code"></a>
+<h2 id="the-same-workflow-in-code">The same workflow in code<a class="anchor" aria-label="anchor" href="#the-same-workflow-in-code"></a>
 </h2>
-<p>The code below is trying to achieve one prediction run on new raw
-data using a model that already exists.</p>
+<p>The same prediction run can also be written as a spec. Here, the most
+important choice is the <code>model_bundle</code> path.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
+<span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Point to the folder containing the new raw accelerometer files.</span></span>
+<span>    raw_dir <span class="op">=</span> <span class="st">"data_raw"</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># There are no training observations in this workflow.</span></span>
+<span>    <span class="co"># Supply tech.csv if you need it for id mapping.</span></span>
+<span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
+<span>    <span class="co"># No observation file is needed for prediction-only work.</span></span>
 <span>    path <span class="op">=</span> <span class="cn">NULL</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  predict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Point to the folder that contains the exported model bundle.</span></span>
-<span>    model_bundle <span class="op">=</span> <span class="st">"path/to/exported_bundle"</span></span>
+<span>    <span class="co"># This should point to the exported model folder.</span></span>
+<span>    model_bundle <span class="op">=</span> <span class="st">"path/to/exported_model_bundle"</span>,</span>
+<span>    <span class="co"># Keep the default epoch-level predictions.</span></span>
+<span>    summary_outputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Run only the prediction step.</span></span>
-<span><span class="co"># This reads the new raw files, calculates the required features, and writes predictions.</span></span>
+<span><span class="co"># Run prediction using the existing model bundle.</span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"predict"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="optional-summaries">Optional summaries<a class="anchor" aria-label="anchor" href="#optional-summaries"></a>
+<h2 id="what-happens-during-prediction">What happens during prediction<a class="anchor" aria-label="anchor" href="#what-happens-during-prediction"></a>
 </h2>
-<p>If you want more than epoch-level predictions, the code below adds
-hourly and daily summaries.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
-<span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
-<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>path <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
-<span>  predict <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Use an existing exported model.</span></span>
-<span>    model_bundle <span class="op">=</span> <span class="st">"path/to/exported_bundle"</span>,</span>
-<span>    <span class="co"># Ask moover to also write summary tables.</span></span>
-<span>    summary_outputs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hourly"</span>, <span class="st">"daily"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<p>Prediction is shorter than model training, but the logic is similar.
+<code>moover</code> still needs to take the raw movement data through
+the same feature-building process that was used during training.</p>
+<p>In practice, it will:</p>
+<ol style="list-style-type: decimal">
+<li>read the new raw data</li>
+<li>standardise the timestamps</li>
+<li>build the same fixed time blocks used by the model</li>
+<li>calculate the same features expected by the model bundle</li>
+<li>write epoch-level predictions and class probabilities</li>
+</ol>
+<p>The key idea is consistency. A model is only useful on new data if
+the features are rebuilt the same way.</p>
 </div>
 <div class="section level2">
-<h2 id="compatibility-checklist">Compatibility checklist<a class="anchor" aria-label="anchor" href="#compatibility-checklist"></a>
+<h2 id="what-the-output-looks-like">What the output looks like<a class="anchor" aria-label="anchor" href="#what-the-output-looks-like"></a>
 </h2>
-<p>Before predicting with an existing model, check that you are
-using:</p>
+<p>The main output file is <code>epoch_predictions.csv</code>. Each row
+represents one fixed time block, and the file includes:</p>
 <ul>
-<li>the same type of sensor data</li>
-<li>the same expected feature inputs</li>
-<li>a broadly similar recording setup where that matters</li>
-<li>the right ID mapping for your animals or devices</li>
+<li>the animal id</li>
+<li>the start and end time of the block</li>
+<li>the predicted behaviour</li>
+<li>class probabilities</li>
 </ul>
+<p>That is usually the most useful prediction output because it keeps
+the detail of the original time series.</p>
+<p>If you choose an optional summary, <code>moover</code> can also write
+hourly or daily proportion-of-time tables. Those are helpful when you
+want a quick behavioural summary rather than a row for every epoch.</p>
 </div>
 <div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
+<h2 id="a-quick-compatibility-check">A quick compatibility check<a class="anchor" aria-label="anchor" href="#a-quick-compatibility-check"></a>
 </h2>
-<p>A successful run should give you an epoch-level prediction file in
-the run’s <code>results/</code> folder. If you requested summaries, you
-should also see those files written there.</p>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
+<p>Before trusting the predictions, it is worth asking three simple
+questions:</p>
 <ul>
-<li>Pointing to the wrong bundle directory.</li>
-<li>Predicting on raw files that do not match the expected input
-style.</li>
-<li>Forgetting to provide <code>tech.csv</code> when IDs need
-mapping.</li>
-<li>Expecting a prediction model to work well on very different data
-collection setups without checking compatibility.</li>
+<li>Is this the same kind of sensor data the model was trained on?</li>
+<li>Can <code>moover</code> rebuild the same features the bundle
+expects?</li>
+<li>Is the recording setup broadly similar to the one used during
+training?</li>
 </ul>
+<p>Those questions are not there to discourage prediction. They are
+there because a good model still depends on sensible input data.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="build-a-model.html">Chapter 5. Build Your First Behaviour

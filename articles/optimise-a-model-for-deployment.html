@@ -100,103 +100,93 @@
 
     
     
+<p>This is <strong>Chapter 8 of 10</strong> in the beginner path.</p>
+<p>This chapter is optional. You do not need optimisation to build a
+useful first model. Optimisation becomes helpful when you want to
+balance model performance against model size, memory use, or embedded
+deployment constraints.</p>
 <div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
+<h2 id="why-optimise-at-all">Why optimise at all?<a class="anchor" aria-label="anchor" href="#why-optimise-at-all"></a>
 </h2>
-<p>This is <strong>Chapter 8 of 10</strong> in the beginner path, and it
-is optional.</p>
-</div>
-<div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
-</h2>
-<p>This page is for users who already have a working model and now need
-to make choices about size, speed, and performance.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will understand:</p>
+<p>A model with the best possible accuracy is not always the most
+practical model. On an embedded device, for example, you may need a
+smaller model even if that means giving up a little performance.</p>
+<p>So optimisation is really about choosing a trade-off. In
+<code>moover</code>, that usually means comparing candidates that differ
+in things like:</p>
 <ul>
-<li>why a smaller model may be useful</li>
-<li>what tradeoffs are involved</li>
-<li>where the candidate comparison files are written</li>
-<li>how to choose a candidate that matches your priorities</li>
+<li>feature subset size</li>
+<li>number of trees</li>
+<li>minimum node size</li>
+<li>rolling features on or off</li>
 </ul>
 </div>
 <div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+<h2 id="the-idea-of-a-candidate-model">The idea of a candidate model<a class="anchor" aria-label="anchor" href="#the-idea-of-a-candidate-model"></a>
 </h2>
-<p>If you are deploying onto a device with limited memory, the best
-model is not always the largest or most accurate one. Sometimes a
-slightly smaller model is the better practical choice.</p>
+<p>When <code>moover</code> optimises, it does not commit to one model
+immediately. Instead, it trains and evaluates multiple candidate models
+and writes tables that help you compare them.</p>
+<p>In other words, optimisation answers a practical question: <em>Which
+model is good enough, and small enough, for the job I care
+about?</em></p>
 </div>
 <div class="section level2">
-<h2 id="what-were-doing">What we’re doing<a class="anchor" aria-label="anchor" href="#what-were-doing"></a>
+<h2 id="running-optimisation">Running optimisation<a class="anchor" aria-label="anchor" href="#running-optimisation"></a>
 </h2>
-<p>We are comparing multiple candidate models and choosing one based on
-a tradeoff among accuracy, macro F1, and model size.</p>
-</div>
-<div class="section level2">
-<h2 id="the-beginner-message">The beginner message<a class="anchor" aria-label="anchor" href="#the-beginner-message"></a>
-</h2>
-<p>You do not need to do this for your first successful run.
-Optimisation is a later step once you already trust the basic
-workflow.</p>
-</div>
-<div class="section level2">
-<h2 id="do-this">Do this<a class="anchor" aria-label="anchor" href="#do-this"></a>
-</h2>
-<p>The code below is trying to achieve a full run where
-<code>moover</code> tests multiple model candidates instead of training
-just one fixed model.</p>
+<p>You can turn optimisation on in the training wizard, or you can do it
+explicitly in code.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wobblytwilliams.github.io/moover/">moover</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
+<span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
+<span>    path <span class="op">=</span> <span class="st">"observations.csv"</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  optimise <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="co"># Turn on candidate search.</span></span>
-<span>    <span class="co"># This tells moover to compare multiple model settings before exporting one.</span></span>
 <span>    enabled <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Run the full workflow, including optimisation.</span></span>
-<span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Run only the optimisation stage.</span></span>
+<span><span class="fu"><a href="../reference/optimise_model.html">optimise_model</a></span><span class="op">(</span><span class="va">spec</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-to-look-at-in-the-candidate-tables">What to look at in the candidate tables<a class="anchor" aria-label="anchor" href="#what-to-look-at-in-the-candidate-tables"></a>
+<h2 id="how-to-read-the-candidate-tables">How to read the candidate tables<a class="anchor" aria-label="anchor" href="#how-to-read-the-candidate-tables"></a>
 </h2>
-<p>The main candidate comparison table helps you compare things
-like:</p>
+<p>The optimisation output usually includes candidate tables that list,
+for each model:</p>
 <ul>
 <li>accuracy</li>
 <li>macro F1</li>
-<li>number of features</li>
-<li>number of trees</li>
-<li>minimum node size</li>
 <li>model size proxy</li>
+<li>key model settings</li>
 </ul>
-<p>A practical way to read the table is:</p>
-<ol style="list-style-type: decimal">
-<li>decide what minimum performance you can accept</li>
-<li>filter to candidates above that level</li>
-<li>choose the smallest or simplest remaining model</li>
-</ol>
-</div>
-<div class="section level2">
-<h2 id="what-success-looks-like">What success looks like<a class="anchor" aria-label="anchor" href="#what-success-looks-like"></a>
-</h2>
-<p>A good optimisation outcome is not “the biggest table.” It is a
-confident choice that matches your real deployment needs.</p>
-</div>
-<div class="section level2">
-<h2 id="common-mistakes">Common mistakes<a class="anchor" aria-label="anchor" href="#common-mistakes"></a>
-</h2>
+<p>A good way to read those tables is to start by deciding what you care
+about most. For example:</p>
 <ul>
-<li>Optimising before you have a baseline model that already works.</li>
-<li>Focusing only on accuracy and ignoring size.</li>
-<li>Making the model tiny without checking whether the performance drop
-is acceptable.</li>
+<li>Do you want the best possible accuracy?</li>
+<li>Do you want the smallest model above a threshold?</li>
+<li>Do you want a balanced compromise?</li>
 </ul>
+<p>Once that decision is clear, the candidate tables become much easier
+to interpret.</p>
+</div>
+<div class="section level2">
+<h2 id="a-beginner-friendly-way-to-think-about-the-trade-off">A beginner-friendly way to think about the trade-off<a class="anchor" aria-label="anchor" href="#a-beginner-friendly-way-to-think-about-the-trade-off"></a>
+</h2>
+<p>If you are new to optimisation, this is a sensible order to
+follow:</p>
+<ol style="list-style-type: decimal">
+<li>build a working model first</li>
+<li>decide what size or speed constraint matters</li>
+<li>compare candidates against that constraint</li>
+<li>choose the smallest model that still performs well enough</li>
+</ol>
+<p>That order keeps optimisation grounded in a practical goal rather
+than turning it into a search for abstract “best” settings.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="deployment-export-format.html">Chapter 7. Understand Your

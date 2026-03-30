@@ -100,167 +100,95 @@
 
     
     
+<p>This is <strong>Chapter 10 of 10</strong> in the beginner path.</p>
+<p>If something goes wrong, that does not mean you are “bad at R” or
+that the project is failing. Most problems in an early
+<code>moover</code> workflow are ordinary setup issues: a path is wrong,
+a timestamp is being interpreted incorrectly, or ids do not line up
+across files.</p>
+<p>This chapter collects the most common issues in one place.</p>
 <div class="section level2">
-<h2 id="you-are-here">You are here<a class="anchor" aria-label="anchor" href="#you-are-here"></a>
+<h2 id="when-the-import-preview-looks-wrong">When the import preview looks wrong<a class="anchor" aria-label="anchor" href="#when-the-import-preview-looks-wrong"></a>
 </h2>
-<p>This is <strong>Chapter 10 of 10</strong> in the tutorial path.</p>
-</div>
-<div class="section level2">
-<h2 id="who-this-page-is-for">Who this page is for<a class="anchor" aria-label="anchor" href="#who-this-page-is-for"></a>
-</h2>
-<p>This page is for anyone who got stuck, feels unsure about a term, or
-wants a quick place to look before asking for help.</p>
-</div>
-<div class="section level2">
-<h2 id="what-you-will-achieve">What you will achieve<a class="anchor" aria-label="anchor" href="#what-you-will-achieve"></a>
-</h2>
-<p>By the end of this page, you will have:</p>
+<p>If the import preview does not look sensible, stop there and fix the
+import before doing anything else.</p>
+<p>Typical causes are:</p>
 <ul>
-<li>a checklist of common problems</li>
-<li>plain-language definitions for important <code>moover</code>
-terms</li>
-<li>pointers to the most relevant tutorial pages</li>
+<li>the wrong timestamp format was chosen</li>
+<li>the wrong columns were mapped in a generic file</li>
+<li>the ids in the raw data are not the ids you expected</li>
 </ul>
+<p>The preview stage exists precisely so you can catch those problems
+early.</p>
 </div>
 <div class="section level2">
-<h2 id="why-this-matters">Why this matters<a class="anchor" aria-label="anchor" href="#why-this-matters"></a>
+<h2 id="when-training-fails-or-behaves-strangely">When training fails or behaves strangely<a class="anchor" aria-label="anchor" href="#when-training-fails-or-behaves-strangely"></a>
 </h2>
-<p>Beginners often do not need more detail. They need the right next
-clue.</p>
+<p>If training runs but the results look suspicious, the most common
+causes are usually in the inputs rather than the Random Forest
+settings.</p>
+<p>Things to check first:</p>
+<ul>
+<li>Do the observation ids match the raw-data ids?</li>
+<li>Are the observation times in the right timezone and format?</li>
+<li>Are the behaviour labels spelled consistently?</li>
+<li>Do you actually have enough labelled examples for each
+behaviour?</li>
+</ul>
+<p>These checks are usually more productive than changing model settings
+at random.</p>
 </div>
 <div class="section level2">
-<h2 id="common-problems-and-where-to-look">Common problems and where to look<a class="anchor" aria-label="anchor" href="#common-problems-and-where-to-look"></a>
+<h2 id="when-prediction-gives-unexpected-results">When prediction gives unexpected results<a class="anchor" aria-label="anchor" href="#when-prediction-gives-unexpected-results"></a>
 </h2>
-<div class="section level3">
-<h3 id="my-raw-files-are-not-being-read-correctly">My raw files are not being read correctly<a class="anchor" aria-label="anchor" href="#my-raw-files-are-not-being-read-correctly"></a>
-</h3>
-<p>Check:</p>
+<p>If a prediction run finishes but the outputs do not make sense, ask
+whether the new data really matches the conditions the model
+expects.</p>
+<p>For example:</p>
 <ul>
-<li>the file format tutorial: <a href="accelerometer-input-formats.html">Chapter 3. Prepare Your
-Accelerometer Files</a>
-</li>
-<li>the preview file written into <code>qc/</code>
-</li>
-<li>whether your timestamp column was mapped correctly</li>
+<li>Is it the same type of accelerometer data?</li>
+<li>Are the ids being mapped correctly?</li>
+<li>Can the same features be rebuilt from the new files?</li>
 </ul>
-</div>
-<div class="section level3">
-<h3 id="my-observations-are-not-matching-properly">My observations are not matching properly<a class="anchor" aria-label="anchor" href="#my-observations-are-not-matching-properly"></a>
-</h3>
-<p>Check:</p>
-<ul>
-<li>the observation tutorial: <a href="recording-observations.html">Chapter 4. Record Observations for
-Training</a>
-</li>
-<li>whether IDs match the accelerometer workflow</li>
-<li>whether start and end times are in the correct timezone or
-format</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="i-do-not-understand-where-the-outputs-went">I do not understand where the outputs went<a class="anchor" aria-label="anchor" href="#i-do-not-understand-where-the-outputs-went"></a>
-</h3>
-<p>Check:</p>
-<ul>
-<li><a href="set-up-your-workspace.html">Chapter 2. Set Up Your
-Workspace</a></li>
-<li><a href="deployment-export-format.html">Chapter 7. Understand Your
-Results and Export Folder</a></li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="my-run-is-taking-longer-than-i-expected">My run is taking longer than I expected<a class="anchor" aria-label="anchor" href="#my-run-is-taking-longer-than-i-expected"></a>
-</h3>
-<p>This can be normal on a local computer, especially for optimisation
-or larger datasets. Start with a simpler run first, then add complexity
-once you trust the workflow.</p>
-</div>
-<div class="section level3">
-<h3 id="i-only-want-predictions-not-model-training">I only want predictions, not model training<a class="anchor" aria-label="anchor" href="#i-only-want-predictions-not-model-training"></a>
-</h3>
-<p>Go straight to <a href="predict-with-existing-model.html">Chapter 6.
-Predict Behaviour with an Existing Model</a>.</p>
-</div>
+<p>Unexpected predictions do not automatically mean the model is broken.
+Often they mean the new dataset is not aligned with the training
+setup.</p>
 </div>
 <div class="section level2">
-<h2 id="plain-language-glossary">Plain-language glossary<a class="anchor" aria-label="anchor" href="#plain-language-glossary"></a>
+<h2 id="a-short-glossary">A short glossary<a class="anchor" aria-label="anchor" href="#a-short-glossary"></a>
 </h2>
-<div class="section level3">
-<h3 id="workspace">Workspace<a class="anchor" aria-label="anchor" href="#workspace"></a>
-</h3>
-<p>The folder that holds your raw files, runs, and internal working
-files.</p>
-</div>
-<div class="section level3">
-<h3 id="standard-5-column-movement-format">Standard 5-column movement format<a class="anchor" aria-label="anchor" href="#standard-5-column-movement-format"></a>
-</h3>
-<p>The internal layout used downstream by <code>moover</code>:
-<code>id</code>, <code>t_unix_ms</code>, <code>x</code>, <code>y</code>,
+<p><strong>Accelerometer file</strong>: the raw movement data recorded
+by the device.</p>
+<p><strong>Canonical format</strong>: the standard 5-column layout
+<code>moover</code> uses internally: <code>id</code>,
+<code>t_unix_ms</code>, <code>x</code>, <code>y</code>,
 <code>z</code>.</p>
-</div>
-<div class="section level3">
-<h3 id="fixed-time-block">Fixed time block<a class="anchor" aria-label="anchor" href="#fixed-time-block"></a>
-</h3>
-<p>A short, fixed chunk of time used to group raw samples before
-calculating features. In more technical writing this is often called an
-epoch.</p>
-</div>
-<div class="section level3">
-<h3 id="feature">Feature<a class="anchor" aria-label="anchor" href="#feature"></a>
-</h3>
-<p>A summary value calculated from a fixed time block of movement
-data.</p>
-</div>
-<div class="section level3">
-<h3 id="observation-bout">Observation bout<a class="anchor" aria-label="anchor" href="#observation-bout"></a>
-</h3>
-<p>One labelled behaviour period with a start time and end time.</p>
-</div>
-<div class="section level3">
-<h3 id="model-bundle">Model bundle<a class="anchor" aria-label="anchor" href="#model-bundle"></a>
-</h3>
-<p>The shareable folder containing the trained model plus supporting
-files.</p>
-</div>
-<div class="section level3">
-<h3 id="test-vectors">Test vectors<a class="anchor" aria-label="anchor" href="#test-vectors"></a>
-</h3>
-<p>Reference rows used by collaborators to check that they can reproduce
-the same feature values and predictions in another implementation.</p>
-</div>
-<div class="section level3">
-<h3 id="loco">LOCO<a class="anchor" aria-label="anchor" href="#loco"></a>
-</h3>
-<p>Short for leave-one-cow-out. In plain language, it means testing on
-animals the model has not seen in training.</p>
-</div>
-<div class="section level3">
-<h3 id="saved-spec">Saved spec<a class="anchor" aria-label="anchor" href="#saved-spec"></a>
-</h3>
-<p>A saved set of instructions describing how a run should be carried
-out.</p>
-</div>
+<p><strong>Epoch</strong>: a fixed time block. <code>moover</code>
+builds features for each block.</p>
+<p><strong>Feature</strong>: a numeric summary calculated from the
+movement data within an epoch.</p>
+<p><strong>Model bundle</strong>: the exported folder containing the
+fitted model and supporting files.</p>
+<p><strong>LOCO</strong>: leave-one-cow-out validation, meaning the
+model is tested on animals not used for training.</p>
+<p><strong>Spec</strong>: a saved set of instructions for a run.</p>
 </div>
 <div class="section level2">
 <h2 id="when-to-ask-for-help">When to ask for help<a class="anchor" aria-label="anchor" href="#when-to-ask-for-help"></a>
 </h2>
-<p>Ask for help when:</p>
-<ul>
-<li>you cannot tell whether the imported timestamps are correct</li>
-<li>your IDs are not matching between files</li>
-<li>you are unsure whether your output files are sensible</li>
-<li>you are deciding between model candidates for deployment</li>
-</ul>
-<p>When you ask, it helps to share:</p>
-<ul>
-<li>a small example of the file you are using</li>
-<li>the run folder or the relevant quality-check files</li>
-<li>the exact step where you became unsure</li>
-</ul>
+<p>A good moment to ask for help is after you have answered three
+questions:</p>
+<ol style="list-style-type: decimal">
+<li>Which chapter were you following?</li>
+<li>Which file or step seems to be causing trouble?</li>
+<li>What did the preview or output look like when it went wrong?</li>
+</ol>
+<p>Those details usually make it much easier for someone else to help
+you quickly.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="scripted-reruns-and-saved-specs.html">Chapter 9. Scripted
-Reruns and Saved Specs</a><br> Start again:
+Reruns and Saved Specs</a><br> Back to the start:
 <a href="getting-started.html">Chapter 1. Start Here</a></p>
 </div>
 </div>
