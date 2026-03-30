@@ -87,3 +87,49 @@ moover_parse_yes_no <- function(prompt, default = TRUE) {
   if (!nzchar(ans)) return(isTRUE(default))
   tolower(substr(ans, 1, 1)) == "y"
 }
+
+moover_console_rule <- function(char = "=", width = 78L) {
+  cat(paste(rep(char, width), collapse = ""), "\n", sep = "")
+}
+
+moover_console_wrap <- function(text, indent = 0L, width = 78L) {
+  text <- paste(text, collapse = " ")
+  wrapped <- strwrap(text, width = max(40L, width - indent))
+  prefix <- if (indent > 0L) paste(rep(" ", indent), collapse = "") else ""
+  paste0(prefix, wrapped, collapse = "\n")
+}
+
+moover_console_text <- function(..., indent = 0L, blank_after = TRUE) {
+  text <- paste(..., collapse = "")
+  cat(moover_console_wrap(text, indent = indent), "\n", sep = "")
+  if (isTRUE(blank_after)) cat("\n")
+}
+
+moover_console_bullet <- function(...) {
+  text <- paste(..., collapse = "")
+  wrapped <- strwrap(text, width = 74L, exdent = 2L)
+  if (length(wrapped) == 0L) return(invisible(NULL))
+  cat("- ", wrapped[[1]], "\n", sep = "")
+  if (length(wrapped) > 1L) {
+    cat(paste0("  ", wrapped[-1L], collapse = "\n"), "\n", sep = "")
+  }
+  invisible(NULL)
+}
+
+moover_console_header <- function(title, intro = NULL) {
+  cat("\n")
+  moover_console_rule("=")
+  cat(title, "\n", sep = "")
+  moover_console_rule("=")
+  if (!is.null(intro)) {
+    moover_console_text(intro)
+  }
+}
+
+moover_console_step <- function(step_no, title, detail = NULL) {
+  cat(sprintf("Step %s. %s\n", step_no, title))
+  moover_console_rule("-", width = max(20L, min(78L, nchar(sprintf("Step %s. %s", step_no, title)))))
+  if (!is.null(detail)) {
+    moover_console_text("What moover is doing: ", detail)
+  }
+}

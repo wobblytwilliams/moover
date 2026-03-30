@@ -542,7 +542,7 @@ build_canonical_dataset <- function(config) {
   }))
   if (length(raw_files) == 0L) stop("No raw files found under configured raw_dirs.")
   
-  message("Found raw files: ", length(raw_files))
+  moover_console_bullet(paste0("Raw files available: ", length(raw_files)))
   out_rows <- list()
   
   for (f in raw_files) {
@@ -552,7 +552,6 @@ build_canonical_dataset <- function(config) {
     tech_rows <- tech[accelerometer == acc_id]
     if (nrow(tech_rows) == 0L) next
     
-    message("Processing raw file: ", basename(f), " (accelerometer=", acc_id, ")")
     dt_raw <- read_raw_cquformat(
       f,
       use_legacy_header_reader = isTRUE(config$data$use_legacy_raw_reader)
@@ -669,7 +668,7 @@ build_canonical_dataset <- function(config) {
   data.table::setorder(dt, epoch_seconds, id, epoch_start)
   
   if (isTRUE(config$optimise$enable_rolling_search)) {
-    message("Adding rolling features to canonical dataset...")
+    moover_console_bullet("Adding rolling features to the epoch dataset.")
     epoch_tables <- vector("list", length(unique(dt$epoch_seconds)))
     epoch_values <- sort(unique(dt$epoch_seconds))
     for (i in seq_along(epoch_values)) {
@@ -694,8 +693,9 @@ build_canonical_dataset <- function(config) {
   
   ensure_dir(dirname(canonical_dataset_path(config)))
   saveRDS(dt, canonical_dataset_path(config))
-  message("Wrote canonical dataset: ", normalizePath(canonical_dataset_path(config)))
-  message("Rows: ", nrow(dt), " | Cols: ", ncol(dt))
+  moover_console_bullet(paste0("Canonical dataset saved to: ", normalizePath(canonical_dataset_path(config))))
+  moover_console_bullet(paste0("Dataset size: ", nrow(dt), " rows x ", ncol(dt), " columns"))
+  cat("\n")
   
   invisible(canonical_dataset_path(config))
 }

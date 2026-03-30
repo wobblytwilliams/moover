@@ -165,10 +165,11 @@ build_test_vectors_from_selected_model <- function(config) {
     data.table::fwrite(tv_all, file.path(export_dir, "test_vectors_all.csv"))
   }
   
-  message("Wrote sampled test vectors: ", normalizePath(file.path(export_dir, "test_vectors.csv")))
+  moover_console_bullet(paste0("Sampled test vectors saved to: ", normalizePath(file.path(export_dir, "test_vectors.csv"))))
   if (isTRUE(config$test_vectors$write_test_vectors_all)) {
-    message("Wrote full test vectors: ", normalizePath(file.path(export_dir, "test_vectors_all.csv")))
+    moover_console_bullet(paste0("Full test vectors saved to: ", normalizePath(file.path(export_dir, "test_vectors_all.csv"))))
   }
+  cat("\n")
   
   invisible(export_dir)
 }

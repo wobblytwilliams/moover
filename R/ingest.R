@@ -248,7 +248,13 @@ import_accel <- function(spec) {
   spec <- moover_read_spec(spec)
   run_paths <- moover_run_paths(spec)
   prep <- moover_prepare_inputs(spec, run_paths, require_labels = FALSE)
-  message("Imported raw accelerometer data for run ", run_paths$run_id)
+  moover_console_bullet(paste0("Rows imported: ", prep$summary$n_rows))
+  moover_console_bullet(paste0("Animals found: ", prep$summary$n_ids))
+  moover_console_bullet(paste0("Import preview saved to: ", run_paths$canonical_preview_file))
+  if (isTRUE(spec$ingest$write_canonical_accel)) {
+    moover_console_bullet(paste0("Canonical accelerometer file saved to: ", run_paths$canonical_accel_file))
+  }
+  cat("\n")
   list(
     run_id = run_paths$run_id,
     preview_file = run_paths$canonical_preview_file,

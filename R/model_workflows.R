@@ -450,6 +450,57 @@ predict_behaviour <- function(spec, model_bundle = NULL) {
   out
 }
 
+moover_pipeline_start <- function(spec, stage, run_paths) {
+  moover_console_header(
+    "moover pipeline",
+    intro = "moover will work through the requested stage and describe each step in plain language as it goes."
+  )
+  moover_console_bullet(paste0("Run id: ", run_paths$run_id))
+  moover_console_bullet(paste0("Requested stage: ", stage))
+  moover_console_bullet(paste0("Run folder: ", run_paths$run_root))
+  cat("\n")
+}
+
+moover_pipeline_finish <- function(text = "Pipeline complete.") {
+  moover_console_rule("=")
+  cat(text, "\n", sep = "")
+  moover_console_rule("=")
+}
+
+moover_report_fit_summary <- function(fit) {
+  metrics <- data.table::as.data.table(fit$eval_res$metrics_overall)
+  accuracy <- metrics[metric == "accuracy", estimate][1]
+  macro_f1 <- metrics[metric == "macro_f1", estimate][1]
+  moover_console_bullet(paste0("Candidate used: ", fit$candidate$candidate_id))
+  moover_console_bullet(paste0("Predictors used: ", length(fit$full_fit$predictors)))
+  if (!is.na(accuracy)) {
+    moover_console_bullet(paste0("LOCO accuracy: ", sprintf("%.4f", accuracy)))
+  }
+  if (!is.na(macro_f1)) {
+    moover_console_bullet(paste0("LOCO macro F1: ", sprintf("%.4f", macro_f1)))
+  }
+  cat("\n")
+}
+
+moover_report_export_summary <- function(export_dir, config) {
+  moover_console_bullet(paste0("Export folder: ", export_dir))
+  moover_console_bullet(paste0("Model bundle id: ", basename(export_dir)))
+  cat("\n")
+}
+
+moover_report_prediction_summary <- function(pred_dt, run_paths, summary_outputs = character()) {
+  moover_console_bullet(paste0("Epoch predictions: ", file.path(run_paths$results_dir, "epoch_predictions.csv")))
+  moover_console_bullet(paste0("Predicted epochs: ", format(nrow(pred_dt), big.mark = ",", scientific = FALSE, trim = TRUE)))
+  moover_console_bullet(paste0("Animals predicted: ", data.table::uniqueN(pred_dt$id)))
+  if ("hourly" %in% summary_outputs) {
+    moover_console_bullet(paste0("Hourly summary: ", file.path(run_paths$results_dir, "hourly_summary.csv")))
+  }
+  if ("daily" %in% summary_outputs) {
+    moover_console_bullet(paste0("Daily summary: ", file.path(run_paths$results_dir, "daily_summary.csv")))
+  }
+  cat("\n")
+}
+
 #' Run a moover Pipeline
 #'
 #' Executes one stage or a full workflow from a JSON spec or spec object.
@@ -463,27 +514,151 @@ predict_behaviour <- function(spec, model_bundle = NULL) {
 run_pipeline <- function(spec, stage = c("import", "features", "train", "optimise", "predict", "export", "all")) {
   spec <- moover_read_spec(spec)
   stage <- match.arg(stage)
-  if (identical(stage, "import")) return(import_accel(spec))
-  if (identical(stage, "features")) return(build_epoch_features(spec))
-  if (identical(stage, "optimise")) return(optimise_model(spec))
-  if (identical(stage, "train")) return(train_model(spec))
-  if (identical(stage, "export")) return(export_model(spec))
-  if (identical(stage, "predict")) return(predict_behaviour(spec))
+  run_paths <- moover_run_paths(spec)
+  
+  if (identical(stage, "import")) {
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Import and check the raw accelerometer data",
+      "Read the raw files, convert them into moover's standard five-column format, and save a preview so you can quickly check that the import looks sensible."
+    )
+    out <- import_accel(spec)
+    moover_pipeline_finish("Import complete.")
+    return(out)
+  }
+  if (identical(stage, "features")) {
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Build fixed time blocks and calculate features",
+      "Group the movement data into fixed time blocks and calculate the feature set needed for model training or optimisation."
+    )
+    out <- build_epoch_features(spec)
+    moover_pipeline_finish("Feature building complete.")
+    return(out)
+  }
+  if (identical(stage, "optimise")) {
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Compare candidate models",
+      "Use the prepared feature dataset to compare multiple model candidates and write the optimisation tables that help you choose a trade-off between size and performance."
+    )
+    out <- optimise_model(spec)
+    moover_console_bullet(paste0("Optimisation output folder: ", out))
+    cat("\n")
+    moover_pipeline_finish("Optimisation complete.")
+    return(out)
+  }
+  if (identical(stage, "train")) {
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Train and validate the model",
+      "Fit the Random Forest model and evaluate how well it performs on held-out animals."
+    )
+    out <- train_model(spec)
+    moover_report_fit_summary(out)
+    moover_pipeline_finish("Training complete.")
+    return(out)
+  }
+  if (identical(stage, "export")) {
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Export the model bundle",
+      "Write the fitted model, feature list, metrics, and test vectors into a shareable export folder."
+    )
+    out <- export_model(spec)
+    config <- if (file.exists(run_paths$fit_cache)) readRDS(run_paths$fit_cache)$config else moover_make_pipeline_config(spec, run_paths)
+    moover_report_export_summary(out, config)
+    moover_pipeline_finish("Export complete.")
+    return(out)
+  }
+  if (identical(stage, "predict")) {
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Predict behaviour on new data",
+      "Read the new accelerometer files, rebuild the features expected by the model bundle, and write epoch-level predictions."
+    )
+    out <- predict_behaviour(spec)
+    moover_report_prediction_summary(out, run_paths, summary_outputs = spec$predict$summary_outputs)
+    moover_pipeline_finish("Prediction complete.")
+    return(out)
+  }
   label_path <- spec$labels$path %||% ""
   label_exists <- nzchar(label_path) &&
     file.exists(moover_normalize_path(label_path, base = spec$workspace$root, must_work = FALSE))
   if (!is.null(spec$predict$model_bundle) && !label_exists) {
-    return(predict_behaviour(spec))
+    moover_pipeline_start(spec, stage, run_paths)
+    moover_console_step(
+      1,
+      "Predict behaviour on new data",
+      "No observation file was supplied, so moover will use the model bundle to generate predictions rather than run a training workflow."
+    )
+    out <- predict_behaviour(spec)
+    moover_report_prediction_summary(out, run_paths, summary_outputs = spec$predict$summary_outputs)
+    moover_pipeline_finish("Prediction complete.")
+    return(out)
   }
+  
+  moover_pipeline_start(spec, stage, run_paths)
+  
+  step_no <- 1L
+  moover_console_step(
+    step_no,
+    "Import and check the raw accelerometer data",
+    "Read the raw files, convert them into moover's standard five-column format, and save a preview so you can quickly check that the import looks sensible."
+  )
   import_accel(spec)
+  
+  step_no <- step_no + 1L
+  moover_console_step(
+    step_no,
+    "Build fixed time blocks and calculate features",
+    "Group the movement data into fixed time blocks and calculate the feature set needed for model training."
+  )
   build_epoch_features(spec)
+  
   if (isTRUE(spec$optimise$enabled)) {
+    step_no <- step_no + 1L
+    moover_console_step(
+      step_no,
+      "Compare candidate models",
+      "Evaluate multiple model candidates so you can choose a trade-off between size and performance before fitting the final model."
+    )
     optimise_model(spec)
   }
+  
+  step_no <- step_no + 1L
+  moover_console_step(
+    step_no,
+    "Train and validate the model",
+    "Fit the Random Forest model and check its performance on held-out animals."
+  )
   fit <- train_model(spec)
+  moover_report_fit_summary(fit)
+  
+  step_no <- step_no + 1L
+  moover_console_step(
+    step_no,
+    "Export the model bundle and write test vectors",
+    "Write the fitted model, feature list, metrics, and test vectors into a shareable export folder."
+  )
   export_dir <- export_model(spec, fit)
+  moover_report_export_summary(export_dir, fit$config)
+  
   if (isTRUE(spec$predict$predict_after_export) && !is.null(spec$predict$model_bundle)) {
+    step_no <- step_no + 1L
+    moover_console_step(
+      step_no,
+      "Run prediction on new data",
+      "Apply the model bundle to new accelerometer files and write epoch-level predictions."
+    )
     predict_behaviour(spec)
   }
+  moover_pipeline_finish("Pipeline complete.")
   invisible(export_dir)
 }
