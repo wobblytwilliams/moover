@@ -17,6 +17,8 @@ If you already have a model and only want predictions, jump to [Chapter 6: Predi
 
 This chapter is for first-time `moover` users who want one clean, successful run before they bring in their own files. That first successful run matters. It tells you that the software is working, that your local setup is working, and that you know where the outputs will appear.
 
+The bigger idea behind `moover` is that the workflow should feel ordinary. If you can load a package, read in a table, and make a plot in R, you should be able to train a behaviour model and use it for prediction. You should not need to become a precision-livestock specialist first.
+
 We'll do four things in this chapter:
 
 1. find the example training workspace that ships with `moover`
@@ -27,6 +29,8 @@ We'll do four things in this chapter:
 ## Why start with example data?
 
 When people begin with their own files straight away, there are often two problems tangled together: learning the workflow and checking the data structure. The example workspace separates those two jobs. First we learn the workflow. Then we move on to your files.
+
+Once you switch to your own project, the core requirement is still simple: give `moover` accelerometer data in a standard format, a `tech.csv` file that links animals and sensors, and an `observations.csv` file with labelled behaviour periods. From there, `moover` handles the feature generation, Random Forest training, validation, export, and prediction steps.
 
 ## Find and copy the example training workspace
 

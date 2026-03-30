@@ -20,6 +20,8 @@ This chapter holds **two walkthroughs on one page** because they are really two 
 
 If you are learning `moover` as a full workflow, begin with Walkthrough 1. If you already have a model and only care about prediction, jump straight to Walkthrough 2.
 
+The promise of `moover` is that this should stay manageable. Once your accelerometer files, tech details, and observations are in the expected formats, the package takes over the harder pipeline steps: feature calculation across fixed epochs, Random Forest training, leave-one-animal-out validation, export, and prediction on larger datasets.
+
 ## Walkthrough 1: Train, Validate, Export, Predict {#walkthrough-1}
 
 In this first walkthrough, we will:

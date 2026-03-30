@@ -15,6 +15,14 @@ This is **Chapter 2 of 10** in the beginner path.
 
 A `moover` workspace is just an ordinary folder on your computer. You do not need a high-performance cluster, and you do not need an `.Rproj` file. What you do need is a consistent place for local outputs, run histories, and a small number of support files.
 
+That small number of support files is important. In most projects, `moover` only needs three kinds of inputs from you:
+
+- accelerometer files with a timestamp and `x`, `y`, `z`
+- a `tech.csv` file that links animals to sensors and deployment details
+- an `observations.csv` file that records labelled behaviour periods
+
+If those are in place, `moover` can take care of the rest of the workflow.
+
 In this chapter, we'll do three things:
 
 1. create a workspace
@@ -77,6 +85,8 @@ For a training workflow, two extra files usually sit at the top level of the wor
 - `observations.csv`
 
 The `tech.csv` file links animal ids to accelerometer ids when that mapping is needed. The `observations.csv` file holds the labelled behaviour periods you want the model to learn from.
+
+This is part of what makes `moover` beginner-friendly. You do not need to manually calculate features, hand-build validation folds, or script your own export format. The package uses these standard inputs to calculate features across fixed time blocks, train a Random Forest, check accuracy, export a bundle, and later reuse that bundle for prediction.
 
 A common beginner setup looks like this:
 

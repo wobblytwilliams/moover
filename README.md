@@ -2,6 +2,8 @@
 
 `moover` helps animal scientists turn movement data into behaviour outputs.
 
+The main idea is simplicity. If you can load a package, read in data, and make a plot in R, you should be able to use `moover` to build a Random Forest behaviour model and apply it to predict behaviour.
+
 It is designed for people who want to work locally on their own computer, without needing a high-performance computing (HPC) environment. Larger runs can still take time, but the goal is to make behaviour modelling practical and approachable for beginners.
 
 In `moover`, the usual pattern is:
@@ -13,6 +15,29 @@ In `moover`, the usual pattern is:
 ## Who `moover` is for
 
 `moover` is for animal scientists, including nutritionists and other researchers who may be new to accelerometer pipelines, machine learning, or R package workflows.
+
+## What you need to provide
+
+`moover` is built around a simple contract.
+
+If you can provide:
+
+- accelerometer data in a standard format with a timestamp and `x`, `y`, `z`
+- a `tech.csv` file linking animals to sensors and deployment periods
+- an `observations.csv` file in a standard labelled-bout format
+
+then `moover` does the rest.
+
+It will:
+
+- standardise the input data
+- compute features across fixed time blocks
+- train a Random Forest model
+- check accuracy using standard validation methods such as leave-one-animal-out testing
+- export a reusable model bundle
+- apply that model to a larger raw dataset
+
+And if you do not want to train a model yourself, `moover` also lets collaborators share model bundles so you can run prediction on your own data without rebuilding the model from scratch.
 
 ## Installation
 
@@ -82,6 +107,7 @@ These are designed to work together:
 
 - ingests raw accelerometer data
 - converts it into a standard 5-column movement format
+- uses simple support files for tech details and observations
 - generates features from fixed time blocks
 - trains and optimises Random Forest models
 - evaluates models with beginner-friendly summaries and metrics
