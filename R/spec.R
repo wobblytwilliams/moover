@@ -19,6 +19,8 @@ moover_default_spec <- function() {
         recursive = FALSE,
         timezone = "Australia/Brisbane",
         downsample_keep_every_n = 2L,
+        chunk_rows = NULL,
+        large_file_warning_bytes = 524288000,
         write_canonical_accel = TRUE,
         preview_n = 12L,
         use_legacy_raw_reader = FALSE,

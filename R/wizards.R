@@ -142,10 +142,15 @@ moover_prompt_generic_schema <- function(raw_dir) {
 
 moover_wizard_show_workspace <- function(workspace) {
   moover_wizard_text("Workspace ready. moover will use these folders:")
-  moover_wizard_bullet(paste0("Raw data folder: ", workspace$data_raw))
+  moover_wizard_bullet(paste0("Default raw data folder inside the workspace: ", workspace$data_raw))
   moover_wizard_bullet(paste0("Run outputs: ", workspace$runs))
   moover_wizard_bullet(paste0("Internal helper files: ", workspace$internal))
+  moover_wizard_text("Your raw data does not have to live in that default raw-data folder. If the files are already on a network drive, portable drive, or another local folder, you can point moover there directly. moover will still keep the derived outputs for each run inside the workspace.")
   cat("\n")
+}
+
+moover_wizard_large_file_note <- function() {
+  moover_wizard_text("If your raw files are very large, it is fine to leave them where they already live and point moover to that folder. If whole-file reading becomes slow or memory-heavy later, you can turn on chunked reading in the saved instructions by setting ingest$chunk_rows to a fixed number of rows.")
 }
 
 moover_wizard_show_saved_spec <- function(spec) {
@@ -194,13 +199,13 @@ wizard_import <- function() {
 
   moover_wizard_section(
     "Step 1. Choose a Workspace",
-    what = "We need one folder where moover can keep your raw files, your outputs, and the saved instructions for this run.",
-    why = "A consistent workspace structure makes it much easier for beginners to find their files later."
+    what = "We need one folder where moover can keep the outputs, previews, and saved instructions for this run.",
+    why = "A consistent workspace structure makes it much easier for beginners to find their files later, even when the original raw data lives somewhere else."
   )
   root <- moover_prompt(
     "Workspace root",
     getwd(),
-    details = "Using the current working directory is usually fine. moover will create data_raw, runs, and _internal inside this folder if they do not already exist."
+    details = "Using the current working directory is usually fine. moover will create data_raw, runs, and _internal inside this folder if they do not already exist. The workspace is mainly for local outputs and saved run instructions."
   )
   workspace <- init_workspace(root)
   moover_wizard_show_workspace(workspace)
@@ -210,17 +215,18 @@ wizard_import <- function() {
   moover_wizard_section(
     "Step 2. Point moover to Your Raw Files",
     what = "Now we need the folder that contains the raw accelerometer files you want to import.",
-    why = "moover reads the files directly from this folder and keeps the original files unchanged."
+    why = "moover reads the files directly from this folder and keeps the original files unchanged. This folder can be inside the workspace, or it can be somewhere else entirely."
   )
   raw_dir <- moover_prompt(
     "Raw data directory",
     file.path(root, "data_raw"),
     details = if (identical(raw_format, "cqu")) {
-      "This folder should contain your CQU-style accelerometer files."
+      "This folder should contain your CQU-style accelerometer files. It can be the workspace data_raw folder, or it can be an external folder on another drive."
     } else {
-      "This folder should contain the CSV or TSV files that you want moover to inspect and import."
+      "This folder should contain the CSV or TSV files that you want moover to inspect and import. It can be the workspace data_raw folder, or it can be an external folder on another drive."
     }
   )
+  moover_wizard_large_file_note()
   ingest <- list(format = raw_format, raw_dir = raw_dir)
   schema <- if (identical(raw_format, "generic")) moover_prompt_generic_schema(raw_dir) else list()
 
@@ -269,13 +275,13 @@ wizard_train <- function() {
 
   moover_wizard_section(
     "Step 1. Choose a Workspace",
-    what = "We need one folder where moover can store the raw files, the run outputs, and the model export.",
-    why = "Keeping everything in one predictable place makes it much easier to revisit a model later or share a run with colleagues."
+    what = "We need one folder where moover can store the run outputs, saved instructions, and model export.",
+    why = "Keeping everything in one predictable place makes it much easier to revisit a model later or share a run with colleagues, even when the raw files stay on another drive."
   )
   root <- moover_prompt(
     "Workspace root",
     getwd(),
-    details = "moover will create data_raw, runs, and _internal inside this folder if they do not already exist."
+    details = "moover will create data_raw, runs, and _internal inside this folder if they do not already exist. The workspace is the local home for outputs and caches produced during each run."
   )
   workspace <- init_workspace(root)
   moover_wizard_show_workspace(workspace)
@@ -285,13 +291,14 @@ wizard_train <- function() {
   moover_wizard_section(
     "Step 2. Point moover to Your Training Files",
     what = "We need the folder containing your raw accelerometer files, plus the tech file and observation file used for training.",
-    why = "The raw data tells moover how the animals moved, while the observations tell moover which behaviour was happening during each labelled period."
+    why = "The raw data tells moover how the animals moved, while the observations tell moover which behaviour was happening during each labelled period. The raw data folder can be inside or outside the workspace."
   )
   raw_dir <- moover_prompt(
     "Raw data directory",
     file.path(root, "data_raw"),
-    details = "This is the folder containing the accelerometer files that match your labelled observations."
+    details = "This is the folder containing the accelerometer files that match your labelled observations. If the raw files are too large to copy into the workspace, you can leave them where they are and point moover to that folder directly."
   )
+  moover_wizard_large_file_note()
   schema <- if (identical(raw_format, "generic")) moover_prompt_generic_schema(raw_dir) else list()
   tech_file <- moover_prompt(
     "Tech file",
@@ -401,7 +408,7 @@ wizard_predict <- function() {
   root <- moover_prompt(
     "Workspace root",
     getwd(),
-    details = "moover will create data_raw, runs, and _internal inside this folder if they do not already exist."
+    details = "moover will create data_raw, runs, and _internal inside this folder if they do not already exist. The workspace is for local outputs; the raw data you predict on can live elsewhere."
   )
   workspace <- init_workspace(root)
   moover_wizard_show_workspace(workspace)
@@ -421,13 +428,14 @@ wizard_predict <- function() {
   moover_wizard_section(
     "Step 3. Point moover to the New Raw Files",
     what = "We need the folder containing the new accelerometer files you want to classify.",
-    why = "moover will read these files, build the same features used by the model, and then generate epoch-level predictions."
+    why = "moover will read these files, build the same features used by the model, and then generate epoch-level predictions. The files can stay where they already live."
   )
   raw_dir <- moover_prompt(
     "Raw data directory",
     file.path(root, "data_raw"),
-    details = "This folder should contain the new accelerometer files you want to classify."
+    details = "This folder should contain the new accelerometer files you want to classify. It can be the workspace data_raw folder or an external folder on another drive."
   )
+  moover_wizard_large_file_note()
   schema <- if (identical(raw_format, "generic")) moover_prompt_generic_schema(raw_dir) else list()
   tech_file <- moover_prompt(
     "Tech file (optional)",

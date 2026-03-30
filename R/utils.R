@@ -17,6 +17,14 @@ moover_normalize_path <- function(path, base = getwd(), must_work = FALSE) {
   normalizePath(path, winslash = "/", mustWork = must_work)
 }
 
+moover_path_is_within <- function(path, root) {
+  path <- moover_normalize_path(path, must_work = FALSE)
+  root <- moover_normalize_path(root, must_work = FALSE)
+  path_norm <- gsub("/+$", "", path)
+  root_norm <- gsub("/+$", "", root)
+  identical(path_norm, root_norm) || startsWith(path_norm, paste0(root_norm, "/"))
+}
+
 moover_timestamp_run_id <- function() {
   format(Sys.time(), "%Y%m%d_%H%M%S", tz = "UTC")
 }

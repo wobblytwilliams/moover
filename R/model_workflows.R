@@ -27,6 +27,7 @@ moover_make_pipeline_config <- function(spec, run_paths) {
     data = list(
       epoch_lengths = as.integer(spec$epochs$lengths),
       downsample_keep_every_n = as.integer(spec$ingest$downsample_keep_every_n),
+      chunk_rows = spec$ingest$chunk_rows,
       use_legacy_raw_reader = isTRUE(spec$ingest$use_legacy_raw_reader),
       epoch_seconds_for_raw_id = as.integer(spec$epochs$raw_epoch_seconds %||% min(spec$epochs$lengths)),
       tz_local_raw_noz = spec$ingest$timezone,
@@ -451,6 +452,9 @@ predict_behaviour <- function(spec, model_bundle = NULL) {
 }
 
 moover_pipeline_start <- function(spec, stage, run_paths) {
+  raw_dir <- moover_normalize_path(spec$ingest$raw_dir, base = spec$workspace$root, must_work = FALSE)
+  workspace_root <- moover_normalize_path(spec$workspace$root, must_work = FALSE)
+  chunk_rows <- spec$ingest$chunk_rows
   moover_console_header(
     "moover pipeline",
     intro = "moover will work through the requested stage and describe each step in plain language as it goes."
@@ -458,6 +462,23 @@ moover_pipeline_start <- function(spec, stage, run_paths) {
   moover_console_bullet(paste0("Run id: ", run_paths$run_id))
   moover_console_bullet(paste0("Requested stage: ", stage))
   moover_console_bullet(paste0("Run folder: ", run_paths$run_root))
+  if (moover_path_is_within(raw_dir, workspace_root)) {
+    moover_console_bullet(paste0("Raw files will be read from the workspace: ", raw_dir))
+  } else {
+    moover_console_bullet(paste0("Raw files will be read from an external location: ", raw_dir))
+  }
+  moover_console_bullet("Derived files for this run will be written locally inside the run folder.")
+  if (moover_is_chunked_ingest(chunk_rows)) {
+    moover_console_bullet(
+      paste0(
+        "Large-file mode is enabled. moover will read raw data in fixed chunks of ",
+        format(as.integer(chunk_rows), big.mark = ",", scientific = FALSE, trim = TRUE),
+        " rows."
+      )
+    )
+  } else {
+    moover_console_bullet("Large-file mode is off. moover will read each raw file in one pass.")
+  }
   cat("\n")
 }
 

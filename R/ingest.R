@@ -107,11 +107,32 @@ moover_lookup_accelerometer <- function(source_id, id_type = "id", tech = NULL) 
   source_id
 }
 
-moover_canonicalise_cqu_file <- function(path, spec, tech = NULL) {
-  dt <- read_raw_cquformat(
-    path,
-    use_legacy_header_reader = isTRUE(spec$ingest$use_legacy_raw_reader)
+moover_is_chunked_ingest <- function(chunk_rows) {
+  !is.null(chunk_rows) && length(chunk_rows) == 1L &&
+    !is.na(chunk_rows) && is.finite(chunk_rows) && as.numeric(chunk_rows) > 0
+}
+
+moover_maybe_warn_large_raw_file <- function(path, spec) {
+  chunk_rows <- spec$ingest$chunk_rows
+  warn_bytes <- spec$ingest$large_file_warning_bytes %||% NA_real_
+  if (moover_is_chunked_ingest(chunk_rows)) return(invisible(NULL))
+  if (is.null(warn_bytes) || length(warn_bytes) != 1L || is.na(warn_bytes) || !is.finite(warn_bytes) || warn_bytes <= 0) {
+    return(invisible(NULL))
+  }
+  size <- file.info(path)$size
+  if (is.na(size) || size < warn_bytes) return(invisible(NULL))
+  warning(
+    paste0(
+      "Raw file '", basename(path), "' is ", format(size, big.mark = ",", scientific = FALSE),
+      " bytes. Whole-file reading may be slow or memory-heavy. ",
+      "Consider setting ingest$chunk_rows to process the file in smaller chunks."
+    ),
+    call. = FALSE
   )
+  invisible(NULL)
+}
+
+moover_canonicalise_cqu_dt <- function(dt, path, spec, tech = NULL) {
   data.table::setDT(dt)
   if (!inherits(dt$datetime, "POSIXct")) {
     dt <- dt[is_valid_datetime_string(datetime)]
@@ -135,11 +156,16 @@ moover_canonicalise_cqu_file <- function(path, spec, tech = NULL) {
   dt[, .(id, accelerometer, t_unix_ms, x, y, z)]
 }
 
-moover_canonicalise_generic_file <- function(path, spec, tech = NULL) {
-  dt <- data.table::fread(
-    file = path,
-    sep = spec$ingest$delimiter
+moover_canonicalise_cqu_file <- function(path, spec, tech = NULL) {
+  dt <- read_raw_cquformat(
+    path,
+    use_legacy_header_reader = isTRUE(spec$ingest$use_legacy_raw_reader)
   )
+  moover_canonicalise_cqu_dt(dt, path = path, spec = spec, tech = tech)
+}
+
+moover_canonicalise_generic_dt <- function(dt, path, spec, tech = NULL) {
+  data.table::setDT(dt)
   raw_schema <- spec$schema$raw
   needed <- c(raw_schema$datetime, raw_schema$x, raw_schema$y, raw_schema$z)
   if (!is.null(raw_schema$id) && nzchar(raw_schema$id)) {
@@ -169,25 +195,166 @@ moover_canonicalise_generic_file <- function(path, spec, tech = NULL) {
   out[is.finite(x) & is.finite(y) & is.finite(z) & is.finite(t_unix_ms)]
 }
 
-moover_collect_canonical_accel <- function(spec, tech = NULL) {
+moover_canonicalise_generic_file <- function(path, spec, tech = NULL) {
+  dt <- data.table::fread(
+    file = path,
+    sep = spec$ingest$delimiter
+  )
+  moover_canonicalise_generic_dt(dt, path = path, spec = spec, tech = tech)
+}
+
+moover_iterate_cqu_file_chunks <- function(path, spec, callback) {
+  if (!moover_is_chunked_ingest(spec$ingest$chunk_rows) || isTRUE(spec$ingest$use_legacy_raw_reader)) {
+    dt <- read_raw_cquformat(
+      path,
+      use_legacy_header_reader = isTRUE(spec$ingest$use_legacy_raw_reader)
+    )
+    callback(dt)
+    return(invisible(NULL))
+  }
+  
+  chunk_rows <- as.integer(spec$ingest$chunk_rows)
+  rows_read <- 0L
+  repeat {
+    dt <- tryCatch(
+      data.table::fread(
+        file = path,
+        header = FALSE,
+        fill = TRUE,
+        select = 1:4,
+        colClasses = "character",
+        skip = rows_read,
+        nrows = chunk_rows
+      ),
+      error = function(e) {
+        if (grepl("^skip=\\d+ but the input only has \\d+ lines$", conditionMessage(e))) {
+          return(NULL)
+        }
+        stop(e)
+      }
+    )
+    if (is.null(dt)) break
+    raw_rows <- nrow(dt)
+    if (raw_rows == 0L) break
+    rows_read <- rows_read + raw_rows
+    data.table::setnames(dt, c("datetime", "x", "y", "z"))
+    dt[, `:=`(
+      datetime = trimws(as.character(datetime)),
+      x = trimws(as.character(x)),
+      y = trimws(as.character(y)),
+      z = trimws(as.character(z))
+    )]
+    if (rows_read == raw_rows) {
+      header_like <- nrow(dt) >= 1L &&
+        tolower(dt$datetime[1]) %in% c("datetime", "timestamp", "time") &&
+        tolower(dt$x[1]) == "x" &&
+        tolower(dt$y[1]) == "y" &&
+        tolower(dt$z[1]) == "z"
+      if (header_like) {
+        dt <- dt[-1L]
+      }
+    }
+    if (nrow(dt) == 0L) next
+    callback(dt)
+    if (raw_rows < chunk_rows) break
+  }
+  invisible(NULL)
+}
+
+moover_iterate_generic_file_chunks <- function(path, spec, callback) {
+  if (!moover_is_chunked_ingest(spec$ingest$chunk_rows)) {
+    dt <- data.table::fread(
+      file = path,
+      sep = spec$ingest$delimiter
+    )
+    callback(dt)
+    return(invisible(NULL))
+  }
+  
+  chunk_rows <- as.integer(spec$ingest$chunk_rows)
+  header_dt <- data.table::fread(file = path, sep = spec$ingest$delimiter, nrows = 0L)
+  col_names <- names(header_dt)
+  rows_read <- 0L
+  first_chunk <- TRUE
+  repeat {
+    dt <- tryCatch(
+      if (isTRUE(first_chunk)) {
+        data.table::fread(
+          file = path,
+          sep = spec$ingest$delimiter,
+          nrows = chunk_rows
+        )
+      } else {
+        data.table::fread(
+          file = path,
+          sep = spec$ingest$delimiter,
+          skip = rows_read + 1L,
+          nrows = chunk_rows,
+          header = FALSE
+        )
+      },
+      error = function(e) {
+        if (grepl("^skip=\\d+ but the input only has \\d+ lines$", conditionMessage(e))) {
+          return(NULL)
+        }
+        stop(e)
+      }
+    )
+    if (is.null(dt)) break
+    if (!isTRUE(first_chunk) && nrow(dt) > 0L) {
+      data.table::setnames(dt, col_names)
+    }
+    first_chunk <- FALSE
+    raw_rows <- nrow(dt)
+    if (raw_rows == 0L) break
+    rows_read <- rows_read + raw_rows
+    callback(dt)
+    if (raw_rows < chunk_rows) break
+  }
+  invisible(NULL)
+}
+
+moover_stream_raw_file <- function(path, spec, tech = NULL, callback) {
+  moover_maybe_warn_large_raw_file(path, spec)
+  if (identical(spec$ingest$format, "cqu")) {
+    moover_iterate_cqu_file_chunks(path, spec, function(dt_chunk) {
+      out <- moover_canonicalise_cqu_dt(dt_chunk, path = path, spec = spec, tech = tech)
+      if (nrow(out) > 0L) callback(out)
+    })
+  } else {
+    moover_iterate_generic_file_chunks(path, spec, function(dt_chunk) {
+      out <- moover_canonicalise_generic_dt(dt_chunk, path = path, spec = spec, tech = tech)
+      if (nrow(out) > 0L) callback(out)
+    })
+  }
+  invisible(NULL)
+}
+
+moover_stream_canonical_accel <- function(spec, tech = NULL, callback) {
   files <- moover_list_raw_files(spec)
   if (length(files) == 0L) {
     stop("No raw accelerometer files found in ", spec$ingest$raw_dir)
   }
-  canonical <- data.table::rbindlist(lapply(files, function(path) {
-    if (identical(spec$ingest$format, "cqu")) {
-      moover_canonicalise_cqu_file(path, spec, tech = tech)
-    } else {
-      moover_canonicalise_generic_file(path, spec, tech = tech)
-    }
-  }), use.names = TRUE, fill = TRUE)
+  for (path in files) {
+    moover_stream_raw_file(path, spec, tech = tech, callback = callback)
+  }
+  invisible(files)
+}
+
+moover_collect_canonical_accel <- function(spec, tech = NULL) {
+  chunks <- list()
+  moover_stream_canonical_accel(spec, tech = tech, callback = function(chunk) {
+    chunks[[length(chunks) + 1L]] <<- chunk
+  })
+  canonical <- data.table::rbindlist(chunks, use.names = TRUE, fill = TRUE)
   data.table::setorder(canonical, id, t_unix_ms)
   canonical
 }
 
-moover_write_generic_as_cqu <- function(canonical_dt, run_paths) {
+moover_append_generic_chunk_as_cqu <- function(canonical_dt, run_paths) {
   moover_ensure_dir(run_paths$canonical_raw_dir)
   data.table::setDT(canonical_dt)
+  if (nrow(canonical_dt) == 0L) return(invisible(NULL))
   for (acc in unique(canonical_dt$accelerometer)) {
     sub <- canonical_dt[accelerometer == acc]
     if (nrow(sub) == 0L) next
@@ -197,11 +364,18 @@ moover_write_generic_as_cqu <- function(canonical_dt, run_paths) {
       y = sub$y,
       z = sub$z
     )
+    out_path <- file.path(run_paths$canonical_raw_dir, paste0("prepared-", acc, "_cquFormat.csv"))
     data.table::fwrite(
       out,
-      file.path(run_paths$canonical_raw_dir, paste0("prepared-", acc, "_cquFormat.csv"))
+      out_path,
+      append = file.exists(out_path)
     )
   }
+  invisible(NULL)
+}
+
+moover_write_generic_as_cqu <- function(canonical_dt, run_paths) {
+  moover_append_generic_chunk_as_cqu(canonical_dt, run_paths)
   invisible(run_paths$canonical_raw_dir)
 }
 
@@ -210,18 +384,49 @@ moover_prepare_inputs <- function(spec, run_paths, require_labels = FALSE) {
   moover_write_spec(spec, run_paths$run_spec_file)
   tech <- moover_prepare_tech_file(spec, run_paths, required = require_labels)
   obs <- moover_prepare_observations_file(spec, run_paths, required = require_labels)
-  canonical <- moover_collect_canonical_accel(spec, tech = tech)
-  if (identical(spec$ingest$format, "generic")) {
-    moover_write_generic_as_cqu(canonical, run_paths)
+  
+  if (isTRUE(spec$ingest$write_canonical_accel) && file.exists(run_paths$canonical_accel_file)) {
+    file.remove(run_paths$canonical_accel_file)
   }
-  if (isTRUE(spec$ingest$write_canonical_accel)) {
-    data.table::fwrite(canonical[, .(id, t_unix_ms, x, y, z)], run_paths$canonical_accel_file)
+  if (identical(spec$ingest$format, "generic") && dir.exists(run_paths$canonical_raw_dir)) {
+    unlink(run_paths$canonical_raw_dir, recursive = TRUE, force = TRUE)
   }
-  preview <- moover_preview_head(canonical[, .(id, t_unix_ms, x, y, z)], spec$ingest$preview_n)
+  
+  preview_parts <- list()
+  preview_rows <- 0L
+  seen_ids <- character()
+  n_rows <- 0L
+  
+  moover_stream_canonical_accel(spec, tech = tech, callback = function(chunk) {
+    chunk_out <- chunk[, .(id, t_unix_ms, x, y, z)]
+    n_rows <<- n_rows + nrow(chunk_out)
+    seen_ids <<- union(seen_ids, unique(chunk_out$id))
+    
+    if (isTRUE(spec$ingest$write_canonical_accel)) {
+      data.table::fwrite(
+        chunk_out,
+        run_paths$canonical_accel_file,
+        append = file.exists(run_paths$canonical_accel_file)
+      )
+    }
+    if (identical(spec$ingest$format, "generic")) {
+      moover_append_generic_chunk_as_cqu(chunk, run_paths)
+    }
+    if (preview_rows < spec$ingest$preview_n) {
+      need <- spec$ingest$preview_n - preview_rows
+      preview_chunk <- data.table::copy(utils::head(chunk_out, need))
+      if (nrow(preview_chunk) > 0L) {
+        preview_parts[[length(preview_parts) + 1L]] <<- preview_chunk
+        preview_rows <<- preview_rows + nrow(preview_chunk)
+      }
+    }
+  })
+  
+  preview <- data.table::rbindlist(preview_parts, use.names = TRUE, fill = TRUE)
   data.table::fwrite(preview, run_paths$canonical_preview_file)
   summary <- list(
-    n_rows = nrow(canonical),
-    n_ids = data.table::uniqueN(canonical$id),
+    n_rows = n_rows,
+    n_ids = length(seen_ids),
     raw_format = spec$ingest$format,
     preview_file = run_paths$canonical_preview_file,
     canonical_accel_file = if (isTRUE(spec$ingest$write_canonical_accel)) run_paths$canonical_accel_file else NULL
@@ -230,7 +435,7 @@ moover_prepare_inputs <- function(spec, run_paths, require_labels = FALSE) {
   list(
     tech = tech,
     observations = obs,
-    canonical = canonical,
+    canonical = preview,
     summary = summary
   )
 }

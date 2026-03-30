@@ -48,6 +48,11 @@ library(moover)
 # Create a run specification for a beginner training run.
 spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
+  ingest = list(
+    # Point this to the folder holding the raw accelerometer files.
+    # It can be the workspace data_raw folder, or it can be an external path.
+    raw_dir = "data_raw"
+  ),
   labels = list(
     # tech.csv links animal ids and accelerometer ids when that mapping is needed.
     tech_file = "tech.csv",
@@ -73,6 +78,8 @@ spec <- create_spec(
 run_pipeline(spec, stage = "all")
 ```
 
+If your raw files already live somewhere else, you can replace `"data_raw"` with an absolute path such as `"E:/portable_drive/cattle_trial_raw"`. `moover` will read from that folder and still keep the epoch dataset, model bundle, and test vectors inside the workspace for this run.
+
 ## What happens during the run
 
 A model-training run can feel like a lot is happening behind the scenes, so it helps to name the main steps plainly.
@@ -88,6 +95,8 @@ During the run, `moover` will:
 7. write an export bundle containing the fitted model and support files
 
 That is the full arc of the training workflow.
+
+If the raw files are large, `moover` can also read them in fixed-size chunks using `ingest$chunk_rows`. That option is there to make large local workflows more manageable, not to change the feature definitions or the final model outputs.
 
 ## What the main metrics mean
 

@@ -499,6 +499,203 @@ load_canonical_dataset <- function(config) {
   dt
 }
 
+iterate_cqu_chunks_for_dataset <- function(path, config, callback) {
+  chunk_rows <- config$data$chunk_rows
+  if (!moover_is_chunked_ingest(chunk_rows) || isTRUE(config$data$use_legacy_raw_reader)) {
+    dt <- read_raw_cquformat(
+      path,
+      use_legacy_header_reader = isTRUE(config$data$use_legacy_raw_reader)
+    )
+    callback(dt)
+    return(invisible(NULL))
+  }
+  
+  chunk_rows <- as.integer(chunk_rows)
+  rows_read <- 0L
+  repeat {
+    dt <- tryCatch(
+      data.table::fread(
+        file = path,
+        header = FALSE,
+        fill = TRUE,
+        select = 1:4,
+        colClasses = "character",
+        skip = rows_read,
+        nrows = chunk_rows
+      ),
+      error = function(e) {
+        if (grepl("^skip=\\d+ but the input only has \\d+ lines$", conditionMessage(e))) {
+          return(NULL)
+        }
+        stop(e)
+      }
+    )
+    if (is.null(dt)) break
+    raw_rows <- nrow(dt)
+    if (raw_rows == 0L) break
+    rows_read <- rows_read + raw_rows
+    data.table::setnames(dt, c("datetime", "x", "y", "z"))
+    dt[, `:=`(
+      datetime = trimws(as.character(datetime)),
+      x = trimws(as.character(x)),
+      y = trimws(as.character(y)),
+      z = trimws(as.character(z))
+    )]
+    if (rows_read == raw_rows) {
+      header_like <- nrow(dt) >= 1L &&
+        tolower(dt$datetime[1]) %in% c("datetime", "timestamp", "time") &&
+        tolower(dt$x[1]) == "x" &&
+        tolower(dt$y[1]) == "y" &&
+        tolower(dt$z[1]) == "z"
+      if (header_like) {
+        dt <- dt[-1L]
+      }
+    }
+    if (nrow(dt) == 0L) next
+    callback(dt)
+    if (raw_rows < chunk_rows) break
+  }
+  invisible(NULL)
+}
+
+prepare_cqu_chunk_for_dataset <- function(dt_raw, config) {
+  data.table::setDT(dt_raw)
+  if (!inherits(dt_raw$datetime, "POSIXct")) {
+    dt_raw[, datetime := trimws(as.character(datetime))]
+    dt_raw <- dt_raw[is_valid_datetime_string(datetime)]
+    if (nrow(dt_raw) == 0L) return(dt_raw[0])
+    dt_raw[, datetime_utc := parse_raw_datetime_to_utc(datetime, tz_local_noz = config$data$tz_local_raw_noz)]
+  } else {
+    dt_raw[, datetime_utc := lubridate::with_tz(as.POSIXct(datetime), tzone = "UTC")]
+  }
+  dt_raw[, `:=`(
+    x = to_numeric_direct(x),
+    y = to_numeric_direct(y),
+    z = to_numeric_direct(z)
+  )]
+  dt_raw[is.finite(x) & is.finite(y) & is.finite(z) & !is.na(datetime_utc), .(datetime_utc, x, y, z)]
+}
+
+select_downsample_chunk_rows <- function(dt_raw, n_keep, valid_seen) {
+  if (nrow(dt_raw) == 0L) {
+    return(list(chunk = dt_raw, valid_seen = valid_seen))
+  }
+  idx <- seq_len(nrow(dt_raw))
+  keep <- ((valid_seen + idx - 1L) %% n_keep) == 0L
+  list(
+    chunk = dt_raw[keep],
+    valid_seen = valid_seen + nrow(dt_raw)
+  )
+}
+
+init_epoch_accumulators <- function(epoch_lengths) {
+  keys <- as.character(epoch_lengths)
+  list(
+    carry = stats::setNames(vector("list", length(epoch_lengths)), keys),
+    raw_context = stats::setNames(vector("list", length(epoch_lengths)), keys),
+    feat_parts = stats::setNames(vector("list", length(epoch_lengths)), keys),
+    raw_parts = stats::setNames(vector("list", length(epoch_lengths)), keys)
+  )
+}
+
+append_epoch_part <- function(parts, key, value) {
+  if (is.null(value) || nrow(value) == 0L) return(parts)
+  current <- parts[[key]]
+  parts[[key]] <- c(current, list(value))
+  parts
+}
+
+split_complete_epochs <- function(dt, epoch_secs) {
+  if (nrow(dt) == 0L) {
+    return(list(complete = dt, carry = dt, last_start = as.POSIXct(NA)))
+  }
+  tmp_start <- as.POSIXct(
+    floor(as.numeric(dt$datetime_utc) / epoch_secs) * epoch_secs,
+    origin = "1970-01-01",
+    tz = "UTC"
+  )
+  last_start <- max(tmp_start)
+  list(
+    complete = dt[tmp_start < last_start],
+    carry = dt[tmp_start == last_start],
+    last_start = last_start
+  )
+}
+
+bind_dt_parts <- function(parts) {
+  data.table::rbindlist(parts, use.names = TRUE, fill = TRUE)
+}
+
+process_downsampled_chunk_for_epochs <- function(ds_chunk, accumulators, config) {
+  if (nrow(ds_chunk) == 0L) return(accumulators)
+  for (epoch_secs in config$data$epoch_lengths) {
+    key <- as.character(epoch_secs)
+    carry <- accumulators$carry[[key]]
+    raw_context <- accumulators$raw_context[[key]]
+    combined <- if (is.null(carry) || nrow(carry) == 0L) {
+      data.table::copy(ds_chunk)
+    } else {
+      data.table::rbindlist(list(carry, ds_chunk), use.names = TRUE, fill = TRUE)
+    }
+    split <- split_complete_epochs(combined, epoch_secs)
+    accumulators$carry[[key]] <- split$carry
+    if (nrow(split$complete) == 0L) next
+    raw_for_nesting <- if (is.null(raw_context) || nrow(raw_context) == 0L) {
+      data.table::copy(combined)
+    } else {
+      data.table::rbindlist(list(raw_context, combined), use.names = TRUE, fill = TRUE)
+    }
+    feat_dt <- compute_epoch_features_utc(data.table::copy(split$complete), epoch_secs)
+    raw_nested_dt <- build_epoch_raw_nesting(
+      data.table::copy(raw_for_nesting),
+      epoch_secs = epoch_secs,
+      raw_nest_delim = config$data$raw_nest_delim,
+      raw_max_samples_per_epoch = config$data$raw_max_samples_per_epoch
+    )
+    data.table::setkey(raw_nested_dt, epoch_start, epoch_end)
+    raw_nested_dt <- raw_nested_dt[feat_dt[, .(epoch_start, epoch_end)], nomatch = 0L]
+    accumulators$raw_context[[key]] <- split$complete[.N]
+    accumulators$feat_parts <- append_epoch_part(accumulators$feat_parts, key, feat_dt)
+    accumulators$raw_parts <- append_epoch_part(accumulators$raw_parts, key, raw_nested_dt)
+  }
+  accumulators
+}
+
+finalise_epoch_accumulators <- function(accumulators, config) {
+  out <- vector("list", length(config$data$epoch_lengths))
+  names(out) <- as.character(config$data$epoch_lengths)
+  for (epoch_secs in config$data$epoch_lengths) {
+    key <- as.character(epoch_secs)
+    carry <- accumulators$carry[[key]]
+    raw_context <- accumulators$raw_context[[key]]
+    feat_parts <- accumulators$feat_parts[[key]]
+    raw_parts <- accumulators$raw_parts[[key]]
+    if (!is.null(carry) && nrow(carry) > 0L) {
+      feat_last <- compute_epoch_features_utc(data.table::copy(carry), epoch_secs)
+      raw_input <- if (is.null(raw_context) || nrow(raw_context) == 0L) {
+        data.table::copy(carry)
+      } else {
+        data.table::rbindlist(list(raw_context, carry), use.names = TRUE, fill = TRUE)
+      }
+      raw_last <- build_epoch_raw_nesting(
+        data.table::copy(raw_input),
+        epoch_secs = epoch_secs,
+        raw_nest_delim = config$data$raw_nest_delim,
+        raw_max_samples_per_epoch = config$data$raw_max_samples_per_epoch
+      )
+      data.table::setkey(raw_last, epoch_start, epoch_end)
+      raw_last <- raw_last[feat_last[, .(epoch_start, epoch_end)], nomatch = 0L]
+      feat_parts <- c(feat_parts, list(feat_last))
+      raw_parts <- c(raw_parts, list(raw_last))
+    }
+    out[[key]] <- list(
+      feat = bind_dt_parts(feat_parts),
+      raw = bind_dt_parts(raw_parts)
+    )
+  }
+  out
+}
+
 build_canonical_dataset <- function(config) {
   ensure_dir(config$paths$out_model_dir)
   ensure_dir(config$paths$out_raw_ds_dir)
@@ -551,50 +748,63 @@ build_canonical_dataset <- function(config) {
     
     tech_rows <- tech[accelerometer == acc_id]
     if (nrow(tech_rows) == 0L) next
-    
-    dt_raw <- read_raw_cquformat(
-      f,
-      use_legacy_header_reader = isTRUE(config$data$use_legacy_raw_reader)
-    )
-    data.table::setDT(dt_raw)
-    
-    if (!inherits(dt_raw$datetime, "POSIXct")) {
-      dt_raw[, datetime := trimws(as.character(datetime))]
-      dt_raw <- dt_raw[is_valid_datetime_string(datetime)]
-      if (nrow(dt_raw) == 0L) next
-      
-      dt_raw[, datetime_utc := parse_raw_datetime_to_utc(datetime, tz_local_noz = config$data$tz_local_raw_noz)]
-    } else {
-      dt_raw[, datetime_utc := lubridate::with_tz(as.POSIXct(datetime), tzone = "UTC")]
-    }
-    dt_raw[, `:=`(
-      x = to_numeric_direct(x),
-      y = to_numeric_direct(y),
-      z = to_numeric_direct(z)
-    )]
-    dt_raw <- dt_raw[is.finite(x) & is.finite(y) & is.finite(z) & !is.na(datetime_utc)]
-    if (nrow(dt_raw) < 2L) next
-    
-    dt_ds <- downsample_every_n(dt_raw, config$data$downsample_keep_every_n)
-    if (nrow(dt_ds) < 2L) next
-    
-    dt_ds <- add_epoch_ids_utc(dt_ds, epoch_seconds = config$data$epoch_seconds_for_raw_id)
-    dt_ds <- add_sample_features(dt_ds)
-    
+
+    accumulators <- init_epoch_accumulators(config$data$epoch_lengths)
+    valid_seen <- 0L
+    prev_ds_row <- NULL
     if (isTRUE(config$data$write_downsampled_raw)) {
       out_raw_name <- sub("\\.csv$", "", basename(f))
       out_raw_path <- file.path(config$paths$out_raw_ds_dir, paste0(out_raw_name, "_ds12p5_every2.csv"))
-      data.table::fwrite(dt_ds[, .(datetime_utc, ms_to_origin_utc, x, y, z, epoch_start_10s, epoch_end_10s, epoch_id_10s)], out_raw_path)
+      if (file.exists(out_raw_path)) file.remove(out_raw_path)
+    } else {
+      out_raw_path <- NULL
     }
     
+    iterate_cqu_chunks_for_dataset(f, config, function(dt_chunk_raw) {
+      dt_raw <- prepare_cqu_chunk_for_dataset(dt_chunk_raw, config)
+      if (nrow(dt_raw) == 0L) return(invisible(NULL))
+      
+      ds_sel <- select_downsample_chunk_rows(dt_raw, config$data$downsample_keep_every_n, valid_seen)
+      valid_seen <<- ds_sel$valid_seen
+      dt_ds_chunk <- ds_sel$chunk
+      if (nrow(dt_ds_chunk) == 0L) return(invisible(NULL))
+      
+      base_cols <- c("datetime_utc", "x", "y", "z")
+      combined_sf <- if (is.null(prev_ds_row) || nrow(prev_ds_row) == 0L) {
+        data.table::copy(dt_ds_chunk)
+      } else {
+        data.table::rbindlist(list(prev_ds_row[, ..base_cols], dt_ds_chunk), use.names = TRUE, fill = TRUE)
+      }
+      combined_sf <- add_epoch_ids_utc(combined_sf, epoch_seconds = config$data$epoch_seconds_for_raw_id)
+      combined_sf <- add_sample_features(combined_sf)
+      current_enriched <- if (is.null(prev_ds_row) || nrow(prev_ds_row) == 0L) {
+        combined_sf
+      } else {
+        combined_sf[-1L]
+      }
+      if (nrow(current_enriched) == 0L) return(invisible(NULL))
+      
+      prev_ds_row <<- data.table::copy(current_enriched[.N])
+      
+      if (isTRUE(config$data$write_downsampled_raw) && !is.null(out_raw_path)) {
+        data.table::fwrite(
+          current_enriched[, .(datetime_utc, ms_to_origin_utc, x, y, z, epoch_start_10s, epoch_end_10s, epoch_id_10s)],
+          out_raw_path,
+          append = file.exists(out_raw_path)
+        )
+      }
+      
+      accumulators <<- process_downsampled_chunk_for_epochs(current_enriched, accumulators, config)
+      invisible(NULL)
+    })
+    
+    epoch_outputs <- finalise_epoch_accumulators(accumulators, config)
+    
     for (epoch_secs in config$data$epoch_lengths) {
-      feat_dt <- compute_epoch_features_utc(data.table::copy(dt_ds), epoch_secs)
-      raw_nested_dt <- build_epoch_raw_nesting(
-        data.table::copy(dt_ds),
-        epoch_secs = epoch_secs,
-        raw_nest_delim = config$data$raw_nest_delim,
-        raw_max_samples_per_epoch = config$data$raw_max_samples_per_epoch
-      )
+      key <- as.character(epoch_secs)
+      feat_dt <- epoch_outputs[[key]]$feat
+      raw_nested_dt <- epoch_outputs[[key]]$raw
+      if (nrow(feat_dt) == 0L || nrow(raw_nested_dt) == 0L) next
       data.table::setkey(feat_dt, epoch_start, epoch_end)
       data.table::setkey(raw_nested_dt, epoch_start, epoch_end)
       
@@ -635,7 +845,7 @@ build_canonical_dataset <- function(config) {
       }
     }
     
-    rm(dt_raw, dt_ds)
+    rm(accumulators, epoch_outputs, prev_ds_row)
     gc()
   }
   
