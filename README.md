@@ -1,7 +1,7 @@
 # moover
 
 <p align="center">
-  <img src="moover_hex.png" alt="moover package logo" width="220">
+  <img src="https://github.com/wobblytwilliams/moover/raw/main/moover_hex.png" alt="moover package logo" width="220">
 </p>
 
 `moover` helps animal scientists turn movement data into behaviour outputs.
