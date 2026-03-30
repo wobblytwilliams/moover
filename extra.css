@@ -1,5 +1,9 @@
-﻿.moover-article-layout {
+.moover-article-layout {
   align-items: flex-start;
+}
+
+.moover-article-layout main {
+  max-width: 960px;
 }
 
 .moover-chapter-nav {
@@ -92,8 +96,3 @@
   color: #113528;
 }
 
-@media (max-width: 991.98px) {
-  .template-article #toc {
-    margin-top: 1.5rem;
-  }
-}
