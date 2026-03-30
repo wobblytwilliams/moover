@@ -8,6 +8,16 @@ computer, without needing a high-performance computing (HPC)
 environment. Larger runs can still take time, but the goal is to make
 behaviour modelling practical and approachable for beginners.
 
+In `moover`, the usual pattern is:
+
+- raw accelerometer files can live wherever they already live, including
+  a network drive or portable drive
+- the workspace keeps the local derived outputs for each run, such as
+  previews, epoch features, optimisation results, model bundles, and
+  test vectors
+- epoch-level data is expected to be held locally so runs stay
+  reproducible and easier to revisit
+
 ## Who `moover` is for
 
 `moover` is for animal scientists, including nutritionists and other
@@ -92,8 +102,21 @@ system.file("extdata", "example_workspace", package = "moover")
 - Random Forest models
 - reusable and shareable model bundles
 - support for CQU-style and generic delimited input files
+- support for external raw-data folders with local run outputs
+- fixed-size chunked reading for larger raw files when needed
+
+## Storage note
+
+Version 1 keeps the storage choices simple on purpose:
+
+- raw files can be read directly from outside the workspace
+- local run outputs are written as CSV.gz and RDS files
+- Parquet is not required for the beginner workflow
+
+We may add optional Parquet or Arrow-based local caching later if
+intermediate-file read and write time becomes a real bottleneck, but it
+is not needed to get started.
 
 ## TODO
 
-- parquet and arrow ingestion support
 - additional model backends beyond Random Forest

@@ -48,6 +48,11 @@ In most cases, the model bundle is the main thing. It contains the
 fitted model, the feature list, and the settings needed to rebuild the
 same features on new data.
 
+Just as in the training workflow, the raw files you want to predict on
+do not have to be copied into the workspace. They can stay on another
+drive, while `moover` writes the prediction outputs locally in the
+current run folder.
+
 ## The easiest path: use the prediction wizard
 
 The prediction wizard is a good choice when you want help checking the
@@ -73,6 +78,7 @@ spec <- create_spec(
   workspace = list(root = "my_moover_workspace"),
   ingest = list(
     # Point to the folder containing the new raw accelerometer files.
+    # This can be inside the workspace or on an external drive.
     raw_dir = "data_raw"
   ),
   labels = list(
@@ -109,6 +115,11 @@ In practice, it will:
 
 The key idea is consistency. A model is only useful on new data if the
 features are rebuilt the same way.
+
+If the raw files are very large, you can also turn on chunked reading
+with `ingest$chunk_rows`. That tells `moover` to read a fixed number of
+rows at a time without changing the feature definitions used for
+prediction.
 
 ## What the output looks like
 

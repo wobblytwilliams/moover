@@ -35,6 +35,12 @@ package supports two routes:
 
 We’ll look at both.
 
+One reassuring point before we start: these files do not have to be
+copied into the workspace. If your raw data already lives on a network
+drive, portable drive, or large shared folder, `moover` can read it
+there and still keep the derived outputs for the run on your local
+machine.
+
 ## The two input routes
 
 If your files already look like the standard CQU format, `moover` can
@@ -109,6 +115,19 @@ UTC milliseconds. That standardisation is important because the later
 steps, such as building epochs and calculating features, depend on time
 being handled consistently.
 
+## What happens with larger raw files
+
+For small and medium datasets, reading a whole file in one pass is
+usually fine. For larger datasets, `moover` can instead read a fixed
+number of rows at a time using `ingest$chunk_rows`.
+
+That setting is intentionally simple. We do **not** try to guess a chunk
+size from the available RAM on your computer. A fixed chunk size is
+easier to repeat, easier to explain, and easier to troubleshoot.
+
+The key promise is that chunked reading should not change the feature
+values. It is just a safer way to get through very large raw files.
+
 ## Common problems to catch early
 
 Most import problems are easier to fix before you start model building.
@@ -119,6 +138,8 @@ Here are the main ones to watch for:
 - missing headers in generic files
 - x, y, and z columns mapped in the wrong order
 - a folder that mixes different file structures together
+- trying to copy very large raw files into the workspace when it would
+  be easier to read them in place
 
 The wizard helps here because it shows previews before going further. If
 the preview looks wrong, that is the moment to stop and correct the

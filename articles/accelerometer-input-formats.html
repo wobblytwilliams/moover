@@ -110,6 +110,11 @@ version 1, the package supports two routes:</p>
 interactively</li>
 </ol>
 <p>We’ll look at both.</p>
+<p>One reassuring point before we start: these files do not have to be
+copied into the workspace. If your raw data already lives on a network
+drive, portable drive, or large shared folder, <code>moover</code> can
+read it there and still keep the derived outputs for the run on your
+local machine.</p>
 <div class="section level2">
 <h2 id="the-two-input-routes">The two input routes<a class="anchor" aria-label="anchor" href="#the-two-input-routes"></a>
 </h2>
@@ -183,6 +188,20 @@ steps, such as building epochs and calculating features, depend on time
 being handled consistently.</p>
 </div>
 <div class="section level2">
+<h2 id="what-happens-with-larger-raw-files">What happens with larger raw files<a class="anchor" aria-label="anchor" href="#what-happens-with-larger-raw-files"></a>
+</h2>
+<p>For small and medium datasets, reading a whole file in one pass is
+usually fine. For larger datasets, <code>moover</code> can instead read
+a fixed number of rows at a time using
+<code>ingest$chunk_rows</code>.</p>
+<p>That setting is intentionally simple. We do <strong>not</strong> try
+to guess a chunk size from the available RAM on your computer. A fixed
+chunk size is easier to repeat, easier to explain, and easier to
+troubleshoot.</p>
+<p>The key promise is that chunked reading should not change the feature
+values. It is just a safer way to get through very large raw files.</p>
+</div>
+<div class="section level2">
 <h2 id="common-problems-to-catch-early">Common problems to catch early<a class="anchor" aria-label="anchor" href="#common-problems-to-catch-early"></a>
 </h2>
 <p>Most import problems are easier to fix before you start model
@@ -194,6 +213,8 @@ workspace</li>
 <li>missing headers in generic files</li>
 <li>x, y, and z columns mapped in the wrong order</li>
 <li>a folder that mixes different file structures together</li>
+<li>trying to copy very large raw files into the workspace when it would
+be easier to read them in place</li>
 </ul>
 <p>The wizard helps here because it shows previews before going further.
 If the preview looks wrong, that is the moment to stop and correct the

@@ -138,6 +138,11 @@ run with a spec. The spec simply records the choices we want
 <span><span class="co"># Create a run specification for a beginner training run.</span></span>
 <span><span class="va">spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_spec.html">create_spec</a></span><span class="op">(</span></span>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
+<span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="co"># Point this to the folder holding the raw accelerometer files.</span></span>
+<span>    <span class="co"># It can be the workspace data_raw folder, or it can be an external path.</span></span>
+<span>    raw_dir <span class="op">=</span> <span class="st">"data_raw"</span></span>
+<span>  <span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="co"># tech.csv links animal ids and accelerometer ids when that mapping is needed.</span></span>
 <span>    tech_file <span class="op">=</span> <span class="st">"tech.csv"</span>,</span>
@@ -161,6 +166,11 @@ run with a spec. The spec simply records the choices we want
 <span></span>
 <span><span class="co"># Run the complete workflow from import through export.</span></span>
 <span><span class="fu"><a href="../reference/run_pipeline.html">run_pipeline</a></span><span class="op">(</span><span class="va">spec</span>, stage <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<p>If your raw files already live somewhere else, you can replace
+<code>"data_raw"</code> with an absolute path such as
+<code>"E:/portable_drive/cattle_trial_raw"</code>. <code>moover</code>
+will read from that folder and still keep the epoch dataset, model
+bundle, and test vectors inside the workspace for this run.</p>
 </div>
 <div class="section level2">
 <h2 id="what-happens-during-the-run">What happens during the run<a class="anchor" aria-label="anchor" href="#what-happens-during-the-run"></a>
@@ -179,6 +189,10 @@ scenes, so it helps to name the main steps plainly.</p>
 files</li>
 </ol>
 <p>That is the full arc of the training workflow.</p>
+<p>If the raw files are large, <code>moover</code> can also read them in
+fixed-size chunks using <code>ingest$chunk_rows</code>. That option is
+there to make large local workflows more manageable, not to change the
+feature definitions or the final model outputs.</p>
 </div>
 <div class="section level2">
 <h2 id="what-the-main-metrics-mean">What the main metrics mean<a class="anchor" aria-label="anchor" href="#what-the-main-metrics-mean"></a>

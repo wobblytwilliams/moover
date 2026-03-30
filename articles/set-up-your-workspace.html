@@ -104,7 +104,8 @@
 <p>A <code>moover</code> workspace is just an ordinary folder on your
 computer. You do not need a high-performance cluster, and you do not
 need an <code>.Rproj</code> file. What you do need is a consistent place
-for raw data, run outputs, and a small number of support files.</p>
+for local outputs, run histories, and a small number of support
+files.</p>
 <p>In this chapter, we’ll do three things:</p>
 <ol style="list-style-type: decimal">
 <li>create a workspace</li>
@@ -133,8 +134,8 @@ expects.</p>
 <h2 id="what-the-folders-are-for">What the folders are for<a class="anchor" aria-label="anchor" href="#what-the-folders-are-for"></a>
 </h2>
 <p>A beginner-friendly workspace is helpful because the same questions
-come up every time: where do the raw files go, where are the model
-outputs, and where did the package save this run?</p>
+come up every time: where are the model outputs, where did the package
+save this run, and which folder should I share with a colleague?</p>
 <p>A standard <code>moover</code> workspace looks like this:</p>
 <pre class="text"><code>my_moover_workspace/
   data_raw/
@@ -147,9 +148,14 @@ outputs, and where did the package save this run?</p>
 <h3 id="data_raw">
 <code>data_raw/</code><a class="anchor" aria-label="anchor" href="#data_raw"></a>
 </h3>
-<p>This is where your raw accelerometer files go. They stay here
-unchanged. <code>moover</code> reads from this folder; it does not
-expect you to hand-edit the files during a run.</p>
+<p>This is the default place for raw accelerometer files inside the
+workspace. If that is convenient, use it. The files stay here unchanged,
+and <code>moover</code> reads from this folder without expecting you to
+hand-edit them during a run.</p>
+<p>Just as importantly, this folder is <strong>optional</strong>. If
+your raw data is too large to copy locally, or it already lives on a
+network drive or portable drive, you can point <code>moover</code> to
+that external folder instead.</p>
 </div>
 <div class="section level3">
 <h3 id="runs">
@@ -190,6 +196,38 @@ from.</p>
   _internal/
   tech.csv
   observations.csv</code></pre>
+<p>That is the simplest arrangement, and it is a good place to
+start.</p>
+</div>
+<div class="section level2">
+<h2 id="when-your-raw-data-lives-somewhere-else">When your raw data lives somewhere else<a class="anchor" aria-label="anchor" href="#when-your-raw-data-lives-somewhere-else"></a>
+</h2>
+<p>Many real projects have more raw data than is comfortable to
+duplicate inside a teaching workspace. That is fine. In
+<code>moover</code>, the workspace is the local home for the
+<strong>derived</strong> data and outputs. The raw data can stay
+somewhere else.</p>
+<p>For example, you might have:</p>
+<pre class="text"><code>my_moover_workspace/
+  runs/
+  _internal/
+  tech.csv
+  observations.csv
+
+E:/portable_drive/cattle_trial_raw/
+  animal_01_cquFormat.csv
+  animal_02_cquFormat.csv</code></pre>
+<p>In that situation, you point <code>ingest$raw_dir</code> to
+<code>E:/portable_drive/cattle_trial_raw/</code>, and
+<code>moover</code> will still write the preview files, epoch dataset,
+optimisation results, model bundle, and test vectors into the workspace
+on your local machine.</p>
+<p>That split is worth remembering:</p>
+<ul>
+<li>raw data can be external</li>
+<li>run outputs stay local</li>
+<li>epoch-level data is expected to be held locally</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="what-a-run-folder-looks-like">What a run folder looks like<a class="anchor" aria-label="anchor" href="#what-a-run-folder-looks-like"></a>
@@ -219,6 +257,12 @@ questions later:</p>
 computer. Larger datasets can still take time, and that is normal. The
 main goal of the package is not to pretend the work is instant; it is to
 make the work manageable and understandable for beginners.</p>
+<p>If your raw files are very large, <code>moover</code> can also read
+them in fixed-size chunks instead of trying to load the whole file at
+once. That chunk size is controlled with <code>ingest$chunk_rows</code>.
+We use a fixed row count on purpose because it is easier to explain,
+easier to reproduce, and less fragile than trying to guess what your
+available RAM happens to be at the moment.</p>
 <div class="moover-next-steps">
 <p><strong>Move through the tutorial</strong><br> Previous chapter:
 <a href="getting-started.html">Chapter 1. Start Here</a><br> Next

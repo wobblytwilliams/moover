@@ -125,6 +125,10 @@ animal ids</li>
 <p>In most cases, the model bundle is the main thing. It contains the
 fitted model, the feature list, and the settings needed to rebuild the
 same features on new data.</p>
+<p>Just as in the training workflow, the raw files you want to predict
+on do not have to be copied into the workspace. They can stay on another
+drive, while <code>moover</code> writes the prediction outputs locally
+in the current run folder.</p>
 </div>
 <div class="section level2">
 <h2 id="the-easiest-path-use-the-prediction-wizard">The easiest path: use the prediction wizard<a class="anchor" aria-label="anchor" href="#the-easiest-path-use-the-prediction-wizard"></a>
@@ -150,6 +154,7 @@ important choice is the <code>model_bundle</code> path.</p>
 <span>  workspace <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>root <span class="op">=</span> <span class="st">"my_moover_workspace"</span><span class="op">)</span>,</span>
 <span>  ingest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    <span class="co"># Point to the folder containing the new raw accelerometer files.</span></span>
+<span>    <span class="co"># This can be inside the workspace or on an external drive.</span></span>
 <span>    raw_dir <span class="op">=</span> <span class="st">"data_raw"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -185,6 +190,10 @@ the same feature-building process that was used during training.</p>
 </ol>
 <p>The key idea is consistency. A model is only useful on new data if
 the features are rebuilt the same way.</p>
+<p>If the raw files are very large, you can also turn on chunked reading
+with <code>ingest$chunk_rows</code>. That tells <code>moover</code> to
+read a fixed number of rows at a time without changing the feature
+definitions used for prediction.</p>
 </div>
 <div class="section level2">
 <h2 id="what-the-output-looks-like">What the output looks like<a class="anchor" aria-label="anchor" href="#what-the-output-looks-like"></a>

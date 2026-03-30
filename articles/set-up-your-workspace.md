@@ -27,8 +27,8 @@ This is **Chapter 2 of 10** in the beginner path.
 
 A `moover` workspace is just an ordinary folder on your computer. You do
 not need a high-performance cluster, and you do not need an `.Rproj`
-file. What you do need is a consistent place for raw data, run outputs,
-and a small number of support files.
+file. What you do need is a consistent place for local outputs, run
+histories, and a small number of support files.
 
 In this chapter, we’ll do three things:
 
@@ -59,8 +59,8 @@ That one step gives you the basic structure `moover` expects.
 ## What the folders are for
 
 A beginner-friendly workspace is helpful because the same questions come
-up every time: where do the raw files go, where are the model outputs,
-and where did the package save this run?
+up every time: where are the model outputs, where did the package save
+this run, and which folder should I share with a colleague?
 
 A standard `moover` workspace looks like this:
 
@@ -77,9 +77,14 @@ Here is what those folders mean in practice.
 
 ### `data_raw/`
 
-This is where your raw accelerometer files go. They stay here unchanged.
-`moover` reads from this folder; it does not expect you to hand-edit the
-files during a run.
+This is the default place for raw accelerometer files inside the
+workspace. If that is convenient, use it. The files stay here unchanged,
+and `moover` reads from this folder without expecting you to hand-edit
+them during a run.
+
+Just as importantly, this folder is **optional**. If your raw data is
+too large to copy locally, or it already lives on a network drive or
+portable drive, you can point `moover` to that external folder instead.
 
 ### `runs/`
 
@@ -118,6 +123,40 @@ my_moover_workspace/
   observations.csv
 ```
 
+That is the simplest arrangement, and it is a good place to start.
+
+## When your raw data lives somewhere else
+
+Many real projects have more raw data than is comfortable to duplicate
+inside a teaching workspace. That is fine. In `moover`, the workspace is
+the local home for the **derived** data and outputs. The raw data can
+stay somewhere else.
+
+For example, you might have:
+
+``` text
+my_moover_workspace/
+  runs/
+  _internal/
+  tech.csv
+  observations.csv
+
+E:/portable_drive/cattle_trial_raw/
+  animal_01_cquFormat.csv
+  animal_02_cquFormat.csv
+```
+
+In that situation, you point `ingest$raw_dir` to
+`E:/portable_drive/cattle_trial_raw/`, and `moover` will still write the
+preview files, epoch dataset, optimisation results, model bundle, and
+test vectors into the workspace on your local machine.
+
+That split is worth remembering:
+
+- raw data can be external
+- run outputs stay local
+- epoch-level data is expected to be held locally
+
 ## What a run folder looks like
 
 When you start a run, `moover` creates a self-contained folder inside
@@ -147,6 +186,13 @@ questions later:
 datasets can still take time, and that is normal. The main goal of the
 package is not to pretend the work is instant; it is to make the work
 manageable and understandable for beginners.
+
+If your raw files are very large, `moover` can also read them in
+fixed-size chunks instead of trying to load the whole file at once. That
+chunk size is controlled with `ingest$chunk_rows`. We use a fixed row
+count on purpose because it is easier to explain, easier to reproduce,
+and less fragile than trying to guess what your available RAM happens to
+be at the moment.
 
 **Move through the tutorial**  
 Previous chapter: [Chapter 1. Start

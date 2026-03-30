@@ -63,6 +63,12 @@
 </h1></div>
 <p><code>moover</code> helps animal scientists turn movement data into behaviour outputs.</p>
 <p>It is designed for people who want to work locally on their own computer, without needing a high-performance computing (HPC) environment. Larger runs can still take time, but the goal is to make behaviour modelling practical and approachable for beginners.</p>
+<p>In <code>moover</code>, the usual pattern is:</p>
+<ul>
+<li>raw accelerometer files can live wherever they already live, including a network drive or portable drive</li>
+<li>the workspace keeps the local derived outputs for each run, such as previews, epoch features, optimisation results, model bundles, and test vectors</li>
+<li>epoch-level data is expected to be held locally so runs stay reproducible and easier to revisit</li>
+</ul>
 <div class="section level2">
 <h2 id="who-moover-is-for">Who <code>moover</code> is for<a class="anchor" aria-label="anchor" href="#who-moover-is-for"></a>
 </h2>
@@ -145,13 +151,25 @@
 <li>Random Forest models</li>
 <li>reusable and shareable model bundles</li>
 <li>support for CQU-style and generic delimited input files</li>
+<li>support for external raw-data folders with local run outputs</li>
+<li>fixed-size chunked reading for larger raw files when needed</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="storage-note">Storage note<a class="anchor" aria-label="anchor" href="#storage-note"></a>
+</h2>
+<p>Version 1 keeps the storage choices simple on purpose:</p>
+<ul>
+<li>raw files can be read directly from outside the workspace</li>
+<li>local run outputs are written as CSV.gz and RDS files</li>
+<li>Parquet is not required for the beginner workflow</li>
+</ul>
+<p>We may add optional Parquet or Arrow-based local caching later if intermediate-file read and write time becomes a real bottleneck, but it is not needed to get started.</p>
 </div>
 <div class="section level2">
 <h2 id="todo">TODO<a class="anchor" aria-label="anchor" href="#todo"></a>
 </h2>
 <ul>
-<li>parquet and arrow ingestion support</li>
 <li>additional model backends beyond Random Forest</li>
 </ul>
 </div>
